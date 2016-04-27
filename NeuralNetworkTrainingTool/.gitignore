@@ -1,5 +1,4 @@
 /bin/
 .settings
 .metadata/
-.recommenders
-
+/target/
