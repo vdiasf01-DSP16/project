@@ -2,10 +2,6 @@ package app.model.dataSet;
 
 import java.util.function.Function;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
 /**
  * The Normalising given double into the range set.
  * 
