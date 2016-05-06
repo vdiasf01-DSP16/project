@@ -11,23 +11,25 @@ import java.util.function.Function;
 public class Normalize implements Function<Double, Double> {
 
 	/**
-	 * The maximum normalised range.
+	 * The maximum input allowed.
 	 */
-	private final Double maxNorm;
+	private final Double maxValue;
 	
 	/**
-	 * The minimum normalised range.
+	 * The minimum input allowed.
 	 */
-	private final Double minNorm;
+	private final Double minValue;
 	
 	/**
-	 * Constructor requiring the min and the max range to be set.
+	 * Constructor requiring the minimum and the maximum 
+	 * input range allowed.
 	 * 
-	 * @param mathExpression String
+	 * @param minValue
+	 * @param maxValue
 	 */
-	public Normalize(double minNorm, double maxNorm) {
-		this.minNorm = minNorm;
-		this.maxNorm = maxNorm;
+	public Normalize(double minValue, double maxValue) {
+		this.minValue = minValue;
+		this.maxValue = maxValue;
 	}
 
 	/**
@@ -39,6 +41,10 @@ public class Normalize implements Function<Double, Double> {
 	 */
 	@Override
 	public Double apply(Double value) {
-		return ( value - minNorm ) / ( maxNorm - minNorm );
+		if ( value < minValue | value > maxValue ) 
+			throw new IllegalArgumentException("Supplied value '"
+		      + value + "' is out of range ["
+			  + minValue + ", " + maxValue + "]");
+		return ( value - minValue ) / ( maxValue - minValue );
 	}
 }

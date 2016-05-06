@@ -3,7 +3,8 @@ package app.model.dataSet;
 import java.util.function.Function;
 
 /**
- * The De-Normalisation of given double into the range set.
+ * The DeNormalisation of given double between zero and one
+ * into the minimum and maximum final expected value range set.
  * 
  * @author Vasco
  *
@@ -11,23 +12,25 @@ import java.util.function.Function;
 public class DeNormalize implements Function<Double, Double> {
 
 	/**
-	 * The maximum normalised range.
+	 * The maximum output value de-normalised.
 	 */
-	private final Double maxNorm;
+	private final Double maxDeNorm;
 	
 	/**
-	 * The minimum normalised range.
+	 * The minimum output value de-normalised.
 	 */
-	private final Double minNorm;
+	private final Double minDeNorm;
 	
 	/**
-	 * Constructor requiring the min and the max range to be set.
+	 * Constructor requiring the minimum and the maximum final
+	 * values ranges.
 	 * 
-	 * @param mathExpression String
+	 * @param minDeNorm
+	 * @param maxDeNorm
 	 */
-	public DeNormalize(double minNorm, double maxNorm) {
-		this.minNorm = minNorm;
-		this.maxNorm = maxNorm;
+	public DeNormalize(double minDeNorm, double maxDeNorm) {
+		this.minDeNorm = minDeNorm;
+		this.maxDeNorm = maxDeNorm;
 	}
 
 	/**
@@ -39,6 +42,9 @@ public class DeNormalize implements Function<Double, Double> {
 	 */
 	@Override
 	public Double apply(Double value) {
-		return minNorm + value * ( maxNorm - minNorm );
+		if ( value < 0.0 | value > 1.0 ) 
+			throw new IllegalArgumentException("Supplied value '" + value + "' is out of range [0.0, 1.0]");
+
+		return minDeNorm + value * ( maxDeNorm - minDeNorm );
 	}
 }

@@ -87,4 +87,20 @@ public class TestNormalise {
 		Double found = normalise.apply(value);
 		assertEquals(expected, found);
 	}
+
+	/**
+	 * Testing out of range value exception upper bound.
+	 */
+	@Test(expected=IllegalArgumentException.class)
+	public void testNormalisedOutOfRangeExceptionUpperBound() {
+		normalise.apply(MAX_NORM + 1);
+	}
+
+	/**
+	 * Testing out of range value exception lower bound.
+	 */
+	@Test(expected=IllegalArgumentException.class)
+	public void testNormalisedOutOfRangeExceptionLowerBound() {
+		normalise.apply(MIN_NORM - 1);
+	}
 }
