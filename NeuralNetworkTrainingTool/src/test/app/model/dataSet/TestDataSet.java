@@ -95,8 +95,8 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetInputRow() { 
-        dataSetSource = new double[2][3];
-        dataSetSource[1][2] = 2.5;
+        dataSet = new double[2][3];
+        dataSet[1][2] = 2.5;
         double[] found = super.getInputRow(1); 
         assertNotNull(found);
         assertTrue(2.5 == found[2]);
@@ -110,8 +110,8 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetNumberOfInputColumns() { 
-        dataSetSource = new double[2][3];
-        dataSetSource[1][2] = 2.5;
+        dataSet = new double[2][3];
+        dataSet[1][2] = 2.5;
         int found = super.getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
@@ -123,8 +123,8 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetNumberOfOutputColumns() { 
-        dataSetSource = new double[2][3];
-        dataSetSource[1][2] = 2.5;
+        dataSet = new double[2][3];
+        dataSet[1][2] = 2.5;
         int found = super.getNumberOfOutputColumns();
         assertTrue(0 == found);
     }
@@ -136,8 +136,8 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetOutputRow() { 
-        dataSetSource = new double[2][3];
-        dataSetSource[1][2] = 2.5;
+        dataSet = new double[2][3];
+        dataSet[1][2] = 2.5;
         double found[] = super.getOutputRow(1);
         assertNull(found);
     }
@@ -149,8 +149,8 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetTotalNumberOfSourceColumns() { 
-        dataSetSource = new double[2][3];
-        dataSetSource[1][2] = 2.5;
+        dataSet = new double[2][3];
+        dataSet[1][2] = 2.5;
         int found = super.getTotalNumberOfSourceColumns();
         assertTrue(3 == found);
     }
@@ -162,8 +162,8 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetTotalNumberOfSourceRows() { 
-        dataSetSource = new double[2][3];
-        dataSetSource[1][2] = 2.5;
+        dataSet = new double[2][3];
+        dataSet[1][2] = 2.5;
         int found = super.getTotalNumberOfSourceRows();
         assertTrue(2 == found);
     }
@@ -188,8 +188,8 @@ public class TestDataSet extends DataSet {
         inputColumnMap.put(0, transform);
         super.setInputColumns(inputColumnMap);
 
-        dataSetSource = new double[2][3];
-        dataSetSource[0][1] = 5.3;
+        dataSet = new double[2][3];
+        dataSet[0][1] = 5.3;
         double[] found = super.getInputRow(0); 
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
@@ -209,8 +209,8 @@ public class TestDataSet extends DataSet {
         inputColumnMap.put(0, transform);
         super.setInputColumns(inputColumnMap);
 
-        dataSetSource = new double[2][3];
-        dataSetSource[0][1] = 5.3;
+        dataSet = new double[2][3];
+        dataSet[0][1] = 5.3;
         int found = super.getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
@@ -227,8 +227,8 @@ public class TestDataSet extends DataSet {
         inputColumnMap.put(0, transform);
         super.setInputColumns(inputColumnMap);
 
-        dataSetSource = new double[2][3];
-        dataSetSource[0][1] = 5.3;
+        dataSet = new double[2][3];
+        dataSet[0][1] = 5.3;
         int found = super.getNumberOfOutputColumns();
         assertTrue(0 == found);
     }
@@ -245,8 +245,8 @@ public class TestDataSet extends DataSet {
         outputColumnMap.put(0, transform);
         super.setInputColumns(outputColumnMap);
 
-        dataSetSource = new double[2][3];
-        dataSetSource[0][1] = 5.3;
+        dataSet = new double[2][3];
+        dataSet[0][1] = 5.3;
         double found[] = super.getOutputRow(1);
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
@@ -266,8 +266,8 @@ public class TestDataSet extends DataSet {
         outputColumnMap.put(0, transform);
         super.setInputColumns(outputColumnMap);
 
-        dataSetSource = new double[2][3];
-        dataSetSource[0][1] = 5.3;
+        dataSet = new double[2][3];
+        dataSet[0][1] = 5.3;
         int found = super.getTotalNumberOfSourceColumns();
         assertTrue(3 == found);
     }
@@ -284,8 +284,8 @@ public class TestDataSet extends DataSet {
         outputColumnMap.put(0, transform);
         super.setInputColumns(outputColumnMap);
 
-        dataSetSource = new double[2][3];
-        dataSetSource[0][1] = 5.3;
+        dataSet = new double[2][3];
+        dataSet[0][1] = 5.3;
         int found = super.getTotalNumberOfSourceRows();
         assertTrue(2 == found);
     }
