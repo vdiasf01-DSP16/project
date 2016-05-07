@@ -2,14 +2,21 @@ package test.app.model.dataSet;
 
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
 import java.util.function.Function;
 
 import org.junit.Test;
 
 import app.model.dataSet.MapTransform;
+import app.model.dataSet.MathOperator;
 
 /**
  * Testing the MapTransform implementation.
+ * 
+ * MapTransform, when initialised, takes the input index.
+ * the output index, and the transformation operation to 
+ * happen between the two. The value of the first will be
+ * transformed and stored into the second.
  * 
  * @author Vasco
  *
@@ -17,11 +24,22 @@ import app.model.dataSet.MapTransform;
 public class TestMapTransform {
 
 	/**
-	 * Testing that with no given expression, same value is returned.
+	 * The first value.
+	 */
+	private final BigDecimal GIVEN_VALUE = BigDecimal.valueOf(1.25d);
+
+	/**
+	 * The second value.
+	 */
+	private final BigDecimal INITIAL_VALUE = BigDecimal.valueOf(-2.12345d);
+
+	/**
+	 * Testing that with no given expression, 
+	 * same value is returned.
 	 */
 	@Test
 	public void testNoMathExpression() {
-		// Instantiate new object with no math expression
+		// Instantiate new object with no math operation
 		Function<Double,Double> mapTransform = new MapTransform();
 		// Check if expected value matches returned one.
 		double expectedValue = 12.34;
@@ -30,11 +48,12 @@ public class TestMapTransform {
 	}
 
 	/**
-	 * Testing that with no given expression, same small double value is returned.
+	 * Testing that with no given expression, 
+	 * same small double value is returned.
 	 */
 	@Test
 	public void testNoMathExpressionSmallDouble() {
-		// Instantiate new object with no math expression
+		// Instantiate new object with no math operation
 		Function<Double,Double> mapTransform = new MapTransform();
 		// Check if expected value matches returned one.
 		double expectedValue = 12.34E-90;
@@ -43,11 +62,12 @@ public class TestMapTransform {
 	}
 
 	/**
-	 * Testing that with no given expression, same big double value is returned.
+	 * Testing that with no given expression, 
+	 * same big double value is returned.
 	 */
 	@Test
 	public void testNoMathExpressionBigDouble() {
-		// Instantiate new object with no math expression
+		// Instantiate new object with no math operation
 		Function<Double,Double> mapTransform = new MapTransform();
 		// Check if expected value matches returned one.
 		double expectedValue = 12.34E90;
@@ -56,92 +76,82 @@ public class TestMapTransform {
 	}
 
 	/**
-	 * Testing math equations with integers.
+	 * Testing that with no given expression, 
+	 * same very small double value is returned.
 	 */
 	@Test
-	public void testMathExpressionWithIntegers() {
-		// Instantiate new object with math expression
-		Function<Double,Double> mapTransform = new MapTransform("2+3-%s+2");
-
+	public void testNoMathExpressioVerySmallDouble() {
+		// Instantiate new object with no math operation
+		Function<Double,Double> mapTransform = new MapTransform();
 		// Check if expected value matches returned one.
-		double givenValue = 7;
-		double expectedValue = 0;
-		double foundValue = mapTransform.apply(givenValue);
+		double expectedValue = 12.34E-90;
+		double foundValue = mapTransform.apply(expectedValue);
 		assertTrue(expectedValue == foundValue);
 	}
 
 	/**
-	 * Testing math equations with integers.
+	 * Testing addition.
 	 */
 	@Test
-	public void testMathExpressionWithIntegers2() {
-		// Instantiate new object with math expression
-		Function<Double,Double> mapTransform = new MapTransform("2/3*%s+2");
+	public void testMathAddition() {
+		// Instantiate new object with math operation
+		MapTransform mapTransform = new MapTransform(MathOperator.ADD,INITIAL_VALUE.doubleValue());
 
 		// Check if expected value matches returned one.
-		double givenValue = 7;
-		double expectedValue = 6.666666666666666;
-		double foundValue = mapTransform.apply(givenValue);
+		double expectedValue = GIVEN_VALUE.add(INITIAL_VALUE).doubleValue();
+		double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
 		assertTrue(expectedValue == foundValue);
 	}
 
 	/**
-	 * Testing math equations with double.
+	 * Testing subtraction.
 	 */
 	@Test
-	public void testMathExpressionWithDouble() {
-		// Instantiate new object with math expression
-		Function<Double,Double> mapTransform = new MapTransform("2.2+3.1-%s+2.5");
+	public void testMathSubtraction() {
+		// Instantiate new object with math operation
+		MapTransform mapTransform = new MapTransform(MathOperator.SUB,INITIAL_VALUE.doubleValue());
 
 		// Check if expected value matches returned one.
-		double givenValue = 7.2;
-		double expectedValue = 0.6000000000000005;
-		double foundValue = mapTransform.apply(givenValue);
+		double expectedValue = GIVEN_VALUE.subtract(INITIAL_VALUE).doubleValue();
+		double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
 		assertTrue(expectedValue == foundValue);
 	}
 
 	/**
-	 * Testing math equations with double.
+	 * Testing multiplication.
 	 */
 	@Test
-	public void testMathExpressionWithDouble2() {
-		// Instantiate new object with math expression
-		Function<Double,Double> mapTransform = new MapTransform("2.2/3.1*%s+2.5");
+	public void testMathMultiplication() {
+		// Instantiate new object with math operation
+		MapTransform mapTransform = new MapTransform(MathOperator.MUL,INITIAL_VALUE.doubleValue());
 
 		// Check if expected value matches returned one.
-		double givenValue = 7.2;
-		double expectedValue = 7.609677419354839;
-		double foundValue = mapTransform.apply(givenValue);
+		double expectedValue = GIVEN_VALUE.multiply(INITIAL_VALUE).doubleValue();
+		double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
 		assertTrue(expectedValue == foundValue);
 	}
 
 	/**
-	 * Testing math equations with small doubles.
+	 * Testing division.
 	 */
 	@Test
-	public void testMathExpressionWithSmallDouble() {
-		// Instantiate new object with math expression
-		Function<Double,Double> mapTransform = new MapTransform("2.2E-10/3.1E-11*%s+2.5E-11");
+	public void testMathDivision() {
+		// Instantiate new object with math operation
+		MapTransform mapTransform = new MapTransform(MathOperator.DIV,INITIAL_VALUE.doubleValue());
 
 		// Check if expected value matches returned one.
-		double givenValue = 7.2E-10;
-		double expectedValue = 5.134677419354838E-9;
-		double foundValue = mapTransform.apply(givenValue);
+		double expectedValue = GIVEN_VALUE.doubleValue() / INITIAL_VALUE.doubleValue();
+		double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
 		assertTrue(expectedValue == foundValue);
 	}
 
 	/**
-	 * Testing math equations with big doubles.
+	 * Testing division by zero.
 	 */
-	@Test
-	public void testMathExpressionWithBigDouble() {
-		// Instantiate new object with math expression
-		Function<Double,Double> mapTransform = new MapTransform("2.2E10/3.1E11*%s+2.5E11");
-
-		// Check if expected value matches returned one.
-		double givenValue = 7.2E10;
-		double expectedValue = 2.5510967741935483E11;
-		double foundValue = mapTransform.apply(givenValue);
-		assertTrue(expectedValue == foundValue);
+	@Test(expected=ArithmeticException.class)
+	public void testMathDivisionByZero() {
+		// Instantiate new object with math operation
+		MapTransform mapTransform = new MapTransform(MathOperator.DIV,0);
+		mapTransform.apply(GIVEN_VALUE.doubleValue());
 	}
 }

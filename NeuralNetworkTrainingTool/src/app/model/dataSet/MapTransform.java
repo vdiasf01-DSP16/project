@@ -1,14 +1,12 @@
 package app.model.dataSet;
 
+import java.math.BigDecimal;
 import java.util.function.Function;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 /**
  * The Map Transform for the ideal columns from the source columns,
- * mapping between indexes and making any required mathematical operation.
+ * mapping between indexes and making any required mathematical operation
+ * from the source to the output.
  * 
  * @author Vasco
  *
@@ -16,59 +14,66 @@ import javax.script.ScriptException;
 public class MapTransform implements Function<Double, Double> {
 
 	/**
-	 * The mathematical expression to be applied to the given double.
+	 * The operations to be applied to the given double.
 	 */
-	private String mathExpression;
+	private final MathOperator operation;
 	
 	/**
-	 * Constructor for when no mathematical expression required.
-	 * 
-	 * @param mathExpression String
+	 * The biasValue to be used with the operation to transform
+	 * the apply given value.
+	 */
+	private final BigDecimal biasValue;
+	
+	/**
+	 * If no operation is supplied at the start, then no transformation 
+	 * will be required, and the input value will be returned.
 	 */
 	public MapTransform() {
-		this.mathExpression = null;
+		this.operation = null;
+		this.biasValue = new BigDecimal(0d);
 	}
 
 	/**
-	 * Constructor requiring a mathematical expression to be kept.
-	 * 
-	 * @param mathExpression String
+	 * Constructor requiring an operator and a double where the input
+	 * value will suffer the operator action with the given double value
+	 * and will be returned.
 	 */
-	public MapTransform(String mathExpression) {
-		if ( mathExpression != null ) {
-			if ( !mathExpression.contains("%") ) {
-				throw new IllegalArgumentException("No placeholder found in: "+mathExpression);
-			}
+	public MapTransform(MathOperator operation, double biasValue) {
+		// An operation must be supplied
+		if ( operation == null ) {
+			throw new IllegalArgumentException("No operation list supplied");
 		}
-		this.mathExpression = mathExpression;
+		if ( operation.equals(MathOperator.DIV) & biasValue == 0 ) 
+			throw new ArithmeticException("Illegal division by zero");
+		
+		this.operation = operation;
+		this.biasValue = BigDecimal.valueOf(biasValue);
 	}
 
 	/**
-	 * Applying the supplied mathematical expression to the supplied double,
-	 * and returning the result. The mathematical expression must contain placeholder
-	 * e.g.: 2+4*%d+3 where %d is the placeholder where the given double will
-	 * be placed into for calculation.
+	 * If an operator was supplied, it will take the bias value, and operate
+	 * with this supplied double to return the result.
+	 * 
+	 * If no operation was supplied, this value will be returned without any
+	 * transformation.
 	 * 
 	 * @param value Double
 	 * @return Double
 	 */
 	@Override
 	public Double apply(Double value) {
+
 		// If no mathematical calculations are to be made, return given value.
-		if ( mathExpression == null ) return value;
-
-		// Use the given mathematical equation to calculate on with given double
-		ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
-		ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("JavaScript");
+		if ( operation == null ) return value;
 		
-		// Add the value to the mathematical expression.
-        String expression = String.format(mathExpression, ""+value);
+        BigDecimal bigDecimalValue = BigDecimal.valueOf(value);
+		if ( operation.equals(MathOperator.ADD) ) return bigDecimalValue.add(biasValue).doubleValue();
+		if ( operation.equals(MathOperator.SUB) ) return bigDecimalValue.subtract(biasValue).doubleValue();
+		if ( operation.equals(MathOperator.MUL) ) return bigDecimalValue.multiply(biasValue).doubleValue();
+		if ( operation.equals(MathOperator.DIV) ) return bigDecimalValue.doubleValue() / biasValue.doubleValue();
 
-		// Return the evaluated transformed double or alert user about the mistake.
-		try {
-			return (Double) scriptEngine.eval(expression);
-		} catch (ScriptException e) {
-			throw new IllegalStateException("Don't know how to evaluate: "+expression);
-		}
+		throw new IllegalStateException("Don't supplied operation: "+operation);
 	}
+	
+	
 }
