@@ -113,7 +113,6 @@ public class TestDataSet extends DataSet {
         dataSet = new double[2][3];
         dataSet[1][2] = 2.5;
         int found = getNumberOfInputColumns(); 
-        System.out.println(found);
         assertTrue(3 == found);
     }
 
