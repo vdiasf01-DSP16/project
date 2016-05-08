@@ -63,7 +63,7 @@ public class TestDataSet extends DataSet {
      */
     @Test(expected=IllegalStateException.class)
     public void testGetOutputRow() { 
-        super.getOutputRow(0); 
+        getOutputRow(0); 
     }
 
     /**
@@ -112,7 +112,8 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetNumberOfInputColumns() { 
         dataSet = new double[2][3];
         dataSet[1][2] = 2.5;
-        int found = super.getNumberOfInputColumns(); 
+        int found = getNumberOfInputColumns(); 
+        System.out.println(found);
         assertTrue(3 == found);
     }
 
@@ -207,11 +208,11 @@ public class TestDataSet extends DataSet {
         Map<Integer,MapTransform> transform = new HashMap<>();
         transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
         inputColumnMap.put(0, transform);
-        super.setInputColumns(inputColumnMap);
+        setInputColumns(inputColumnMap);
 
         dataSet = new double[2][3];
         dataSet[0][1] = 5.3;
-        int found = super.getNumberOfInputColumns(); 
+        int found = getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
 
@@ -238,20 +239,19 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetOutputRowTransform() { 
-        // Source[0] -> Input[1] += 1.3
+        // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
         outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
         Map<Integer,MapTransform> transform = new HashMap<>();
         transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
         outputColumnMap.put(0, transform);
-        super.setInputColumns(outputColumnMap);
+        setOutputColumns(outputColumnMap);
 
         dataSet = new double[2][3];
-        dataSet[0][1] = 5.3;
-        double found[] = super.getOutputRow(1);
+        dataSet[1][0] = 5.3;
+        double found[] = getOutputRow(1);
         assertNotNull(found);
-        assertTrue(0.0 == found[0]);
-        assertTrue(5.3 == found[1]);
-        assertTrue(0.0 == found[2]);
+        assertTrue(1 == found.length);
+        assertTrue(5.3 == found[0]);
     }
 
     /**
