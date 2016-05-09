@@ -16,6 +16,14 @@ import app.model.dataSet.MathOperator;
 /**
  * Testing the abstract class DataSet to ensure all exceptions are thrown.
  * 
+ * Two dataSets supplied: 
+ *  trainingDataSet
+ *  testingDataSet
+ *  
+ * These two data sets are independent with the exception when the testing
+ * data set is not supplied, the training data set take the full load and
+ * become the default data set to be used.
+ * 
  * @author Vasco
  *
  */
@@ -26,12 +34,30 @@ public class TestDataSet extends DataSet {
      **********************************************************/
 
     /**
-     * Testing exception with load() on DataSet that
+     * Testing exception with load() on both data set that
      * required to be implemented on the extending class.
      */
     @Test(expected=IllegalStateException.class)
     public void testLoad() { 
         load(); 
+    }
+
+    /**
+     * Testing exception with loadTesting() required to be 
+     * implemented on the extending class.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testLoadTraining() { 
+        loadTraining(); 
+    }
+
+    /**
+     * Testing exception with loadTesting() required to be 
+     * implemented on the extending class.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testLoadTesting() { 
+        loadTesting(); 
     }
 
     /**
@@ -64,42 +90,6 @@ public class TestDataSet extends DataSet {
     @Test(expected=IllegalStateException.class)
     public void testGetTestingOutputRow() { 
         getTestingOutputRow(0); 
-    }
-
-    /**
-     * Expected exception on a not yet loaded file.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testGetNumberOfInputColumns() { 
-        getNumberOfInputColumns(); 
-    }
-
-    /**
-     * Testing expected exception on a not yet loaded file.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testGetNumberOfOutputColumns() { 
-        getNumberOfOutputColumns(); 
-    }
-
-    /**
-     * Expected exception on a not yet loaded file.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testGetNumberOfInputColumnsWithTestingDataSet() { 
-    	testingDataSet = new double[2][2];
-    	testingDataSet[0][1] = 2.3;
-        getNumberOfInputColumns(); 
-    }
-
-    /**
-     * Testing expected exception on a not yet loaded file.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testGetNumberOfOutputColumnsWithTestingDataSet() { 
-    	testingDataSet = new double[2][2];
-    	testingDataSet[0][1] = 2.3;
-        getNumberOfOutputColumns(); 
     }
 
     /**
@@ -212,7 +202,8 @@ public class TestDataSet extends DataSet {
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
         double found[] = getTestingOutputRow(1);
-        assertNull(found);
+        assertNotNull(found);
+        assertTrue(0 == found.length);
     }
 
     /**
@@ -241,7 +232,7 @@ public class TestDataSet extends DataSet {
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
         int found = getNumberOfInputColumns(); 
-        assertTrue(0 == found);
+        assertTrue(3 == found);
     }
 
     /**
@@ -274,6 +265,7 @@ public class TestDataSet extends DataSet {
         assertTrue(0 == found);
     }
 
+    
     /***********************************************************
      *   Transformations and input/output index allocations    *
      *                                                         *
@@ -400,39 +392,4 @@ public class TestDataSet extends DataSet {
         assertTrue(5.3 == found[0]);
     }
 
-    /**
-     * Testing method on loaded source using map transforms.
-     */
-    @Test
-    public void testLoadedGetTotalNumberOfSourceColumnsTransform() { 
-        // Source[0] -> Input[1] += 1.3
-        outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        outputColumnMap.put(0, transform);
-        setInputColumns(outputColumnMap);
-
-        trainingDataSet = new double[2][3];
-        trainingDataSet[0][1] = 5.3;
-        int found = getTotalNumberOfSourceColumns();
-        assertTrue(3 == found);
-    }
-
-    /**
-     * Testing method on loaded source using map transforms.
-     */
-    @Test
-    public void testLoadedGetTotalNumberOfSourceRowsTransform() { 
-        // Source[0] -> Input[1] += 1.3
-        outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        outputColumnMap.put(0, transform);
-        setInputColumns(outputColumnMap);
-
-        trainingDataSet = new double[2][3];
-        trainingDataSet[0][1] = 5.3;
-        int found = getTotalNumberOfSourceRows();
-        assertTrue(2 == found);
-    }
 }
