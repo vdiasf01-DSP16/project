@@ -31,23 +31,47 @@ public class TestDataSet extends DataSet {
      */
     @Test(expected=IllegalStateException.class)
     public void testLoad() { 
-        super.load(); 
+        load(); 
     }
 
     /**
      * Testing expected exception on a not yet loaded file.
      */
     @Test(expected=IllegalStateException.class)
-    public void testGetInputRow() { 
-        super.getInputRow(0); 
+    public void testGetTrainingInputRow() { 
+        getTrainingInputRow(0); 
+    }
+
+    /**
+     * Expected exception on a not yet loaded file.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testGetTestingInputRow() { 
+        getTestingInputRow(0); 
     }
 
     /**
      * Testing expected exception on a not yet loaded file.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testGetTrainingOutputRow() { 
+        getTrainingOutputRow(0); 
+    }
+
+    /**
+     * Testing expected exception on a not yet loaded file.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testGetTestingOutputRow() { 
+        getTestingOutputRow(0); 
+    }
+
+    /**
+     * Expected exception on a not yet loaded file.
      */
     @Test(expected=IllegalStateException.class)
     public void testGetNumberOfInputColumns() { 
-        super.getNumberOfInputColumns(); 
+        getNumberOfInputColumns(); 
     }
 
     /**
@@ -55,15 +79,27 @@ public class TestDataSet extends DataSet {
      */
     @Test(expected=IllegalStateException.class)
     public void testGetNumberOfOutputColumns() { 
-        super.getNumberOfOutputColumns(); 
+        getNumberOfOutputColumns(); 
+    }
+
+    /**
+     * Expected exception on a not yet loaded file.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testGetNumberOfInputColumnsWithTestingDataSet() { 
+    	testingDataSet = new double[2][2];
+    	testingDataSet[0][1] = 2.3;
+        getNumberOfInputColumns(); 
     }
 
     /**
      * Testing expected exception on a not yet loaded file.
      */
     @Test(expected=IllegalStateException.class)
-    public void testGetOutputRow() { 
-        getOutputRow(0); 
+    public void testGetNumberOfOutputColumnsWithTestingDataSet() { 
+    	testingDataSet = new double[2][2];
+    	testingDataSet[0][1] = 2.3;
+        getNumberOfOutputColumns(); 
     }
 
     /**
@@ -71,7 +107,7 @@ public class TestDataSet extends DataSet {
      */
     @Test(expected=IllegalStateException.class)
     public void testGetTotalNumberOfSourceColumns() { 
-        super.getTotalNumberOfSourceColumns(); 
+        getTotalNumberOfSourceColumns(); 
     }
 
     /**
@@ -79,9 +115,45 @@ public class TestDataSet extends DataSet {
      */
     @Test(expected=IllegalStateException.class)
     public void testGetTotalNumberOfSourceRows() { 
-        super.getTotalNumberOfSourceRows(); 
+        getTotalNumberOfSourceRows(); 
     }
 
+    /**
+     * Testing method on loaded source.
+     * 
+     * By default, source columns still give an exception. 
+     * It is with the extending class where the source is loaded
+     * and these are calculated. After transformation and stored in
+     * either trainingDataSet or testingDataSet, these will not be 
+     * the same.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testLoadedGetTotalNumberOfSourceColumns() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        getTotalNumberOfSourceColumns();
+    }
+
+    /**
+     * Testing method on loaded source.
+     * 
+     * By default, source rows still give an exception. 
+     * It is with the extending class where the source is loaded
+     * and these are calculated. After transformation and stored in
+     * either trainingDataSet or testingDataSet, these will not be 
+     * the same.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testLoadedGetTotalNumberOfSourceRows() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        getTotalNumberOfSourceRows();
+    }
+    
 
     /**********************************************************
      *             Default methods on loaded data             *
@@ -94,12 +166,53 @@ public class TestDataSet extends DataSet {
      * on a one-to-one basis.
      */
     @Test
-    public void testLoadedGetInputRow() { 
-        dataSet = new double[2][3];
-        dataSet[1][2] = 2.5;
-        double[] found = super.getInputRow(1); 
+    public void testLoadedGetTrainingInputRow() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        double[] found = getTrainingInputRow(1); 
         assertNotNull(found);
         assertTrue(2.5 == found[2]);
+    }
+
+    /**
+     * Testing method on loaded source.
+     * 
+     * By default, input row should return any source rows
+     * on a one-to-one basis.
+     */
+    @Test
+    public void testLoadedGetTestingInputRow() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        double[] found = getTestingInputRow(1); 
+        assertNotNull(found);
+        assertTrue(2.5 == found[2]);
+    }
+
+    /**
+     * Testing method on loaded source.
+     * 
+     * By default, no columns should be assigned to the output.
+     */
+    @Test
+    public void testLoadedGetTrainingOutputRow() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        double found[] = getTrainingOutputRow(1);
+        assertNull(found);
+    }
+
+    /**
+     * Testing method on loaded source.
+     * 
+     * By default, no columns should be assigned to the output.
+     */
+    @Test
+    public void testLoadedGetTestingOutputRow() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        double found[] = getTestingOutputRow(1);
+        assertNull(found);
     }
 
     /**
@@ -109,9 +222,9 @@ public class TestDataSet extends DataSet {
      * on a one-to-one basis.
      */
     @Test
-    public void testLoadedGetNumberOfInputColumns() { 
-        dataSet = new double[2][3];
-        dataSet[1][2] = 2.5;
+    public void testLoadedGetNumberOfInputColumnsOnlyTraining() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
         int found = getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
@@ -119,55 +232,48 @@ public class TestDataSet extends DataSet {
     /**
      * Testing method on loaded source.
      * 
-     * By default, no columns should be assigned to the output.
+     * When no trainingDataSet is supplied, the number of columns
+     * for the testingDataSet is irrelevant and it is always expected
+     * to return zero.
      */
     @Test
-    public void testLoadedGetNumberOfOutputColumns() { 
-        dataSet = new double[2][3];
-        dataSet[1][2] = 2.5;
-        int found = super.getNumberOfOutputColumns();
+    public void testLoadedGetNumberOfInputColumnsOnlyTesting() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        int found = getNumberOfInputColumns(); 
         assertTrue(0 == found);
     }
 
     /**
      * Testing method on loaded source.
      * 
-     * By default, no columns should be assigned to the output.
+     * When no trainingDataSet is supplied, the number of columns
+     * for the testingDataSet is irrelevant and it is always expected
+     * to return zero.
      */
     @Test
-    public void testLoadedGetOutputRow() { 
-        dataSet = new double[2][3];
-        dataSet[1][2] = 2.5;
-        double found[] = super.getOutputRow(1);
-        assertNull(found);
+    public void testLoadedGetNumberOfOutputColumnsOnlyTraining() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        int found = getNumberOfOutputColumns();
+        assertTrue(0 == found);
     }
 
     /**
      * Testing method on loaded source.
      * 
-     * By default, source columns should be equal to loaded ones.
+     * When no trainingDataSet is supplied, the number of columns
+     * for the testingDataSet is irrelevant and it is always expected
+     * to return zero.
      */
     @Test
-    public void testLoadedGetTotalNumberOfSourceColumns() { 
-        dataSet = new double[2][3];
-        dataSet[1][2] = 2.5;
-        int found = super.getTotalNumberOfSourceColumns();
-        assertTrue(3 == found);
+    public void testLoadedGetNumberOfOutputColumnsOnlyTesting() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        int found = getNumberOfOutputColumns();
+        assertTrue(0 == found);
     }
 
-    /**
-     * Testing method on loaded source.
-     * 
-     * By default, source rows should be equal to loaded ones.
-     */
-    @Test
-    public void testLoadedGetTotalNumberOfSourceRows() { 
-        dataSet = new double[2][3];
-        dataSet[1][2] = 2.5;
-        int found = super.getTotalNumberOfSourceRows();
-        assertTrue(2 == found);
-    }
-    
     /***********************************************************
      *   Transformations and input/output index allocations    *
      *                                                         *
@@ -180,17 +286,38 @@ public class TestDataSet extends DataSet {
      * Testing method on loaded source using map transforms.
      */
     @Test
-    public void testLoadedGetInputRowTransform() { 
+    public void testLoadedGetInputRowTransformTraining() { 
         // Source[0] -> Input[1] += 1.3
         inputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
         Map<Integer,MapTransform> transform = new HashMap<>();
         transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
         inputColumnMap.put(0, transform);
-        super.setInputColumns(inputColumnMap);
+        setInputColumns(inputColumnMap);
 
-        dataSet = new double[2][3];
-        dataSet[0][1] = 5.3;
-        double[] found = super.getInputRow(0); 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[0][1] = 5.3;
+        double[] found = getTrainingInputRow(0); 
+        assertNotNull(found);
+        assertTrue(0.0 == found[0]);
+        assertTrue(5.3 == found[1]);
+        assertTrue(0.0 == found[2]);
+    }
+
+    /**
+     * Testing method on loaded source using map transforms.
+     */
+    @Test
+    public void testLoadedGetInputRowTransformTesting() { 
+        // Source[0] -> Input[1] += 1.3
+        inputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
+        Map<Integer,MapTransform> transform = new HashMap<>();
+        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
+        inputColumnMap.put(0, transform);
+        setInputColumns(inputColumnMap);
+
+        testingDataSet = new double[2][3];
+        testingDataSet[0][1] = 5.3;
+        double[] found = getTestingInputRow(0); 
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
         assertTrue(5.3 == found[1]);
@@ -209,8 +336,8 @@ public class TestDataSet extends DataSet {
         inputColumnMap.put(0, transform);
         setInputColumns(inputColumnMap);
 
-        dataSet = new double[2][3];
-        dataSet[0][1] = 5.3;
+        trainingDataSet = new double[2][3];
+        trainingDataSet[0][1] = 5.3;
         int found = getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
@@ -225,11 +352,11 @@ public class TestDataSet extends DataSet {
         Map<Integer,MapTransform> transform = new HashMap<>();
         transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
         inputColumnMap.put(0, transform);
-        super.setInputColumns(inputColumnMap);
+        setInputColumns(inputColumnMap);
 
-        dataSet = new double[2][3];
-        dataSet[0][1] = 5.3;
-        int found = super.getNumberOfOutputColumns();
+        trainingDataSet = new double[2][3];
+        trainingDataSet[0][1] = 5.3;
+        int found = getNumberOfOutputColumns();
         assertTrue(0 == found);
     }
 
@@ -237,7 +364,7 @@ public class TestDataSet extends DataSet {
      * Testing method on loaded source using map transforms.
      */
     @Test
-    public void testLoadedGetOutputRowTransform() { 
+    public void testLoadedGetOutputRowTransformTraining() { 
         // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
         outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
         Map<Integer,MapTransform> transform = new HashMap<>();
@@ -245,9 +372,29 @@ public class TestDataSet extends DataSet {
         outputColumnMap.put(0, transform);
         setOutputColumns(outputColumnMap);
 
-        dataSet = new double[2][3];
-        dataSet[1][0] = 5.3;
-        double found[] = getOutputRow(1);
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][0] = 5.3;
+        double found[] = getTrainingOutputRow(1);
+        assertNotNull(found);
+        assertTrue(1 == found.length);
+        assertTrue(5.3 == found[0]);
+    }
+
+    /**
+     * Testing method on loaded source using map transforms.
+     */
+    @Test
+    public void testLoadedGetOutputRowTransformTesting() { 
+        // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
+        outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
+        Map<Integer,MapTransform> transform = new HashMap<>();
+        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
+        outputColumnMap.put(0, transform);
+        setOutputColumns(outputColumnMap);
+
+        testingDataSet = new double[2][3];
+        testingDataSet[1][0] = 5.3;
+        double found[] = getTestingOutputRow(1);
         assertNotNull(found);
         assertTrue(1 == found.length);
         assertTrue(5.3 == found[0]);
@@ -263,11 +410,11 @@ public class TestDataSet extends DataSet {
         Map<Integer,MapTransform> transform = new HashMap<>();
         transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
         outputColumnMap.put(0, transform);
-        super.setInputColumns(outputColumnMap);
+        setInputColumns(outputColumnMap);
 
-        dataSet = new double[2][3];
-        dataSet[0][1] = 5.3;
-        int found = super.getTotalNumberOfSourceColumns();
+        trainingDataSet = new double[2][3];
+        trainingDataSet[0][1] = 5.3;
+        int found = getTotalNumberOfSourceColumns();
         assertTrue(3 == found);
     }
 
@@ -281,11 +428,11 @@ public class TestDataSet extends DataSet {
         Map<Integer,MapTransform> transform = new HashMap<>();
         transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
         outputColumnMap.put(0, transform);
-        super.setInputColumns(outputColumnMap);
+        setInputColumns(outputColumnMap);
 
-        dataSet = new double[2][3];
-        dataSet[0][1] = 5.3;
-        int found = super.getTotalNumberOfSourceRows();
+        trainingDataSet = new double[2][3];
+        trainingDataSet[0][1] = 5.3;
+        int found = getTotalNumberOfSourceRows();
         assertTrue(2 == found);
     }
 }
