@@ -239,46 +239,6 @@ public abstract class DataSet {
     };
 
     /**
-     * Define the number of rows from the original source that are to
-     * be used for training purposes. If not set, all data set will be used.
-     * 
-     * @param start row index.
-     * @param end row index.
-     */
-    public void setTrainingRowRange(int start, int end) {
-        throw new IllegalStateException("DataSet.setTrainingRowRange() must be implemented on the extending class.");
-    };
-
-    /**
-     * Define the number of rows from the original source that are to
-     * be used for testing. If not set, all data set will be used.
-     * 
-     * @param start row index.
-     * @param end row index.
-     */
-    public void setTestingRowRange(int start, int end) {
-        throw new IllegalStateException("DataSet.setTestingRowRange() must be implemented on the extending class.");
-    };
-
-    /**
-     * The total number of rows in source.
-     * 
-     * @return Integer
-     */
-    public Integer getTotalNumberOfSourceRows() { 
-        throw new IllegalStateException("DataSet.setTestingRowRange() must be implemented on the extending class.");
-    };
-
-    /**
-     * The total number of columns per row on source.
-     * 
-     * @return Integer
-     */    
-    public Integer getTotalNumberOfSourceColumns() { 
-        throw new IllegalStateException("DataSet.getTotalNumberOfSourceColumns() must be implemented on the extending class.");
-    };
-
-    /**
      * The total of input columns.
      * 
      * @return Integer

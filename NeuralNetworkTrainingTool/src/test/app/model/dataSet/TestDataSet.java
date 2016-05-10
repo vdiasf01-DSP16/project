@@ -92,59 +92,6 @@ public class TestDataSet extends DataSet {
         getTestingOutputRow(0); 
     }
 
-    /**
-     * Testing expected exception on a not yet loaded file.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testGetTotalNumberOfSourceColumns() { 
-        getTotalNumberOfSourceColumns(); 
-    }
-
-    /**
-     * Testing expected exception on a not yet loaded file.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testGetTotalNumberOfSourceRows() { 
-        getTotalNumberOfSourceRows(); 
-    }
-
-    /**
-     * Testing method on loaded source.
-     * 
-     * By default, source columns still give an exception. 
-     * It is with the extending class where the source is loaded
-     * and these are calculated. After transformation and stored in
-     * either trainingDataSet or testingDataSet, these will not be 
-     * the same.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testLoadedGetTotalNumberOfSourceColumns() { 
-        trainingDataSet = new double[2][3];
-        trainingDataSet[1][2] = 2.5;
-        testingDataSet = new double[2][3];
-        testingDataSet[1][2] = 2.5;
-        getTotalNumberOfSourceColumns();
-    }
-
-    /**
-     * Testing method on loaded source.
-     * 
-     * By default, source rows still give an exception. 
-     * It is with the extending class where the source is loaded
-     * and these are calculated. After transformation and stored in
-     * either trainingDataSet or testingDataSet, these will not be 
-     * the same.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testLoadedGetTotalNumberOfSourceRows() { 
-        trainingDataSet = new double[2][3];
-        trainingDataSet[1][2] = 2.5;
-        testingDataSet = new double[2][3];
-        testingDataSet[1][2] = 2.5;
-        getTotalNumberOfSourceRows();
-    }
-    
-
     /**********************************************************
      *             Default methods on loaded data             *
      **********************************************************/
