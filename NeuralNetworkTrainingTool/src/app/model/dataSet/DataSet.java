@@ -32,18 +32,17 @@ public abstract class DataSet {
      * Neural Networks only. For un-supervised Neural Networks, this mapping
      * will be ignored.
      * 
-     * Each element of the map will carry the source index and the target index
-     * with any transformation required.
+     * Each element of the map will carry the source index and is in sequence
+     * for the target index, also carrying any transformation required.
      */
     protected List<VectorMap> outputColumnMap;
 
     /**
      * The Input column map defines the mapping of the inputs that are to be
-     * considered as part of the input vector. These are defined in function 
-     * of the data source input columns. 
+     * considered as part of the input vector. 
      * 
-     * Each element of the map will carry the source index and the target index
-     * with any transformation required.
+     * Each element of the map will carry the source index and is in sequence
+     * for the target index, also carrying any transformation required.
      */
     protected List<VectorMap> inputColumnMap;
 
@@ -94,8 +93,8 @@ public abstract class DataSet {
      * @return double[]
      */
     public double[] getTrainingOutputRow(int index) { 
-        if ( !isTrainingDataSetLoaded() ) throw new IllegalStateException("Data not yet loaded.");
-        if ( outputColumnMap == null ) return null;
+        if ( trainingDataSet == null ) throw new IllegalStateException("Data not yet loaded.");
+        if ( outputColumnMap == null ) throw new IllegalStateException("No output map defined.");
 
         return Arrays.copyOfRange(
                 trainingDataSet[index], 
@@ -105,21 +104,23 @@ public abstract class DataSet {
     };
 
     /**
-     * The training data set input row.
+     * The training data set input row.<p>
      * 
      * The array of doubles for the input vector double row given by the index.
      * These will carry already transformed values given by the transformation 
-     * function after load() was called. 
+     * function after load() was called. <p>
      * 
-     * The Source[0..X] -> dataSet[index][input0 .. inputN]
+     * The Source[0..X] -> dataSet[index][input0 .. inputN]<p>
      * 
-     * The input and output Maps are only used at loading time. Once data has been
-     * loaded, these will not be used, only to Depending on the inputMap outputMap, the input vector may differ.
+     * The input and output Maps are only used at loading time. Once data has 
+     * been loaded, these will not be used. Depending on the inputMap outputMap, 
+     * the input vector may differ.<p>
+     * 
      *  - By default, if inputMap and outputMap are not set, the input will
-     *    be the full array of doubles stored from source.
+     *    be the full array of doubles stored from source.<p>
      *    
      *  - If outputMap is set and input isn't, the input map will take remaining
-     *    available columns in order as input vector by default
+     *    available columns in order as input vector by default<p>
      *  
      *  - If inputMap is set, will respect it regardless of the output map
      * 
@@ -127,19 +128,15 @@ public abstract class DataSet {
      * @return double[]
      */
     public double[] getTrainingInputRow(int index) { 
-        if ( !isTrainingDataSetLoaded() ) throw new IllegalStateException("Data not yet loaded.");
-        
-        // Input column map by default maps one-to-one
-        if ( inputColumnMap == null ) {
-            // If the output is not set, use all range
-            if ( outputColumnMap == null ) {
-                return trainingDataSet[index];
-            }
-        }
+        if ( trainingDataSet == null ) throw new IllegalStateException("Data not yet loaded.");
+        if ( inputColumnMap == null ) throw new IllegalStateException("No input map defined.");
 
+        int inputStartingIndex = 0;
+        if ( outputColumnMap != null ) inputStartingIndex = outputColumnMap.size();
+        
         return Arrays.copyOfRange(
                 trainingDataSet[index], 
-                getNumberOfOutputColumns(), 
+                inputStartingIndex,
                 trainingDataSet[index].length
         );
     };
@@ -155,9 +152,8 @@ public abstract class DataSet {
      * @return double[]
      */
     public double[] getTestingOutputRow(int index) { 
-        if ( !isTestingDataSetLoaded() ) throw new IllegalStateException("Data not yet loaded.");
-
-        if ( testingDataSet == null ) return null;
+        if ( testingDataSet == null ) throw new IllegalStateException("Data not yet loaded.");
+        if ( outputColumnMap == null ) throw new IllegalStateException("No output map defined.");
 
         return Arrays.copyOfRange(
                 testingDataSet[index], 
@@ -189,18 +185,15 @@ public abstract class DataSet {
      * @return double[]
      */
     public double[] getTestingInputRow(int index) { 
-        if ( !isTestingDataSetLoaded() ) throw new IllegalStateException("Data not yet loaded.");
+        if ( testingDataSet == null ) throw new IllegalStateException("Data not yet loaded.");
+        if ( inputColumnMap == null ) throw new IllegalStateException("input map not defined.");
 
-        // Input column map by default maps one-to-one
-        if ( inputColumnMap == null ) {
-            // If the output is not set, use all range
-            if ( outputColumnMap == null ) {
-                return testingDataSet[index];
-            }
-        }
+        int inputStartingIndex = 0;
+        if ( outputColumnMap != null ) inputStartingIndex = outputColumnMap.size();
+        
         return Arrays.copyOfRange(
                 testingDataSet[index], 
-                getNumberOfOutputColumns(), 
+                inputStartingIndex, 
                 testingDataSet[index].length
         );
     };
@@ -235,37 +228,18 @@ public abstract class DataSet {
      * @return Integer
      */
     public Integer getNumberOfInputColumns() { 
-        if ( !isTrainingDataSetLoaded() & !isTestingDataSetLoaded() ) return 0;
-        
-        // outputColumnMap drives the business... the number of
-        // input columns is the total columns minus output columns 
-        // through the map.
-        int dataLength = 0;
-        if ( isTestingDataSetLoaded() ) 
-            dataLength = testingDataSet[0].length;
-        else if ( isTrainingDataSetLoaded() ) 
-            dataLength = trainingDataSet[0].length;
-
-        if ( outputColumnMap != null ) 
-            dataLength = dataLength - outputColumnMap.size();
-        
-        return dataLength;
+        if ( inputColumnMap == null ) throw new IllegalStateException("input map not defined.");
+        return inputColumnMap.size();
     };
 
     /**
-     * The total of ideal columns.
+     * The total of output columns.
      * 
      * @return Integer
      */
     public Integer getNumberOfOutputColumns() { 
-        if ( !isTrainingDataSetLoaded() & !isTestingDataSetLoaded() ) return 0; 
-        
-        // Output row may have less columns than the dataSet
-        // and it will be ok to be null at this point. e.g.: For
-        // un-supervised Neural Networks.
-        if ( outputColumnMap != null ) 
-            return outputColumnMap.size();
-        return 0;
+        if ( outputColumnMap == null ) throw new IllegalStateException("No output map defined.");
+        return outputColumnMap.size();
     };
 
     /**
@@ -284,23 +258,5 @@ public abstract class DataSet {
      */
     public Integer getNumberOfTestingRows() {
         return testingDataSet.length;
-    }
-
-    /**
-     * Verify if the load has already happen.
-     */
-    private boolean isTrainingDataSetLoaded() {
-        if ( trainingDataSet == null )     return false;
-        if ( trainingDataSet.length == 0 ) return false;
-        return true;
-    }
-
-    /**
-     * Verify if the the testing set is loaded.
-     */
-    private boolean isTestingDataSetLoaded() {
-        if ( testingDataSet == null )     return false;
-        if ( testingDataSet.length == 0 ) return false;
-        return true;
     }
 }
