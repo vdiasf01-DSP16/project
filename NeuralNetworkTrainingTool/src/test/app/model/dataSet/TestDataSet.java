@@ -1,7 +1,6 @@
 package test.app.model.dataSet;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.LinkedList;
@@ -98,14 +97,15 @@ public class TestDataSet extends DataSet {
 
     /**
      * Testing method on loaded source.
-     * 
-     * By default, input row should return any source rows
-     * on a one-to-one basis.
      */
     @Test
     public void testLoadedGetTrainingInputRow() { 
         trainingDataSet = new double[2][3];
         trainingDataSet[1][2] = 2.5;
+        inputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
         double[] found = getTrainingInputRow(1); 
         assertNotNull(found);
         assertTrue(2.5 == found[2]);
@@ -121,6 +121,10 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetTestingInputRow() { 
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
+        inputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
         double[] found = getTestingInputRow(1); 
         assertNotNull(found);
         assertTrue(2.5 == found[2]);
@@ -135,8 +139,10 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetTrainingOutputRow() { 
         trainingDataSet = new double[2][3];
         trainingDataSet[1][2] = 2.5;
+        outputColumnMap = new LinkedList<>();
         double found[] = getTrainingOutputRow(1);
-        assertNull(found);
+        assertNotNull(found);
+        assertTrue(0 == found.length);
     }
 
     /**
@@ -148,6 +154,7 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetTestingOutputRow() { 
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
+        outputColumnMap = new LinkedList<>();
         double found[] = getTestingOutputRow(1);
         assertNotNull(found);
         assertTrue(0 == found.length);
@@ -155,14 +162,15 @@ public class TestDataSet extends DataSet {
 
     /**
      * Testing method on loaded source.
-     * 
-     * By default, all columns should be allocated to the input
-     * on a one-to-one basis.
      */
     @Test
     public void testLoadedGetNumberOfInputColumnsOnlyTraining() { 
         trainingDataSet = new double[2][3];
         trainingDataSet[1][2] = 2.5;
+        inputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
         int found = getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
@@ -178,6 +186,10 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetNumberOfInputColumnsOnlyTesting() { 
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
+        inputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
+        inputColumnMap.add(new VectorMap(0, 0, null));
         int found = getNumberOfInputColumns(); 
         assertTrue(3 == found);
     }
@@ -193,6 +205,7 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetNumberOfOutputColumnsOnlyTraining() { 
         trainingDataSet = new double[2][3];
         trainingDataSet[1][2] = 2.5;
+        outputColumnMap = new LinkedList<>();
         int found = getNumberOfOutputColumns();
         assertTrue(0 == found);
     }
@@ -208,6 +221,7 @@ public class TestDataSet extends DataSet {
     public void testLoadedGetNumberOfOutputColumnsOnlyTesting() { 
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
+        outputColumnMap = new LinkedList<>();
         int found = getNumberOfOutputColumns();
         assertTrue(0 == found);
     }
@@ -272,7 +286,7 @@ public class TestDataSet extends DataSet {
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
         int found = getNumberOfInputColumns(); 
-        assertTrue(3 == found);
+        assertTrue(1 == found);
     }
 
     /**
@@ -287,6 +301,7 @@ public class TestDataSet extends DataSet {
 
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
+        outputColumnMap = new LinkedList<>();
         int found = getNumberOfOutputColumns();
         assertTrue(0 == found);
     }
