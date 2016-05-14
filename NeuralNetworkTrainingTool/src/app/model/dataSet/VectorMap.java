@@ -22,11 +22,6 @@ public class VectorMap {
 	private final int sourceIndex;
 	
 	/**
-	 * The target index this map corresponds to.
-	 */
-	private final int targetIndex;
-	
-	/**
 	 * The supplied source double array.
 	 */
 	private double[] source;
@@ -35,13 +30,11 @@ public class VectorMap {
 	 * The constructor.
 	 * 
 	 * @param sourceIndex int
-	 * @param targetIndex int
 	 * @param mapTransform MpaTransform
 	 */
-	public VectorMap(int sourceIndex, int targetIndex, MapTransform mapTransform) {
+	public VectorMap(int sourceIndex, MapTransform mapTransform) {
 		this.mapTransform = mapTransform;
 		this.sourceIndex = sourceIndex;
-		this.targetIndex = targetIndex;
 	}
 	
 	/**
@@ -68,15 +61,6 @@ public class VectorMap {
 	}
 
 	/**
-	 * Returns the index where the outcome should be stored into.
-	 * 
-	 * @return int target index
-	 */
-	public int getTargetIndex() {
-		return targetIndex;
-	}
-	
-	/**
 	 * Returns the source index where the initial values should be coming from.
 	 * 
 	 * @return int source index
@@ -84,5 +68,4 @@ public class VectorMap {
 	public int getSourceIndex() {
 		return sourceIndex;
 	}
-	
 }

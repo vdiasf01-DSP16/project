@@ -1,6 +1,7 @@
 package test.app.model.dataSet;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +29,6 @@ public class TestVectorMap {
 	private final int SOURCE_INDEX = 2;
 	
 	/**
-	 * The target index when value is to be assigned to.
-	 */
-	private final int TARGET_INDEX = 1;
-
-	/**
 	 * The source vector.
 	 */
 	private final double[] SOURCE = {0.0, 0.1, 0.2, 0.3 };
@@ -48,7 +44,7 @@ public class TestVectorMap {
 	@Before
 	public void before() {
 		mapTransform = new MapTransform(MathOperator.ADD, 2.1);
-		vectorMap = new VectorMap(SOURCE_INDEX, TARGET_INDEX, mapTransform);
+		vectorMap = new VectorMap(SOURCE_INDEX, mapTransform);
 	}
 
 	/**
@@ -57,14 +53,6 @@ public class TestVectorMap {
 	@Test
 	public void testSourceIndex() {
 		assertEquals(SOURCE_INDEX, vectorMap.getSourceIndex());
-	}
-
-	/**
-	 * Check if target index is same as specified.
-	 */
-	@Test
-	public void testTargetIndex() {
-		assertEquals(TARGET_INDEX, vectorMap.getTargetIndex());
 	}
 
 	/**
@@ -89,7 +77,7 @@ public class TestVectorMap {
 	 */
 	@Test
 	public void testTargetValueNoTransform() {
-		vectorMap = new VectorMap(SOURCE_INDEX, TARGET_INDEX, null);
+		vectorMap = new VectorMap(SOURCE_INDEX, null);
 		vectorMap.setSource(SOURCE);
 		assertTrue(SOURCE[SOURCE_INDEX] == vectorMap.getTargetValue());
 	}
