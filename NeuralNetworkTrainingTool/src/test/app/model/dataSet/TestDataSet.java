@@ -4,14 +4,14 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
 
 import org.junit.Test;
 
 import app.model.dataSet.DataSet;
 import app.model.dataSet.MapTransform;
 import app.model.dataSet.MathOperator;
+import app.model.dataSet.VectorMap;
 
 /**
  * Testing the abstract class DataSet to ensure all exceptions are thrown.
@@ -227,10 +227,8 @@ public class TestDataSet extends DataSet {
     @Test
     public void testLoadedGetInputRowTransformTraining() { 
         // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        inputColumnMap.put(0, transform);
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, 1, new MapTransform(MathOperator.ADD, 1.3)));
         setInputColumns(inputColumnMap);
 
         trainingDataSet = new double[2][3];
@@ -248,10 +246,8 @@ public class TestDataSet extends DataSet {
     @Test
     public void testLoadedGetInputRowTransformTesting() { 
         // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        inputColumnMap.put(0, transform);
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, 1, new MapTransform(MathOperator.ADD, 1.3)));
         setInputColumns(inputColumnMap);
 
         testingDataSet = new double[2][3];
@@ -269,10 +265,8 @@ public class TestDataSet extends DataSet {
     @Test
     public void testLoadedGetNumberOfInputColumnsTransform() { 
         // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        inputColumnMap.put(0, transform);
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, 1, new MapTransform(MathOperator.ADD, 1.3)));
         setInputColumns(inputColumnMap);
 
         trainingDataSet = new double[2][3];
@@ -287,10 +281,8 @@ public class TestDataSet extends DataSet {
     @Test
     public void testLoadedGetNumberOfOutputColumnsTransform() { 
         // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        inputColumnMap.put(0, transform);
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, 1, new MapTransform(MathOperator.ADD, 1.3)));
         setInputColumns(inputColumnMap);
 
         trainingDataSet = new double[2][3];
@@ -305,10 +297,8 @@ public class TestDataSet extends DataSet {
     @Test
     public void testLoadedGetOutputRowTransformTraining() { 
         // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
-        outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        outputColumnMap.put(0, transform);
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, 1, new MapTransform(MathOperator.ADD, 1.3)));
         setOutputColumns(outputColumnMap);
 
         trainingDataSet = new double[2][3];
@@ -325,10 +315,8 @@ public class TestDataSet extends DataSet {
     @Test
     public void testLoadedGetOutputRowTransformTesting() { 
         // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
-        outputColumnMap = new HashMap<Integer, Map<Integer,MapTransform>>();
-        Map<Integer,MapTransform> transform = new HashMap<>();
-        transform.put(1, new MapTransform(MathOperator.ADD, 1.3));
-        outputColumnMap.put(0, transform);
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, 1, new MapTransform(MathOperator.ADD, 1.3)));
         setOutputColumns(outputColumnMap);
 
         testingDataSet = new double[2][3];

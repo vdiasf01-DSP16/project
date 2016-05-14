@@ -1,7 +1,7 @@
 package app.model.dataSet;
 
 import java.util.Arrays;
-import java.util.Map;
+import java.util.List;
 
 /**
  * DataSet abstract class basic implementation for any data set source 
@@ -32,26 +32,20 @@ public abstract class DataSet {
      * Neural Networks only. For un-supervised Neural Networks, this mapping
      * will be ignored.
      * 
-     * The first Map integer corresponds to the input vector index where data
-     * comes from and is keyed to a Map with the integer index of the output
-     * vector and a transform function that will apply changes to the input
-     * value, if required. By default, will map input index value to output
-     * index value.
+     * Each element of the map will carry the source index and the target index
+     * with any transformation required.
      */
-    protected Map<Integer, Map<Integer,MapTransform>> outputColumnMap;
+    protected List<VectorMap> outputColumnMap;
 
     /**
      * The Input column map defines the mapping of the inputs that are to be
      * considered as part of the input vector. These are defined in function 
      * of the data source input columns. 
      * 
-     * The first Map integer corresponds to the source column index where data
-     * comes from and is keyed to a Map with the integer index of the input 
-     * vector and a transform function that will apply changes to the source
-     * value, if required. By default, will map source index value to input
-     * index value.
+     * Each element of the map will carry the source index and the target index
+     * with any transformation required.
      */
-    protected Map<Integer, Map<Integer,MapTransform>> inputColumnMap;
+    protected List<VectorMap> inputColumnMap;
 
     /**
      * Loads the source into memory, erasing previous loads and taking any extra
@@ -100,8 +94,8 @@ public abstract class DataSet {
      * @return double[]
      */
     public double[] getTrainingOutputRow(int index) { 
-           if ( !isTrainingDataSetLoaded() ) throw new IllegalStateException("Data not yet loaded.");
-           if ( outputColumnMap == null ) return null;
+        if ( !isTrainingDataSetLoaded() ) throw new IllegalStateException("Data not yet loaded.");
+        if ( outputColumnMap == null ) return null;
 
         return Arrays.copyOfRange(
                 trainingDataSet[index], 
@@ -142,6 +136,7 @@ public abstract class DataSet {
                 return trainingDataSet[index];
             }
         }
+
         return Arrays.copyOfRange(
                 trainingDataSet[index], 
                 getNumberOfOutputColumns(), 
@@ -213,28 +208,24 @@ public abstract class DataSet {
     /**
      * The output column mapping function.
      * 
-     * First index of the map refers to the input vector index.
-     * Second map integer refers to the output index where the data will be stored.
-     * MapTransform will take the input value and transform it before storing into
-     * the output vector
+     * Each element of the list will contain the source and the target index
+     * towards the final vector. 
      *    
      * @param outputColumns
      */
-    public void setOutputColumns(Map<Integer, Map<Integer, MapTransform>> outputColumns) {
+    public void setOutputColumns(List<VectorMap> outputColumns) {
         this.outputColumnMap = outputColumns;
     };
 
     /**
      * The input columns mapping function.
      * 
-     * First index of the map refers to the source vector index.
-     * Second map integer refers to the input index where the data will be stored.
-     * MapTransform will take the source value and transform it before storing into
-     * the input vector
+     * Each element of the list will contain the source and the target index
+     * towards the final vector. 
      *    
      * @param inputColumns
      */
-    public void setInputColumns(Map<Integer, Map<Integer, MapTransform>> inputColumns) {
+    public void setInputColumns(List<VectorMap> inputColumns) {
         this.inputColumnMap = inputColumns;
     };
 
