@@ -52,6 +52,14 @@ public class TestVectorMap {
 	}
 
 	/**
+	 * Check if source index is same as specified.
+	 */
+	@Test
+	public void testSourceIndex() {
+		assertEquals(SOURCE_INDEX, vectorMap.getSourceIndex());
+	}
+
+	/**
 	 * Check if target index is same as specified.
 	 */
 	@Test

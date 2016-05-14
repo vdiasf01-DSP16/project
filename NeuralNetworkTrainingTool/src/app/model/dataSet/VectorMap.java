@@ -76,4 +76,13 @@ public class VectorMap {
 		return targetIndex;
 	}
 	
+	/**
+	 * Returns the source index where the initial values should be coming from.
+	 * 
+	 * @return int source index
+	 */
+	public int getSourceIndex() {
+		return sourceIndex;
+	}
+	
 }
