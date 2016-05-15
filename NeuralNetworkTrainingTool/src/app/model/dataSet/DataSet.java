@@ -133,7 +133,7 @@ public abstract class DataSet {
 
         int inputStartingIndex = 0;
         if ( outputColumnMap != null ) inputStartingIndex = outputColumnMap.size();
-        
+
         return Arrays.copyOfRange(
                 trainingDataSet[index], 
                 inputStartingIndex,

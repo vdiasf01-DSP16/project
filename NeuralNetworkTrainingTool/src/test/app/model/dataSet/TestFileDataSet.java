@@ -1,12 +1,11 @@
 package test.app.model.dataSet;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +15,7 @@ import app.model.dataSet.FileAttributes;
 import app.model.dataSet.FileDataSet;
 import app.model.dataSet.MapTransform;
 import app.model.dataSet.MathOperator;
+import app.model.dataSet.VectorMap;
 
 /**
  * Testing the FileDataSet class implementation from DataSet abstract class.
@@ -98,6 +98,7 @@ public class TestFileDataSet {
     @Test
     public void testLoadTrainingWasImplemented() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileDataSet.load();
         fileDataSet.loadTraining();
     }
 
@@ -107,6 +108,7 @@ public class TestFileDataSet {
     @Test
     public void testLoadTestingWasImplemented() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileDataSet.load();
         fileDataSet.loadTesting();
     }
 
@@ -132,6 +134,8 @@ public class TestFileDataSet {
     @Test
     public void testLoadTrainingWasImplementedAndDataSetUpdated() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(0, 5);
+        fileDataSet.load();
         double[] input = fileDataSet.getTrainingInputRow(4);
         assertNotNull(input);
         assertTrue(4 == input.length);
@@ -167,7 +171,7 @@ public class TestFileDataSet {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileDataSet.load();
         // Should give exception for there is not output row set.
-        assertNull(fileDataSet.getTrainingOutputRow(0));
+        assertTrue(fileDataSet.getTrainingOutputRow(0).length == 0);
     }
 
     /**
@@ -184,7 +188,6 @@ public class TestFileDataSet {
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         // When the map is not set, the output takes nothing
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-
         assertTrue(0.0 == inputRow[0]);
         assertTrue(0.1 == inputRow[1]);
         assertTrue(0.2 == inputRow[2]);
@@ -212,10 +215,10 @@ public class TestFileDataSet {
         // By default, when the internal map is not set, these will
         // take the source columns all as input.
         double inputRow[] = fileDataSet.getTrainingInputRow(0);
-        assertTrue(0.1 == inputRow[0]);
-        assertTrue(0.2 == inputRow[1]);
-        assertTrue(0.3 == inputRow[2]);
-        assertTrue(0.4 == inputRow[3]);
+        assertTrue(1.0 == inputRow[0]);
+        assertTrue(1.1 == inputRow[1]);
+        assertTrue(1.2 == inputRow[2]);
+        assertTrue(1.3 == inputRow[3]);
     }
 
     /**
@@ -225,33 +228,23 @@ public class TestFileDataSet {
     @Test
     public void testOutputInputMaps() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(0, 5);
 
         // The output transform
-        Map<Integer, MapTransform> outputColumn = new HashMap<>();
-        // The overall transform from source to output.
-        Map<Integer, Map<Integer, MapTransform>> outputColumns = new HashMap<>();
-        // Output index 0 gets no transformation on the allocated value.
-        outputColumn.put(0, null);
-        // Output column index inherits from index 0 of source.
-        outputColumns.put(0, outputColumn);
+        List<VectorMap> outputVectorMap = new LinkedList<>();
+        // Output inherits from source index 0 and gets assigned to index 0 with no transformation.
+        outputVectorMap.add(new VectorMap(0, null));
 
         // The input transform
-        Map<Integer, MapTransform> inputColumn0 = new HashMap<>();
-        Map<Integer, MapTransform> inputColumn1 = new HashMap<>();
-        Map<Integer, MapTransform> inputColumn2 = new HashMap<>();
-        // The overall transform from source to input.
-        Map<Integer, Map<Integer, MapTransform>> inputColumns = new HashMap<>();
+        List<VectorMap> inputVectorMap = new LinkedList<>();
         // Input index 0..2 gets no transformation on the allocated value.
-        inputColumn0.put(0, null);
-        inputColumn1.put(1, null);
-        inputColumn2.put(2, null);
         // Input column index inherits from indexes 1..3 of source.
-        inputColumns.put(1, inputColumn0);
-        inputColumns.put(2, inputColumn1);
-        inputColumns.put(3, inputColumn2);
+        inputVectorMap.add(new VectorMap(1, null));
+        inputVectorMap.add(new VectorMap(2, null));
+        inputVectorMap.add(new VectorMap(3, null));
         
-        fileDataSet.setInputColumns(inputColumns);
-        fileDataSet.setOutputColumns(outputColumns);
+        fileDataSet.setInputColumns(inputVectorMap);
+        fileDataSet.setOutputColumns(outputVectorMap);
 
         fileDataSet.load();
         
@@ -315,33 +308,22 @@ public class TestFileDataSet {
     @Test
     public void testOutputInputMapAndTransforms() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(0, 5);
         
-        double plusTrandformInput = 2.4;
-        double plusTrandformOutput = 2.5;
-
         // The output transform
-        Map<Integer, MapTransform> outputColumn = new HashMap<>();
-        // The overall transform from source to output.
-        Map<Integer, Map<Integer, MapTransform>> outputColumns = new HashMap<>();
+        List<VectorMap> outputColumns = new LinkedList<>();
         // Output index 0 gets no transformation on the allocated value.
-        outputColumn.put(0, new MapTransform(MathOperator.ADD, plusTrandformOutput));
         // Output column index inherits from index 0 of source.
-        outputColumns.put(0, outputColumn);
+        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 2.4)));
 
         // The input transform
-        Map<Integer, MapTransform> inputColumn0 = new HashMap<>();
-        Map<Integer, MapTransform> inputColumn1 = new HashMap<>();
-        Map<Integer, MapTransform> inputColumn2 = new HashMap<>();
+        List<VectorMap> inputColumns = new LinkedList<>();
         // The overall transform from source to input.
-        Map<Integer, Map<Integer, MapTransform>> inputColumns = new HashMap<>();
         // Input index 0..2 gets no transformation on the allocated value.
-        inputColumn0.put(0, new MapTransform(MathOperator.ADD, plusTrandformInput));
-        inputColumn1.put(1, new MapTransform(MathOperator.ADD, plusTrandformInput));
-        inputColumn2.put(2, new MapTransform(MathOperator.ADD, plusTrandformInput));
         // Input column index inherits from indexes 1..3 of source.
-        inputColumns.put(1, inputColumn0);
-        inputColumns.put(2, inputColumn1);
-        inputColumns.put(3, inputColumn2);
+        inputColumns.add(new VectorMap(1, new MapTransform(MathOperator.ADD, 2.5)));
+        inputColumns.add(new VectorMap(2, new MapTransform(MathOperator.ADD, 2.5)));
+        inputColumns.add(new VectorMap(3, new MapTransform(MathOperator.ADD, 2.5)));
         
         fileDataSet.setInputColumns(inputColumns);
         fileDataSet.setOutputColumns(outputColumns);
@@ -353,56 +335,56 @@ public class TestFileDataSet {
         double[] outputRow0 = fileDataSet.getTrainingOutputRow(0);
         assertNotNull(outputRow0); 
         assertTrue(1 == outputRow0.length); 
-        assertTrue(0.0+plusTrandformOutput == outputRow0[0]);
+        assertTrue(2.4 == outputRow0[0]);
         assertNotNull(inputRow0);  
         assertTrue(3 == inputRow0.length); 
-        assertTrue(0.1+plusTrandformInput == inputRow0[0]);
-        assertTrue(0.2+plusTrandformInput == inputRow0[1]);
-        assertTrue(0.3+plusTrandformInput == inputRow0[2]);
+        assertTrue(2.6 == inputRow0[0]);
+        assertTrue(2.7 == inputRow0[1]);
+        assertTrue(2.8 == inputRow0[2]);
 
         double[] inputRow1  = fileDataSet.getTrainingInputRow(1);
         double[] outputRow1 = fileDataSet.getTrainingOutputRow(1);
         assertNotNull(outputRow1); 
         assertTrue(1 == outputRow1.length); 
-        assertTrue(1.0+plusTrandformOutput == outputRow1[0]);
+        assertTrue(3.4 == outputRow1[0]);
         assertNotNull(inputRow1);  
         assertTrue(3 == inputRow1.length); 
-        assertTrue(1.1+plusTrandformInput == inputRow1[0]);
-        assertTrue(1.2+plusTrandformInput == inputRow1[1]);
-        assertTrue(1.3+plusTrandformInput == inputRow1[2]);
+        assertTrue(3.6 == inputRow1[0]);
+        assertTrue(3.7 == inputRow1[1]);
+        assertTrue(3.8 == inputRow1[2]);
 
         double[] inputRow2  = fileDataSet.getTrainingInputRow(2);
         double[] outputRow2 = fileDataSet.getTrainingOutputRow(2);
         assertNotNull(outputRow2); 
         assertTrue(1 == outputRow2.length); 
-        assertTrue(2.0+plusTrandformOutput == outputRow2[0]); 
+        assertTrue(4.4 == outputRow2[0]); 
         assertNotNull(inputRow2);  
         assertTrue(3 == inputRow2.length); 
-        assertTrue(2.1+plusTrandformInput == inputRow2[0]);
-        assertTrue(2.2+plusTrandformInput == inputRow2[1]);
-        assertTrue(2.3+plusTrandformInput == inputRow2[2]);
+        assertTrue(4.6 == inputRow2[0]);
+        assertTrue(4.7 == inputRow2[1]);
+        assertTrue(4.8 == inputRow2[2]);
 
         double[] inputRow3  = fileDataSet.getTrainingInputRow(3);
         double[] outputRow3 = fileDataSet.getTrainingOutputRow(3);
         assertNotNull(outputRow3); 
         assertTrue(1 == outputRow3.length); 
-        assertTrue(3.0+plusTrandformOutput == outputRow3[0]);
+        assertTrue(5.4 == outputRow3[0]);
         assertNotNull(inputRow3);  
         assertTrue(3 == inputRow3.length); 
-        assertTrue(3.1+plusTrandformInput == inputRow3[0]);
-        assertTrue(3.2+plusTrandformInput == inputRow3[1]);
-        assertTrue(3.3+plusTrandformInput == inputRow3[2]);
+        assertTrue(5.6 == inputRow3[0]);
+        assertTrue(5.7 == inputRow3[1]);
+        assertTrue(5.8 == inputRow3[2]);
 
         double[] inputRow4  = fileDataSet.getTrainingInputRow(4);
         double[] outputRow4 = fileDataSet.getTrainingOutputRow(4);
         assertNotNull(outputRow4); 
         assertTrue(1 == outputRow4.length); 
-        assertTrue(4.0+plusTrandformOutput == outputRow4[0]);
+        assertTrue(6.4 == outputRow4[0]);
         assertNotNull(inputRow4);  
         assertTrue(3 == inputRow4.length); 
-        assertTrue(4.1+plusTrandformInput == inputRow4[0]);
-        assertTrue(4.2+plusTrandformInput == inputRow4[1]);
-        assertTrue(4.3+plusTrandformInput == inputRow4[2]);
+        assertTrue(6.6 == inputRow4[0]);
+        assertTrue(6.7 == inputRow4[1]);
+        assertTrue(6.8 == inputRow4[2]);
     }
 
 }
