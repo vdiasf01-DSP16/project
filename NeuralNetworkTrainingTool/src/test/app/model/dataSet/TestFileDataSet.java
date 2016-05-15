@@ -215,10 +215,10 @@ public class TestFileDataSet {
         // By default, when the internal map is not set, these will
         // take the source columns all as input.
         double inputRow[] = fileDataSet.getTrainingInputRow(0);
-        assertTrue(1.0 == inputRow[0]);
-        assertTrue(1.1 == inputRow[1]);
-        assertTrue(1.2 == inputRow[2]);
-        assertTrue(1.3 == inputRow[3]);
+        assertTrue(0.0 == inputRow[0]);
+        assertTrue(0.1 == inputRow[1]);
+        assertTrue(0.2 == inputRow[2]);
+        assertTrue(0.3 == inputRow[3]);
     }
 
     /**
@@ -386,5 +386,4 @@ public class TestFileDataSet {
         assertTrue(6.7 == inputRow4[1]);
         assertTrue(6.8 == inputRow4[2]);
     }
-
 }
