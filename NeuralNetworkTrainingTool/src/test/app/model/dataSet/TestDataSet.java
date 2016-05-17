@@ -341,4 +341,168 @@ public class TestDataSet extends DataSet {
         assertTrue(1 == found.length);
         assertTrue(5.3 == found[0]);
     }
+    
+    /**
+     * Test Normalisation of loaded data.
+     */
+    @Test
+    public void testNormalisation() {
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, null));
+        setOutputColumns(outputColumnMap);
+
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(1, null));
+        inputColumnMap.add(new VectorMap(2, null));
+        setInputColumns(inputColumnMap);
+       
+        // Loaded data
+        trainingDataSet = new double[3][3];
+        // MIN -1.0 MAX 1.5
+        trainingDataSet[0][0] = -1.0; // output row 0 
+        trainingDataSet[1][0] =  1.4; // output row 0
+        trainingDataSet[2][0] =  1.5; // output row 0
+
+        // MIN 0.0 MAX 4.5
+        trainingDataSet[0][1] =  0.0; // input row 0
+        trainingDataSet[1][1] = 2.25; // input row 0
+        trainingDataSet[2][1] =  4.5; // input row 1
+
+        // MIN -125.0 MAX 125.0
+        trainingDataSet[0][2] = -125.0; // input row 1
+        trainingDataSet[1][2] = -50.0;  // input row 1
+        trainingDataSet[2][2] =  125.0; // input row 1
+
+        // Get all values normalised between 0.0 and 1.0
+        normalise(0.0, 1.0);
+        
+        // output row 0 (-1.0) -> 0.0
+        // output row 1 ( 1.4) -> 0.96
+        // output row 2 ( 1.5) -> 1.0
+
+        // input 0 row 0 ( 0.0) -> 0.0
+        // input 0 row 1 (2.25) -> 0.5
+        // input 0 row 2 ( 4.5) -> 1.0
+
+        // input 1 row 0 (-125.0) -> 0.0
+        // input 1 row 1 ( -50.0) -> 0.3
+        // input 1 row 2 ( 125.0) -> 1.0
+
+        // Let's check the outcome for output values
+        double outputFound[] = getTrainingOutputRow(0);
+        assertNotNull(outputFound);
+        assertTrue(1 == outputFound.length);
+        assertTrue(0.0 == outputFound[0]);
+        outputFound = getTrainingOutputRow(1);
+        assertNotNull(outputFound);
+        assertTrue(1 == outputFound.length);
+        assertTrue(0.96 == outputFound[0]);
+        outputFound = getTrainingOutputRow(2);
+        assertNotNull(outputFound);
+        assertTrue(1 == outputFound.length);
+        assertTrue(1.0 == outputFound[0]);
+
+        // Let's check the outcome for input values
+        double inputFound[] = getTrainingInputRow(0);
+        assertNotNull(inputFound);
+        assertTrue(2 == inputFound.length);
+        assertTrue(0.0 == inputFound[0]);
+        assertTrue(0.0 == inputFound[1]);
+        inputFound = getTrainingInputRow(1);
+        assertNotNull(inputFound);
+        assertTrue(2 == inputFound.length);
+        assertTrue(0.5 == inputFound[0]);
+        assertTrue(0.3 == inputFound[1]);
+        inputFound = getTrainingInputRow(2);
+        assertNotNull(inputFound);
+        assertTrue(2 == inputFound.length);
+        assertTrue(1.0 == inputFound[0]);
+        assertTrue(1.0 == inputFound[1]);
+    }
+
+    /**
+     * Test DeNormalisation of loaded data.
+     */
+    @Test
+    public void testDeNormalisation() {
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, null));
+        setOutputColumns(outputColumnMap);
+
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(1, null));
+        inputColumnMap.add(new VectorMap(2, null));
+        setInputColumns(inputColumnMap);
+       
+        // Loaded data
+        trainingDataSet = new double[3][3];
+        // MIN -1.0 MAX 1.5
+        trainingDataSet[0][0] = 0.0;  // output row 0 
+        trainingDataSet[1][0] = 0.96; // output row 0
+        trainingDataSet[2][0] = 1.0;  // output row 0
+
+        // MIN 0.0 MAX 4.5
+        trainingDataSet[0][1] = 0.0; // input row 0
+        trainingDataSet[1][1] = 0.5; // input row 0
+        trainingDataSet[2][1] = 1.0; // input row 1
+
+        // MIN -125.0 MAX 125.0
+        trainingDataSet[0][2] = 0.0; // input row 1
+        trainingDataSet[1][2] = 0.3; // input row 1
+        trainingDataSet[2][2] = 1.0; // input row 1
+        
+        minValue = 0.0;
+        maxValue = 1.0;
+        minValues = new double[3];
+        maxValues = new double[3];
+        minValues[0] = -1.0;   maxValues[0] = 1.5;
+        minValues[1] = 0.0;    maxValues[1] = 4.5;
+        minValues[2] = -125.0; maxValues[2] = 125.0;
+
+        // Get all values normalised between 0.0 and 1.0
+        deNormalise();
+        
+        // output row 0 (-1.0) <- 0.0
+        // output row 1 ( 1.4) <- 0.96
+        // output row 2 ( 1.5) <- 1.0
+
+        // input 0 row 0 ( 0.0) <- 0.0
+        // input 0 row 1 (2.25) <- 0.5
+        // input 0 row 2 ( 4.5) <- 1.0
+
+        // input 1 row 0 (-125.0) <- 0.0
+        // input 1 row 1 ( -50.0) <- 0.3
+        // input 1 row 2 ( 125.0) <- 1.0
+
+        // Let's check the outcome for output values
+        double outputFound[] = getTrainingOutputRow(0);
+        assertNotNull(outputFound);
+        assertTrue(1 == outputFound.length);
+        assertTrue(-1.0 == outputFound[0]);
+        outputFound = getTrainingOutputRow(1);
+        assertNotNull(outputFound);
+        assertTrue(1 == outputFound.length);
+        assertTrue(1.4 == outputFound[0]);
+        outputFound = getTrainingOutputRow(2);
+        assertNotNull(outputFound);
+        assertTrue(1 == outputFound.length);
+        assertTrue(1.5 == outputFound[0]);
+
+        // Let's check the outcome for input values
+        double inputFound[] = getTrainingInputRow(0);
+        assertNotNull(inputFound);
+        assertTrue(2 == inputFound.length);
+        assertTrue(0.0 == inputFound[0]);
+        assertTrue(-125.0 == inputFound[1]);
+        inputFound = getTrainingInputRow(1);
+        assertNotNull(inputFound);
+        assertTrue(2 == inputFound.length);
+        assertTrue(2.25 == inputFound[0]);
+        assertTrue(-50.0 == inputFound[1]);
+        inputFound = getTrainingInputRow(2);
+        assertNotNull(inputFound);
+        assertTrue(2 == inputFound.length);
+        assertTrue(4.5 == inputFound[0]);
+        assertTrue(125.0 == inputFound[1]);
+    }
 }

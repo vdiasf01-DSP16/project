@@ -21,8 +21,7 @@ public class Normalize implements Function<Double, Double> {
     private final Double minValue;
     
     /**
-     * Constructor requiring the minimum and the maximum 
-     * input range allowed.
+     * Constructor requiring the minimum and the maximum input value range.
      * 
      * @param minValue
      * @param maxValue

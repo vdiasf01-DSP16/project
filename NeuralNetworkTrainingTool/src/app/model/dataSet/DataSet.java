@@ -25,6 +25,28 @@ public abstract class DataSet {
      * for supervised training.
      */
     protected double[][] testingDataSet;
+
+    /**
+     * The minimum values found per column across the training
+     * and the testing sets.
+     */
+    protected double[] minValues;
+    
+    /**
+     * The maximum values found per column across the training
+     * and the testing sets.
+     */
+    protected double[] maxValues;
+    
+    /**
+     * The minimum value accepted for Normalised values.
+     */
+    protected double minValue;
+    
+    /**
+     * The maximum value accepted for Normalised values.
+     */
+    protected double maxValue;
     
     /**
      * The Output column map defines the mapping of the output vector
@@ -133,7 +155,7 @@ public abstract class DataSet {
 
         int inputStartingIndex = 0;
         if ( outputColumnMap != null ) inputStartingIndex = outputColumnMap.size();
-
+        
         return Arrays.copyOfRange(
                 trainingDataSet[index], 
                 inputStartingIndex,
@@ -258,5 +280,107 @@ public abstract class DataSet {
      */
     public Integer getNumberOfTestingRows() {
         return testingDataSet.length;
+    }
+    
+    /**
+     * Normalise testing and training sets by first calculate what
+     * are the minimum and maximum values for each column, and then 
+     * normalise all values accordingly.
+     * 
+     * @param minValue
+     * @param maxValue
+     */
+    public void normalise( double minimumValue, double maximumValue ) {
+    	minValue = minimumValue;
+    	maxValue = maximumValue;
+
+    	int numberOfColumns;
+    	if ( trainingDataSet != null ) {
+    		numberOfColumns = trainingDataSet.length;
+    	} 
+    	else if ( testingDataSet != null ) {
+    		numberOfColumns = testingDataSet.length;
+    	}
+    	else {
+    		// No data to normalise. Not an exception.
+    		return;
+    	}
+    	
+    	// Initialise the minimum and maximum values array.
+    	minValues = new double[numberOfColumns]; 
+    	maxValues = new double[numberOfColumns]; 
+
+    	// Start with the training set to collect minimum and maximum values
+    	if ( trainingDataSet != null ) {
+        	for( int row = 0; row < trainingDataSet.length; row++ ) {
+                for(int column = 0; column < trainingDataSet[row].length; column++ ) {
+                    if ( minValues[column] > trainingDataSet[row][column] ) minValues[column] = trainingDataSet[row][column];
+                    if ( maxValues[column] < trainingDataSet[row][column] ) maxValues[column] = trainingDataSet[row][column];
+                }
+        	}
+    	}
+
+    	// Check testing set and collect minimum and maximum values
+    	if ( testingDataSet != null ) {
+        	for( int row = 0; row < testingDataSet.length; row++ ) {
+                for(int column = 0; column < testingDataSet[row].length; column++ ) {
+                    if ( minValues[column] > testingDataSet[row][column] ) minValues[column] = testingDataSet[row][column];
+                    if ( maxValues[column] < testingDataSet[row][column] ) maxValues[column] = testingDataSet[row][column];
+                }
+        	}
+    	}
+    	
+    	// Minimum and maximum values calculated per column. Now normalise it all...
+    	if ( trainingDataSet != null ) {
+        	for( int row = 0; row < trainingDataSet.length; row++ ) {
+                for(int column = 0; column < trainingDataSet[row].length; column++ ) {
+                    double value = trainingDataSet[row][column];
+                    Normalize norm = new Normalize(minValues[column], maxValues[column]);
+                    trainingDataSet[row][column] = norm.apply(value);
+                }
+        	}
+    	}
+
+    	// Check testing set and collect minimum and maximum values
+    	if ( testingDataSet != null ) {
+        	for( int row = 0; row < testingDataSet.length; row++ ) {
+                for(int column = 0; column < testingDataSet[row].length; column++ ) {
+                    double value = testingDataSet[row][column];
+                    Normalize norm = new Normalize(minValues[column], maxValues[column]);
+                    testingDataSet[row][column] = norm.apply(value);
+                }
+        	}
+    	}
+    }
+
+    /**
+     * DeNormalise testing and training sets to their original values
+     * by using the initially saved minimum and maximum values per column.
+     * In case these are not yet saved, nothing will be done.
+     */
+    public void deNormalise() {
+    	if ( minValues == null | maxValues == null ) return;
+
+    	// Minimum and maximum values calculated per column. DeNormalise it all...
+    	if ( trainingDataSet != null ) {
+        	for( int row = 0; row < trainingDataSet.length; row++ ) {
+                for(int column = 0; column < trainingDataSet[row].length; column++ ) {
+                    double value = trainingDataSet[row][column];
+                    DeNormalize deNorm = new DeNormalize(minValues[column], maxValues[column]); 
+                    trainingDataSet[row][column] = deNorm.apply(value);
+                }
+        	}
+    	}
+
+    	// Check testing set and collect minimum and maximum values
+    	if ( testingDataSet != null ) {
+        	for( int row = 0; row < testingDataSet.length; row++ ) {
+                for(int column = 0; column < testingDataSet[row].length; column++ ) {
+                    double value = testingDataSet[row][column];
+                    DeNormalize deNorm = new DeNormalize(minValues[column], maxValues[column]);
+                    testingDataSet[row][column] = deNorm.apply(value);
+                }
+        	}
+    	}
     }
 }
