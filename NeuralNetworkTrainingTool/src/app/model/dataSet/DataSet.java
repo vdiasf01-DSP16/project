@@ -310,6 +310,12 @@ public abstract class DataSet {
     	minValues = new double[numberOfColumns]; 
     	maxValues = new double[numberOfColumns]; 
 
+    	// Set minValues and maxValues initial values with their opposites for unbiased outcome.
+        for( int index = 0 ; index < numberOfColumns ; index ++ ) {
+            minValues[index] = Double.NEGATIVE_INFINITY;
+            maxValues[index] = Double.POSITIVE_INFINITY;
+        }
+
     	// Start with the training set to collect minimum and maximum values
     	if ( trainingDataSet != null ) {
         	for( int row = 0; row < trainingDataSet.length; row++ ) {
