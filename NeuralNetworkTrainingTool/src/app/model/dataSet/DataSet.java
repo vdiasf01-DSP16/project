@@ -39,16 +39,6 @@ public abstract class DataSet {
     protected double[] maxValues;
     
     /**
-     * The minimum value accepted for Normalised values.
-     */
-    protected double minValue;
-    
-    /**
-     * The maximum value accepted for Normalised values.
-     */
-    protected double maxValue;
-    
-    /**
      * The Output column map defines the mapping of the output vector
      * in function of the input. This is only used on supervised learning
      * Neural Networks only. For un-supervised Neural Networks, this mapping
@@ -286,20 +276,14 @@ public abstract class DataSet {
      * Normalise testing and training sets by first calculate what
      * are the minimum and maximum values for each column, and then 
      * normalise all values accordingly.
-     * 
-     * @param minValue
-     * @param maxValue
      */
-    public void normalise( double minimumValue, double maximumValue ) {
-    	minValue = minimumValue;
-    	maxValue = maximumValue;
-
+    public void normalise() {
     	int numberOfColumns;
     	if ( trainingDataSet != null ) {
-    		numberOfColumns = trainingDataSet.length;
+    		numberOfColumns = trainingDataSet[0].length;
     	} 
     	else if ( testingDataSet != null ) {
-    		numberOfColumns = testingDataSet.length;
+    		numberOfColumns = testingDataSet[0].length;
     	}
     	else {
     		// No data to normalise. Not an exception.

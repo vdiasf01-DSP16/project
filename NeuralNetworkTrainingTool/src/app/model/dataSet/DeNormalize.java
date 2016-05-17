@@ -22,8 +22,7 @@ public class DeNormalize implements Function<Double, Double> {
     private final Double minDeNorm;
     
     /**
-     * Constructor requiring the minimum and the maximum final
-     * values ranges.
+     * Constructor requiring the minimum and the maximum final ranges.
      * 
      * @param minDeNorm
      * @param maxDeNorm

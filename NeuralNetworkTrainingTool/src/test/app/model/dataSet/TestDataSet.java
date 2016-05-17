@@ -374,7 +374,7 @@ public class TestDataSet extends DataSet {
         trainingDataSet[2][2] =  125.0; // input row 1
 
         // Get all values normalised between 0.0 and 1.0
-        normalise(0.0, 1.0);
+        normalise();
         
         // output row 0 (-1.0) -> 0.0
         // output row 1 ( 1.4) -> 0.96
@@ -451,8 +451,6 @@ public class TestDataSet extends DataSet {
         trainingDataSet[1][2] = 0.3; // input row 1
         trainingDataSet[2][2] = 1.0; // input row 1
         
-        minValue = 0.0;
-        maxValue = 1.0;
         minValues = new double[3];
         maxValues = new double[3];
         minValues[0] = -1.0;   maxValues[0] = 1.5;
