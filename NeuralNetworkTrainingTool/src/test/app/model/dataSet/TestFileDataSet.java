@@ -59,7 +59,6 @@ public class TestFileDataSet {
      * The FileAttributes.
      */
     private FileAttributes fileAttributes;
-    
     private final int TESTING_START_INDEX  = 3;
     private final int TESTING_END_INDEX    = 4;
     private final int TRAINING_START_INDEX = 0;
@@ -385,5 +384,205 @@ public class TestFileDataSet {
         assertTrue(6.6 == inputRow4[0]);
         assertTrue(6.7 == inputRow4[1]);
         assertTrue(6.8 == inputRow4[2]);
+    }
+
+    /**********************************************************
+     *        Testing normalisation / deNormalisation         *
+     **********************************************************/
+
+    @Test
+    public void testTrainingNormalisationDeNormalisation() {
+    	DataSet fileDataSet = new FileDataSet(fileAttributes);
+    	fileAttributes.setTrainingRangeIndex(0, 5);
+        List<VectorMap> inputColumns = new LinkedList<>();
+        inputColumns.add(new VectorMap(0, null));
+        inputColumns.add(new VectorMap(1, null));
+        inputColumns.add(new VectorMap(2, null));
+        inputColumns.add(new VectorMap(3, null));
+        fileDataSet.setInputColumns(inputColumns);
+
+        fileDataSet.load();
+        fileDataSet.normalise();
+
+        double[] row = fileDataSet.getTrainingInputRow(0);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.0 == row[0]); 
+        assertTrue(0.0 == row[1]); 
+        assertTrue(0.0 == row[2]); 
+        assertTrue(0.0 == row[3]);
+
+        row = fileDataSet.getTrainingInputRow(1);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.25 == row[0]); 
+        assertTrue(0.25 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(0.25 == row[2]); 
+        assertTrue(0.25 == row[3]);
+
+        row = fileDataSet.getTrainingInputRow(2);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.5 == row[0]); 
+        assertTrue(0.5 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(0.5 == (Math.round(row[2]*100.0)/100.0)); 
+        assertTrue(0.5 == (Math.round(row[3]*100.0)/100.0));
+
+        row = fileDataSet.getTrainingInputRow(3);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.75 == row[0]); 
+        assertTrue(0.75 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(0.75 == (Math.round(row[2]*100.0)/100.0)); 
+        assertTrue(0.75 == (Math.round(row[3]*100.0)/100.0));
+
+        row = fileDataSet.getTrainingInputRow(4);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(1 == row[0]); 
+        assertTrue(1 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(1 == (Math.round(row[2]*100.0)/100.0)); 
+        assertTrue(1 == (Math.round(row[3]*100.0)/100.0));
+
+        // Invert expecting original values
+        fileDataSet.deNormalise();
+
+        row = fileDataSet.getTrainingInputRow(0);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.0 == row[0]); 
+        assertTrue(0.1 == row[1]); 
+        assertTrue(0.2 == row[2]); 
+        assertTrue(0.3 == row[3]);
+
+        row = fileDataSet.getTrainingInputRow(1);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(1.0 == row[0]); 
+        assertTrue(1.1 == row[1]); 
+        assertTrue(1.2 == row[2]); 
+        assertTrue(1.3 == row[3]);
+
+        row = fileDataSet.getTrainingInputRow(2);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(2.0 == row[0]); 
+        assertTrue(2.1 == row[1]); 
+        assertTrue(2.2 == row[2]); 
+        assertTrue(2.3 == row[3]);
+
+        row = fileDataSet.getTrainingInputRow(3);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(3.0 == row[0]); 
+        assertTrue(3.1 == row[1]); 
+        assertTrue(3.2 == row[2]); 
+        assertTrue(3.3 == row[3]);
+
+        row = fileDataSet.getTrainingInputRow(4);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(4.0 == row[0]); 
+        assertTrue(4.1 == row[1]); 
+        assertTrue(4.2 == row[2]); 
+        assertTrue(4.3 == row[3]);
+    }
+
+    @Test
+    public void testTestingNormalisationDeNormalisation() {
+    	DataSet fileDataSet = new FileDataSet(fileAttributes);
+    	fileAttributes.setTestingRangeIndex(0, 5);
+        List<VectorMap> inputColumns = new LinkedList<>();
+        inputColumns.add(new VectorMap(0, null));
+        inputColumns.add(new VectorMap(1, null));
+        inputColumns.add(new VectorMap(2, null));
+        inputColumns.add(new VectorMap(3, null));
+        fileDataSet.setInputColumns(inputColumns);
+
+        fileDataSet.load();
+        fileDataSet.normalise();
+
+        double[] row = fileDataSet.getTestingInputRow(0);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.0 == row[0]); 
+        assertTrue(0.0 == row[1]); 
+        assertTrue(0.0 == row[2]); 
+        assertTrue(0.0 == row[3]);
+
+        row = fileDataSet.getTestingInputRow(1);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.25 == row[0]); 
+        assertTrue(0.25 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(0.25 == row[2]); 
+        assertTrue(0.25 == row[3]);
+
+        row = fileDataSet.getTestingInputRow(2);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.5 == row[0]); 
+        assertTrue(0.5 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(0.5 == (Math.round(row[2]*100.0)/100.0)); 
+        assertTrue(0.5 == (Math.round(row[3]*100.0)/100.0));
+
+        row = fileDataSet.getTestingInputRow(3);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.75 == row[0]); 
+        assertTrue(0.75 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(0.75 == (Math.round(row[2]*100.0)/100.0)); 
+        assertTrue(0.75 == (Math.round(row[3]*100.0)/100.0));
+
+        row = fileDataSet.getTestingInputRow(4);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(1 == row[0]); 
+        assertTrue(1 == (Math.round(row[1]*100.0)/100.0)); 
+        assertTrue(1 == (Math.round(row[2]*100.0)/100.0)); 
+        assertTrue(1 == (Math.round(row[3]*100.0)/100.0));
+
+        // Invert expecting original values
+        fileDataSet.deNormalise();
+
+        row = fileDataSet.getTestingInputRow(0);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(0.0 == row[0]); 
+        assertTrue(0.1 == row[1]); 
+        assertTrue(0.2 == row[2]); 
+        assertTrue(0.3 == row[3]);
+
+        row = fileDataSet.getTestingInputRow(1);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(1.0 == row[0]); 
+        assertTrue(1.1 == row[1]); 
+        assertTrue(1.2 == row[2]); 
+        assertTrue(1.3 == row[3]);
+
+        row = fileDataSet.getTestingInputRow(2);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(2.0 == row[0]); 
+        assertTrue(2.1 == row[1]); 
+        assertTrue(2.2 == row[2]); 
+        assertTrue(2.3 == row[3]);
+
+        row = fileDataSet.getTestingInputRow(3);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(3.0 == row[0]); 
+        assertTrue(3.1 == row[1]); 
+        assertTrue(3.2 == row[2]); 
+        assertTrue(3.3 == row[3]);
+
+        row = fileDataSet.getTestingInputRow(4);
+        assertNotNull(row);
+        assertTrue(4 == row.length);
+        assertTrue(4.0 == row[0]); 
+        assertTrue(4.1 == row[1]); 
+        assertTrue(4.2 == row[2]); 
+        assertTrue(4.3 == row[3]);
     }
 }
