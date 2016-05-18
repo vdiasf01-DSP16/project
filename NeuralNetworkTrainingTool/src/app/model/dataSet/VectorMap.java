@@ -15,7 +15,7 @@ public class VectorMap {
 	 * into ready final data.
 	 */
 	private final MapTransform mapTransform;
-	
+
 	/**
 	 * The source index this map corresponds to.
 	 */
