@@ -13,28 +13,27 @@ import app.model.dataSet.MathOperator;
 import app.model.dataSet.VectorMap;
 
 /**
- * Testing the abstract class DataSet to ensure all exceptions are thrown.
+ * Testing the abstract class DataSet to ensure all exceptions are thrown
+ * as well as all default logic implemented works as expected.
  * 
- * Two dataSets supplied: 
+ * Two protected dataSets supplied: 
  *  trainingDataSet
  *  testingDataSet
  *  
- * These two data sets are independent with the exception when the testing
- * data set is not supplied, the training data set take the full load and
- * become the default data set to be used.
+ * These two data sets are independent and share same functionality. The data
+ * that should be loaded in each will be determined outside of this class.
  * 
  * @author Vasco
  *
  */
 public class TestDataSet extends DataSet {
 
-    /**********************************************************
-     *                   Testing exceptions                   *
-     **********************************************************/
+    /************************************************************************
+     *                          Testing exceptions                          *
+     ************************************************************************/
 
     /**
-     * Testing exception with load() on both data set that
-     * required to be implemented on the extending class.
+     * Testing exception on load() requiring implementation on extending class.
      */
     @Test(expected=IllegalStateException.class)
     public void testLoad() { 
@@ -42,8 +41,8 @@ public class TestDataSet extends DataSet {
     }
 
     /**
-     * Testing exception with loadTesting() required to be 
-     * implemented on the extending class.
+     * Testing exception on loadTesting() requiring implementation on 
+     * extending class.
      */
     @Test(expected=IllegalStateException.class)
     public void testLoadTraining() { 
@@ -51,8 +50,8 @@ public class TestDataSet extends DataSet {
     }
 
     /**
-     * Testing exception with loadTesting() required to be 
-     * implemented on the extending class.
+     * Testing exception with loadTesting() required to be implemented on 
+     * the extending class.
      */
     @Test(expected=IllegalStateException.class)
     public void testLoadTesting() { 
@@ -91,15 +90,53 @@ public class TestDataSet extends DataSet {
         getTestingOutputRow(0); 
     }
 
-    /**********************************************************
-     *             Default methods on loaded data             *
-     **********************************************************/
+    /**
+     * Testing exception on not defined input column map.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testExceptionOnNotDefinedInputMap() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        getTrainingInputRow(0);
+    }
 
     /**
-     * Testing method on loaded source.
+     * Testing exception on not defined output column map.
+     */
+    @Test(expected=IllegalStateException.class)
+    public void testExceptionOnNotDefinedOutputMap() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        getTrainingOutputRow(0);
+    }
+
+    /*************************************************************************
+     *                    Default methods on loaded data                     *
+     *************************************************************************/
+
+    /**
+     * Asserting Training Input row zero returns expected vector.
      */
     @Test
-    public void testLoadedGetTrainingInputRow() { 
+    public void testLoadedGetTrainingInputRow0() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        inputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTrainingInputRow(0); 
+        assertNotNull(found);
+        assertTrue(0 == found[0]);
+        assertTrue(0 == found[1]);
+        assertTrue(0 == found[2]);
+    }
+
+    /**
+     * Asserting Training Input row one returns expected vector.
+     */
+    @Test
+    public void testLoadedGetTrainingInputRow1() { 
         trainingDataSet = new double[2][3];
         trainingDataSet[1][2] = 2.5;
         inputColumnMap = new LinkedList<>();
@@ -108,17 +145,120 @@ public class TestDataSet extends DataSet {
         inputColumnMap.add(new VectorMap(0, null));
         double[] found = getTrainingInputRow(1); 
         assertNotNull(found);
+        assertTrue(0 == found[0]);
+        assertTrue(0 == found[1]);
         assertTrue(2.5 == found[2]);
     }
 
     /**
-     * Testing method on loaded source.
-     * 
-     * By default, input row should return any source rows
-     * on a one-to-one basis.
+     * Asserting Training Output row zero returns expected vector.
      */
     @Test
-    public void testLoadedGetTestingInputRow() { 
+    public void testLoadedGetTrainingOutputRow0() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        trainingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
+        outputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTrainingOutputRow(0); 
+        assertNotNull(found);
+        assertTrue(1 == found.length);
+        assertTrue(0 == found[0]);
+    }
+
+    /**
+     * Asserting Training Output row one returns expected vector.
+     */
+    @Test
+    public void testLoadedGetTrainingOutputRow1() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        trainingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
+        outputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTrainingOutputRow(1); 
+        assertNotNull(found);
+        assertTrue(1 == found.length);
+        assertTrue(22.5 == found[0]);
+    }
+
+    /**
+     * Asserting Training Output row zero returns expected vector when two 
+     * columns are expected.
+     */
+    @Test
+    public void testLoadedGetTrainingOutput2Row0() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        trainingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
+        outputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTrainingOutputRow(0); 
+        assertNotNull(found);
+        assertTrue(2 == found.length);
+        assertTrue(0 == found[0]);
+        assertTrue(0 == found[1]);
+    }
+
+    /**
+     * Asserting Training Output row one returns expected vector when two 
+     * columns are expected.
+     */
+    @Test
+    public void testLoadedGetTrainingOutput2Row1() { 
+        trainingDataSet = new double[2][3];
+        trainingDataSet[1][2] = 2.5;
+        trainingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
+        outputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTrainingOutputRow(1); 
+        assertNotNull(found);
+        assertTrue(2 == found.length);
+        assertTrue(22.5 == found[0]);
+        assertTrue(0 == found[1]);
+    }
+
+    /**
+     * Asserting Testing Input row zero returns expected vector.
+     */
+    @Test
+    public void testLoadedGetTestingInputRow0() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        inputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTestingInputRow(0); 
+        assertNotNull(found);
+        assertTrue(0 == found[0]);
+        assertTrue(0 == found[1]);
+        assertTrue(0 == found[2]);
+    }
+
+    /**
+     * Asserting Testing Input row one returns expected vector.
+     */
+    @Test
+    public void testLoadedGetTestingInputRow1() { 
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
         inputColumnMap = new LinkedList<>();
@@ -127,38 +267,100 @@ public class TestDataSet extends DataSet {
         inputColumnMap.add(new VectorMap(0, null));
         double[] found = getTestingInputRow(1); 
         assertNotNull(found);
+        assertTrue(0 == found[0]);
+        assertTrue(0 == found[1]);
         assertTrue(2.5 == found[2]);
     }
 
     /**
-     * Testing method on loaded source.
-     * 
-     * By default, no columns should be assigned to the output.
+     * Asserting Testing Output row zero returns expected vector.
      */
     @Test
-    public void testLoadedGetTrainingOutputRow() { 
-        trainingDataSet = new double[2][3];
-        trainingDataSet[1][2] = 2.5;
+    public void testLoadedGetTestingOutputRow0() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        testingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
         outputColumnMap = new LinkedList<>();
-        double found[] = getTrainingOutputRow(1);
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTestingOutputRow(0); 
         assertNotNull(found);
-        assertTrue(0 == found.length);
+        assertTrue(1 == found.length);
+        assertTrue(0 == found[0]);
     }
 
     /**
-     * Testing method on loaded source.
-     * 
-     * By default, no columns should be assigned to the output.
+     * Asserting Testing Output row one returns expected vector.
      */
     @Test
-    public void testLoadedGetTestingOutputRow() { 
+    public void testLoadedGetTestingOutputRow1() { 
         testingDataSet = new double[2][3];
         testingDataSet[1][2] = 2.5;
+        testingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
         outputColumnMap = new LinkedList<>();
-        double found[] = getTestingOutputRow(1);
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTestingOutputRow(1); 
         assertNotNull(found);
-        assertTrue(0 == found.length);
+        assertTrue(1 == found.length);
+        assertTrue(22.5 == found[0]);
     }
+
+    /**
+     * Asserting Testing Output row zero returns expected vector when two 
+     * columns are expected.
+     */
+    @Test
+    public void testLoadedGetTestingOutput2Row0() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        testingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
+        outputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTestingOutputRow(0); 
+        assertNotNull(found);
+        assertTrue(2 == found.length);
+        assertTrue(0 == found[0]);
+        assertTrue(0 == found[1]);
+    }
+
+    /**
+     * Asserting Testing Output row one returns expected vector when two 
+     * columns are expected.
+     */
+    @Test
+    public void testLoadedGetTestingOutput2Row1() { 
+        testingDataSet = new double[2][3];
+        testingDataSet[1][2] = 2.5;
+        testingDataSet[1][0] = 22.5;
+        inputColumnMap = new LinkedList<>();
+        outputColumnMap = new LinkedList<>();
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        outputColumnMap.add(new VectorMap(0, null));
+        double[] found = getTestingOutputRow(1); 
+        assertNotNull(found);
+        assertTrue(2 == found.length);
+        assertTrue(22.5 == found[0]);
+        assertTrue(0 == found[1]);
+    }
+
+    /*************************************************************************
+     *                            Column lengths                             *
+     *************************************************************************/
 
     /**
      * Testing method on loaded source.
@@ -227,26 +429,23 @@ public class TestDataSet extends DataSet {
     }
 
     
-    /***********************************************************
-     *   Transformations and input/output index allocations    *
-     *                                                         *
-     *  Transforms are not to affect in any way already loaded *
-     *  data. These should have been applied at the point      *
-     *  when load() is called, and done once then.             *
-     ***********************************************************/
+    /*************************************************************************
+     *          Transformations and input/output index allocations           *
+     *                                                                       *
+     *  Transforms are not to affect in any way already loaded data. These   *
+     *  should have been applied at the point when load() is called, and     *
+     *  done once then.                                                      *
+     *************************************************************************/
 
     /**
      * Testing method on loaded source using map transforms.
      */
     @Test
     public void testLoadedGetInputRowTransformTraining() { 
-        // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
-        setInputColumns(inputColumnMap);
-
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
         double[] found = getTrainingInputRow(0); 
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
@@ -259,13 +458,10 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetInputRowTransformTesting() { 
-        // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
-        setInputColumns(inputColumnMap);
-
         testingDataSet = new double[2][3];
         testingDataSet[0][1] = 5.3;
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
         double[] found = getTestingInputRow(0); 
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
@@ -278,13 +474,10 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetNumberOfInputColumnsTransform() { 
-        // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
-        setInputColumns(inputColumnMap);
-
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
         int found = getNumberOfInputColumns(); 
         assertTrue(1 == found);
     }
@@ -294,13 +487,10 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetNumberOfOutputColumnsTransform() { 
-        // Source[0] -> Input[1] += 1.3
-        inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
-        setInputColumns(inputColumnMap);
-
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
         outputColumnMap = new LinkedList<>();
         int found = getNumberOfOutputColumns();
         assertTrue(0 == found);
@@ -311,13 +501,10 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetOutputRowTransformTraining() { 
-        // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
-        outputColumnMap = new LinkedList<VectorMap>();
-        outputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
-        setOutputColumns(outputColumnMap);
-
         trainingDataSet = new double[2][3];
         trainingDataSet[1][0] = 5.3;
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
         double found[] = getTrainingOutputRow(1);
         assertNotNull(found);
         assertTrue(1 == found.length);
@@ -329,13 +516,10 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testLoadedGetOutputRowTransformTesting() { 
-        // Source[0] -> 1.3 + Source[0] -> dataSet[1] += 1.3
-        outputColumnMap = new LinkedList<VectorMap>();
-        outputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
-        setOutputColumns(outputColumnMap);
-
         testingDataSet = new double[2][3];
         testingDataSet[1][0] = 5.3;
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
         double found[] = getTestingOutputRow(1);
         assertNotNull(found);
         assertTrue(1 == found.length);
@@ -347,15 +531,6 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testNormalisation() {
-        outputColumnMap = new LinkedList<VectorMap>();
-        outputColumnMap.add(new VectorMap(0, null));
-        setOutputColumns(outputColumnMap);
-
-        inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(1, null));
-        inputColumnMap.add(new VectorMap(2, null));
-        setInputColumns(inputColumnMap);
-       
         // Loaded data
         trainingDataSet = new double[3][3];
         // MIN -1.0 MAX 1.5
@@ -372,6 +547,12 @@ public class TestDataSet extends DataSet {
         trainingDataSet[0][2] = -125.0; // input row 1
         trainingDataSet[1][2] = -50.0;  // input row 1
         trainingDataSet[2][2] =  125.0; // input row 1
+
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(1, null));
+        inputColumnMap.add(new VectorMap(2, null));
 
         // Get all values normalised between 0.0 and 1.0
         normalise();
@@ -425,15 +606,6 @@ public class TestDataSet extends DataSet {
      */
     @Test
     public void testDeNormalisation() {
-        outputColumnMap = new LinkedList<VectorMap>();
-        outputColumnMap.add(new VectorMap(0, null));
-        setOutputColumns(outputColumnMap);
-
-        inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(1, null));
-        inputColumnMap.add(new VectorMap(2, null));
-        setInputColumns(inputColumnMap);
-       
         // Loaded data
         trainingDataSet = new double[3][3];
         // MIN -1.0 MAX 1.5
@@ -451,6 +623,12 @@ public class TestDataSet extends DataSet {
         trainingDataSet[1][2] = 0.3; // input row 1
         trainingDataSet[2][2] = 1.0; // input row 1
         
+        outputColumnMap = new LinkedList<VectorMap>();
+        outputColumnMap.add(new VectorMap(0, null));
+        inputColumnMap = new LinkedList<VectorMap>();
+        inputColumnMap.add(new VectorMap(1, null));
+        inputColumnMap.add(new VectorMap(2, null));
+
         minValues = new double[3];
         maxValues = new double[3];
         minValues[0] = -1.0;   maxValues[0] = 1.5;
