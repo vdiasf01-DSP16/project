@@ -71,30 +71,6 @@ public abstract class DataSet {
     };
 
     /**
-     * Loads source into memory, erasing previous loads and taking any extra changes 
-     * made to the column maps, header rows, etc. Loads only the selected source training
-     * part for the trainingDataSet.
-     * 
-     * This method should be implemented to centralise core functionality in one
-     * place and avoid future regrets.
-     */
-    public void loadTraining() {
-        throw new IllegalStateException("DataSet.loadTraining() must be implemented on the extending class.");
-    };
-
-    /**
-     * Loads source into memory, erasing previous loads and taking any extra changes 
-     * made to the column maps, header rows, etc. Loads only the selected source testing
-     * part for the testingDataSet.
-     * 
-     * This method should be implemented to centralise core functionality in one
-     * place and avoid future regrets.
-     */
-    public void loadTesting() {
-        throw new IllegalStateException("DataSet.loadTesting() must be implemented on the extending class.");
-    };
-
-    /**
      * The training data set output row.
      * 
      * The array of doubles for the output vector double row given by the index.

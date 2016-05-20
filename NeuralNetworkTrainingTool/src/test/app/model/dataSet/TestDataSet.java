@@ -41,24 +41,6 @@ public class TestDataSet extends DataSet {
     }
 
     /**
-     * Testing exception on loadTesting() requiring implementation on 
-     * extending class.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testLoadTraining() { 
-        loadTraining(); 
-    }
-
-    /**
-     * Testing exception with loadTesting() required to be implemented on 
-     * the extending class.
-     */
-    @Test(expected=IllegalStateException.class)
-    public void testLoadTesting() { 
-        loadTesting(); 
-    }
-
-    /**
      * Testing expected exception on a not yet loaded file.
      */
     @Test(expected=IllegalStateException.class)
