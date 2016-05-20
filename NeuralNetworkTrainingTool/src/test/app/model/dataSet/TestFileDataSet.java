@@ -96,10 +96,10 @@ public class TestFileDataSet {
         fileHeaderAttributes.setSeparator(SEPARATOR);
     }
 
-    /**********************************************************
-     *          Verify core methods were implemented          *
-     *       and loads correctly on training and testing      *
-     **********************************************************/
+    /*************************************************************************
+     *                 Verify core methods were implemented                  *
+     *              and loads correctly on training and testing              *
+     *************************************************************************/
 
     /**
      * Check if load was implemented.
@@ -109,27 +109,6 @@ public class TestFileDataSet {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileDataSet.load();
     }
-
-    /**
-     * Check if loadTraining was implemented.
-     */
-    @Test
-    public void testLoadTrainingWasImplemented() {
-        DataSet fileDataSet = new FileDataSet(fileAttributes);
-        fileDataSet.load();
-        fileDataSet.loadTraining();
-    }
-
-    /**
-     * Check if loadTesting was implemented.
-     */
-    @Test
-    public void testLoadTestingWasImplemented() {
-        DataSet fileDataSet = new FileDataSet(fileAttributes);
-        fileDataSet.load();
-        fileDataSet.loadTesting();
-    }
-
     
     /*************************************************************************
      *                Checking both files load correctly on                  *
@@ -338,8 +317,72 @@ public class TestFileDataSet {
 
 
     /*************************************************************************
-     *                Checking File attributes extended                     *
+     *                 Checking File attributes extended                     *
      *************************************************************************/
+
+    /**
+     * Check Data set ranges on negative ranges.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetNegativeRangesTesting() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(-1, 5);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges on negative ranges.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetNegativeRangesTraining() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(-1, 5);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapSame() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(1, 5);
+        fileAttributes.setTrainingRangeIndex(1, 5);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapPartialTesting() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(1, 3);
+        fileAttributes.setTrainingRangeIndex(2, 5);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapPartialTraining() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(2, 5);
+        fileAttributes.setTrainingRangeIndex(1, 3);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges no overlap exceptions.
+     */
+    @Test
+    public void testLoadFileAttributesDataSetNoOverlap() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(1, 3);
+        fileAttributes.setTrainingRangeIndex(4, 5);
+        fileDataSet.load();
+    }
 
     /**
      * Check Training on different ranges.
