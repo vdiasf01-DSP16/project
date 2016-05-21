@@ -52,6 +52,16 @@ public class FileAttributes {
 	 * The training end row index.
 	 */
 	private int trainingEndIndex;
+	
+	/**
+	 * If set to false, the training range will be ignored.
+	 */
+	private boolean hasTrainingRange;
+	
+	/**
+	 * If set to false, the testing range will be ignored.
+	 */
+	private boolean hasTestingRange;
 
 	/**
 	 * The Header rows.
@@ -134,6 +144,7 @@ public class FileAttributes {
 	public void setTestingRangeIndex(int testingStartIndex, int testingEndIndex) {
 		this.testingStartIndex = testingStartIndex;
 		this.testingEndIndex = testingEndIndex;
+		this.setHasTestingRange(true);
 	}
 
 	/**
@@ -163,6 +174,7 @@ public class FileAttributes {
 	public void setTrainingRangeIndex(int trainingStartIndex, int trainingEndIndex) {
 		this.trainingStartIndex = trainingStartIndex;
 		this.trainingEndIndex = trainingEndIndex;
+		this.setHasTrainingRange(true);
 	}
 
 	/**
@@ -194,5 +206,41 @@ public class FileAttributes {
 				+ "Separator: '"+separator+"'\n"
                 + "TestingRange: "+testingStartIndex+" to "+testingEndIndex+"\n"
 				+ "TrainingRange: "+trainingStartIndex+" to "+trainingEndIndex+"\n";
+	}
+
+	/**
+	 * If set to false, the Training range is to be ignored.
+	 * 
+	 * @return true if has valid Training range.
+	 */
+	public boolean isHasTrainingRange() {
+		return hasTrainingRange;
+	}
+
+	/**
+	 * Sets the Training range to be considered.
+	 * 
+	 * @param hasTrainingRange
+	 */
+	public void setHasTrainingRange(boolean hasTrainingRange) {
+		this.hasTrainingRange = hasTrainingRange;
+	}
+
+	/**
+	 * If set to false, the Testing range is to be ignored.
+	 * 
+	 * @return true if has valid Traing range.
+	 */
+	public boolean isHasTestingRange() {
+		return hasTestingRange;
+	}
+
+	/**
+	 * Sets the Testing range to be considered.
+	 * 
+	 * @param hasTestingRange
+	 */
+	public void setHasTestingRange(boolean hasTestingRange) {
+		this.hasTestingRange = hasTestingRange;
 	}
 }
