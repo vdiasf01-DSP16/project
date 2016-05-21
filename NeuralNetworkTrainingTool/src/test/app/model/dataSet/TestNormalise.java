@@ -1,6 +1,6 @@
 package test.app.model.dataSet;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -103,4 +103,14 @@ public class TestNormalise {
     public void testNormalisedOutOfRangeExceptionLowerBound() {
         normalise.apply(MIN_NORM - 1);
     }
+
+    /**
+     * Testing normalisation on same min and max.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testNormalisedOnSameMinAndMax() {
+    	Normalize testingNormalise = new Normalize(10, 10);
+        testingNormalise.apply(10.0);
+    }
+
 }

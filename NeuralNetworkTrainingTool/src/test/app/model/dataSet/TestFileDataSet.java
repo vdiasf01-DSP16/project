@@ -314,6 +314,30 @@ public class TestFileDataSet {
         fileDataSet.getTestingInputRow(3);
     }
 
+    /**
+     * Check exception on attempting to load more rows than those in file.
+     */
+    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    public void testLoadTrainingFileAttributesLoadMoreThanAvailable() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(TRAINING_START_INDEX, 120125);
+        fileAttributes.setHasTestingRange(false);
+        fileDataSet.load();
+        fileDataSet.getTrainingInputRow(3);
+    }
+
+    /**
+     * Check exception on attempting to load more rows than those in file.
+     */
+    @Test(expected=ArrayIndexOutOfBoundsException.class)
+    public void testLoadTestingFileAttributesLoadMoreThanAvailable() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(TESTING_START_INDEX, 120125);
+        fileAttributes.setHasTrainingRange(false);
+        fileDataSet.load();
+        fileDataSet.getTestingInputRow(3);
+    }
+
 
     /*************************************************************************
      *                 Checking File attributes extended                     *
