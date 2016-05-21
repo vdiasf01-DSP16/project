@@ -154,4 +154,28 @@ public class TestMapTransform {
         MapTransform mapTransform = new MapTransform(MathOperator.DIV,0);
         mapTransform.apply(GIVEN_VALUE.doubleValue());
     }
+
+    /**
+     * Testing inversion.
+     */
+    @Test
+    public void testMathINV() {
+        // Instantiate new object with math operation
+        MapTransform mapTransform = new MapTransform(MathOperator.INV);
+        double expectedValue = GIVEN_VALUE.doubleValue() > 0 ? 0 : 1;
+        double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
+        assertTrue(expectedValue == foundValue);
+    }
+
+    /**
+     * Testing BIN conversion to 1 or 0.
+     */
+    @Test
+    public void testMathBIN() {
+        // Instantiate new object with math operation
+        MapTransform mapTransform = new MapTransform(MathOperator.BIN);
+        double expectedValue = GIVEN_VALUE.doubleValue() > 0 ? 1 : 0;
+        double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
+        assertTrue(expectedValue == foundValue);
+    }
 }
