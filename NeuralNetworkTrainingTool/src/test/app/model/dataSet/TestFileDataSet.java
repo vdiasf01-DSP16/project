@@ -1,7 +1,6 @@
 package test.app.model.dataSet;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -69,10 +68,10 @@ public class TestFileDataSet {
      * The File with Header Attributes.
      */
     private FileAttributes fileHeaderAttributes;
-    private final int HEADER_TRAINING_START_INDEX = 1;
-    private final int HEADER_TRAINING_END_INDEX   = 2;
-    private final int HEADER_TESTING_START_INDEX  = 3;
-    private final int HEADER_TESTING_END_INDEX    = 5;
+    private final int HEADER_TRAINING_START_INDEX = 1 + HEADER_ROWS;
+    private final int HEADER_TRAINING_END_INDEX   = 2 + HEADER_ROWS;
+    private final int HEADER_TESTING_START_INDEX  = 3 + HEADER_ROWS;
+    private final int HEADER_TESTING_END_INDEX    = 5 + HEADER_ROWS;
 
     /**
      * Initialising the FileAttributes with the default settings.
@@ -391,6 +390,7 @@ public class TestFileDataSet {
     public void testLoadTrainingUpdatedForRow5a() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(1, 5);
+        fileAttributes.setHasTestingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTrainingInputRow(4);
         assertNotNull(input);
@@ -408,6 +408,7 @@ public class TestFileDataSet {
     public void testLoadTrainingUpdatedForRow5b() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(2, 5);
+        fileAttributes.setHasTestingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTrainingInputRow(3);
         assertNotNull(input);
@@ -425,6 +426,7 @@ public class TestFileDataSet {
     public void testLoadTrainingUpdatedForRow5c() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(3, 5);
+        fileAttributes.setHasTestingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTrainingInputRow(2);
         assertNotNull(input);
@@ -442,6 +444,7 @@ public class TestFileDataSet {
     public void testLoadTrainingUpdatedForRow5d() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(4, 5);
+        fileAttributes.setHasTestingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTrainingInputRow(1);
         assertNotNull(input);
@@ -459,6 +462,7 @@ public class TestFileDataSet {
     public void testLoadTrainingUpdatedForRow5e() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(5, 5);
+        fileAttributes.setHasTestingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTrainingInputRow(0);
         assertNotNull(input);
@@ -476,6 +480,7 @@ public class TestFileDataSet {
     public void testLoadTestingUpdatedForRow5a() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(1, 5);
+        fileAttributes.setHasTrainingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTestingInputRow(4);
         assertNotNull(input);
@@ -493,6 +498,7 @@ public class TestFileDataSet {
     public void testLoadTestingUpdatedForRow5b() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(2, 5);
+        fileAttributes.setHasTrainingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTestingInputRow(3);
         assertNotNull(input);
@@ -527,6 +533,7 @@ public class TestFileDataSet {
     public void testLoadTestingUpdatedForRow5d() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(4, 5);
+        fileAttributes.setHasTrainingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTestingInputRow(1);
         assertNotNull(input);
@@ -544,6 +551,7 @@ public class TestFileDataSet {
     public void testLoadTestingUpdatedForRow5e() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(5, 5);
+        fileAttributes.setHasTrainingRange(false);
         fileDataSet.load();
         double[] input = fileDataSet.getTestingInputRow(0);
         assertNotNull(input);
@@ -569,12 +577,13 @@ public class TestFileDataSet {
     }
 
     /**
-     * Check if load testing was implemented correctly.
+     * Check if exception is thrown on testing.
      */
     @Test(expected=ArrayIndexOutOfBoundsException.class)
     public void testLoadWasImplementedAndDataSetUpdatedForTestingRow5Exception() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
-        fileAttributes.setTestingRangeIndex(1, 5);
+        fileAttributes.setTestingRangeIndex(1, 4);
+        fileAttributes.setTrainingRangeIndex(4, 5);
         fileDataSet.load();
         fileDataSet.getTestingInputRow(5);
     }
@@ -596,6 +605,7 @@ public class TestFileDataSet {
     public void testLoadWasImplementedAndDataSetUpdatedForRow5Exception() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(1, 5);
+        fileAttributes.setHasTestingRange(false);
         fileDataSet.load();
         fileDataSet.getTrainingInputRow(5);
     }
@@ -626,14 +636,16 @@ public class TestFileDataSet {
 
     /**
      * No exception when no output map supplied and output is requested.
-     * A null should be returned possibly due to a non supervised training.
+     * A zero length array should be returned possibly due to a non 
+     * supervised training.
      */
     @Test
     public void testNoOutputMapGetOutputRow() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileDataSet.load();
         double foundRow[] = fileDataSet.getTrainingOutputRow(0);
-        assertNull(foundRow);
+        assertNotNull(foundRow);
+        assertTrue(0 == foundRow.length);
     }
 
     /**
@@ -693,13 +705,15 @@ public class TestFileDataSet {
         double inputRow[]      = fileDataSet.getTestingInputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == inputRow[0]);
-        assertTrue(0.1 == inputRow[1]);
-        assertTrue(0.2 == inputRow[2]);
-        assertTrue(0.3 == inputRow[3]);
-
-        assertTrue(4 == inputColumnNumber);
+        assertTrue(4 == inputRow.length);
         assertTrue(0 == outputColumnNumber);
+        assertTrue(4 == inputColumnNumber);
+
+        assertTrue(2.0 == inputRow[0]);
+        assertTrue(2.1 == inputRow[1]);
+        assertTrue(2.2 == inputRow[2]);
+        assertTrue(2.3 == inputRow[3]);
+
     }
 
     /**
@@ -715,13 +729,14 @@ public class TestFileDataSet {
         double inputRow[]      = fileDataSet.getTestingInputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == inputRow[0]);
-        assertTrue(0.1 == inputRow[1]);
-        assertTrue(0.2 == inputRow[2]);
-        assertTrue(0.3 == inputRow[3]);
-
-        assertTrue(4 == inputColumnNumber);
+        assertTrue(4 == inputRow.length);
         assertTrue(0 == outputColumnNumber);
+        assertTrue(4 == inputColumnNumber);
+
+        assertTrue(2.0 == inputRow[0]);
+        assertTrue(2.1 == inputRow[1]);
+        assertTrue(2.2 == inputRow[2]);
+        assertTrue(2.3 == inputRow[3]);
     }
 
 
@@ -805,13 +820,15 @@ public class TestFileDataSet {
         double outputRow[]     = fileDataSet.getTrainingOutputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == outputRow[0]);
-        assertTrue(0.1 == outputRow[0]);
-        assertTrue(0.2 == outputRow[1]);
-        assertTrue(0.3 == inputRow[0]);
-
-        assertTrue(1 == inputColumnNumber);
+        assertTrue(1 == inputRow.length);
+        assertTrue(3 == outputRow.length);
         assertTrue(3 == outputColumnNumber);
+        assertTrue(1 == inputColumnNumber);
+
+        assertTrue(0.0 == outputRow[0]);
+        assertTrue(0.1 == outputRow[1]);
+        assertTrue(0.2 == outputRow[2]);
+        assertTrue(0.3 == inputRow[0]);
     }
 
     /**
@@ -879,10 +896,10 @@ public class TestFileDataSet {
         double outputRow[]     = fileDataSet.getTestingOutputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == outputRow[0]);
-        assertTrue(0.1 == inputRow[0]);
-        assertTrue(0.2 == inputRow[1]);
-        assertTrue(0.3 == inputRow[2]);
+        assertTrue(2.0 == outputRow[0]);
+        assertTrue(2.1 == inputRow[0]);
+        assertTrue(2.2 == inputRow[1]);
+        assertTrue(2.3 == inputRow[2]);
 
         assertTrue(3 == inputColumnNumber);
         assertTrue(1 == outputColumnNumber);
@@ -906,10 +923,10 @@ public class TestFileDataSet {
         double outputRow[]     = fileDataSet.getTestingOutputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == outputRow[0]);
-        assertTrue(0.1 == outputRow[1]);
-        assertTrue(0.2 == inputRow[0]);
-        assertTrue(0.3 == inputRow[1]);
+        assertTrue(2.0 == outputRow[0]);
+        assertTrue(2.1 == outputRow[1]);
+        assertTrue(2.2 == inputRow[0]);
+        assertTrue(2.3 == inputRow[1]);
 
         assertTrue(2 == inputColumnNumber);
         assertTrue(2 == outputColumnNumber);
@@ -934,10 +951,10 @@ public class TestFileDataSet {
         double outputRow[]     = fileDataSet.getTestingOutputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == outputRow[0]);
-        assertTrue(0.1 == outputRow[0]);
-        assertTrue(0.2 == outputRow[1]);
-        assertTrue(0.3 == inputRow[0]);
+        assertTrue(2.0 == outputRow[0]);
+        assertTrue(2.1 == outputRow[1]);
+        assertTrue(2.2 == outputRow[2]);
+        assertTrue(2.3 == inputRow[0]);
 
         assertTrue(1 == inputColumnNumber);
         assertTrue(3 == outputColumnNumber);
@@ -964,11 +981,11 @@ public class TestFileDataSet {
         double outputRow[]     = fileDataSet.getTestingOutputRow(0);
         int inputColumnNumber  = fileDataSet.getNumberOfInputColumns();
         int outputColumnNumber = fileDataSet.getNumberOfOutputColumns();
-        assertTrue(0.0 == outputRow[0]);
-        assertTrue(0.1 == outputRow[1]);
-        assertTrue(0.2 == outputRow[2]);
-        assertTrue(2.2 == outputRow[3]);
-        assertTrue(0.3 == inputRow[0]);
+        assertTrue(2.0 == outputRow[0]);
+        assertTrue(2.1 == outputRow[1]);
+        assertTrue(2.2 == outputRow[2]);
+        assertTrue(4.2 == outputRow[3]);
+        assertTrue(2.3 == inputRow[0]);
 
         assertTrue(1 == inputColumnNumber);
         assertTrue(4 == outputColumnNumber);
@@ -1032,6 +1049,7 @@ public class TestFileDataSet {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         // Override training range to use all file.
         fileAttributes.setTrainingRangeIndex(1, 5);
+        fileAttributes.setHasTestingRange(false);
         
         // The output transform
         List<VectorMap> outputColumns = new LinkedList<>();
@@ -1116,6 +1134,7 @@ public class TestFileDataSet {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         // Override testing range to use all file.
         fileAttributes.setTestingRangeIndex(1, 5);
+        fileAttributes.setHasTrainingRange(false);
         
         // The output transform
         List<VectorMap> outputColumns = new LinkedList<>();
@@ -1201,6 +1220,7 @@ public class TestFileDataSet {
     public void testTrainingNormalisationDeNormalisation() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTrainingRangeIndex(1, 5);
+        fileAttributes.setHasTestingRange(false);
         List<VectorMap> inputColumns = new LinkedList<>();
         inputColumns.add(new VectorMap(0, null));
         inputColumns.add(new VectorMap(1, null));
@@ -1303,6 +1323,7 @@ public class TestFileDataSet {
     public void testTestingNormalisationDeNormalisation() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(1, 5);
+        fileAttributes.setHasTrainingRange(false);
         List<VectorMap> inputColumns = new LinkedList<>();
         inputColumns.add(new VectorMap(0, null));
         inputColumns.add(new VectorMap(1, null));
