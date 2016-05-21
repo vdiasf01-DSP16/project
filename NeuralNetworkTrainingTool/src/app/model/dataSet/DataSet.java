@@ -262,7 +262,7 @@ public abstract class DataSet {
     		numberOfColumns = testingDataSet[0].length;
     	}
     	else {
-    		// No data to normalise. Not an exception.
+    		// No data to normalise and no exception.
     		return;
     	}
     	
