@@ -34,9 +34,34 @@ public class MapTransform implements Function<Double, Double> {
     }
 
     /**
+     * Constructor requiring an operator that will be applied to the 
+     * supplied value. Only operators that do not require two arguments
+     * will be allowed to use this constructor.
+     * 
+     * @param operation MathOperator
+     */
+    public MapTransform(MathOperator operation) {
+        // An operation must be supplied
+        if ( operation == null ) {
+            throw new IllegalArgumentException("No operation list supplied");
+        }
+        // allowed operations for this constructor
+        if ( operation.equals(MathOperator.INV) | operation.equals(MathOperator.BIN)) {
+            this.operation = operation;
+            this.biasValue = BigDecimal.valueOf(0.0);
+        }
+        else {
+        	throw new IllegalArgumentException("MathOperator supplied require a biased Value: "+operation);
+        }
+    }
+
+    /**
      * Constructor requiring an operator and a double where the input
-     * value will suffer the operator action with the given double value
-     * and will be returned.
+     * value will suffer the operator action with the given bias value.<p>
+     * e.g.: apply(value) will return value + operation + biasValue.
+     * 
+     * @param operation MathOperator
+     * @param biasValue double
      */
     public MapTransform(MathOperator operation, double biasValue) {
         // An operation must be supplied
@@ -71,6 +96,14 @@ public class MapTransform implements Function<Double, Double> {
         if ( operation.equals(MathOperator.SUB) ) return bigDecimalValue.subtract(biasValue).doubleValue();
         if ( operation.equals(MathOperator.MUL) ) return bigDecimalValue.multiply(biasValue).doubleValue();
         if ( operation.equals(MathOperator.DIV) ) return bigDecimalValue.doubleValue() / biasValue.doubleValue();
+        if ( operation.equals(MathOperator.INV) ) {
+        	if ( value == 0 ) return 1.0;
+        	return 0.0;
+        }
+        if ( operation.equals(MathOperator.BIN) ) {
+        	if ( value == 0 ) return 0.0;
+        	return 1.0;
+        }
 
         throw new IllegalStateException("Don't supplied operation: "+operation);
     }
