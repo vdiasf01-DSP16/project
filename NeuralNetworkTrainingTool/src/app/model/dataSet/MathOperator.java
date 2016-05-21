@@ -8,9 +8,33 @@ package app.model.dataSet;
  *
  */
 public enum MathOperator {
+	/**
+	 * Adds given number to instantiated one .
+	 */
+	ADD, 
 
-    ADD, // Adds given number to instantiated one
-    SUB, // Subtracts given number from instantiated one
-    DIV, // Divide given number from instantiated one
-    MUL, // Multiply given number from instantiated one
+	/**
+     * Subtracts given number from instantiated one.
+     */
+	SUB,
+	
+	/**
+	 * Divide given number from instantiated one.
+	 */
+	DIV, 
+
+	/**
+	 * Multiply given number from instantiated one.
+	 */
+	MUL,
+	
+	/**
+	 * Invert bitwise: 0 is false and anything else is true.
+	 */
+    INV, 
+
+    /**
+     * Ensure binary values: 0 = 0.0 anything else is 1.0.
+     */
+    BIN, 
 }
