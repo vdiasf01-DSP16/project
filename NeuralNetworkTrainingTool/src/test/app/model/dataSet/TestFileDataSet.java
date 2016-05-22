@@ -378,7 +378,7 @@ public class TestFileDataSet {
      * Check Data set ranges overlap exceptions.
      */
     @Test(expected=IllegalArgumentException.class)
-    public void testLoadFileAttributesDataSetOverlapPartialTesting() {
+    public void testLoadFileAttributesDataSetOverlapPartialTestingFirst() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(1, 3);
         fileAttributes.setTrainingRangeIndex(2, 5);
@@ -389,10 +389,54 @@ public class TestFileDataSet {
      * Check Data set ranges overlap exceptions.
      */
     @Test(expected=IllegalArgumentException.class)
-    public void testLoadFileAttributesDataSetOverlapPartialTraining() {
+    public void testLoadFileAttributesDataSetOverlapPartialTrainingFirst() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(2, 5);
         fileAttributes.setTrainingRangeIndex(1, 3);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapTestingWithinTraining() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(1, 5);
+        fileAttributes.setTrainingRangeIndex(3, 4);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapTrainingWithingTesting() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(2, 4);
+        fileAttributes.setTrainingRangeIndex(1, 5);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapTestingEdges() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(1, 3);
+        fileAttributes.setTrainingRangeIndex(3, 5);
+        fileDataSet.load();
+    }
+
+    /**
+     * Check Data set ranges overlap exceptions.
+     */
+    @Test(expected=IllegalArgumentException.class)
+    public void testLoadFileAttributesDataSetOverlapTrainingEdges() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(1, 3);
+        fileAttributes.setTestingRangeIndex(3, 5);
         fileDataSet.load();
     }
 
@@ -607,7 +651,7 @@ public class TestFileDataSet {
     public void testLoadWasImplementedAndDataSetUpdatedForTestingRow5Exception() {
         DataSet fileDataSet = new FileDataSet(fileAttributes);
         fileAttributes.setTestingRangeIndex(1, 4);
-        fileAttributes.setTrainingRangeIndex(4, 5);
+        fileAttributes.setTrainingRangeIndex(5, 5);
         fileDataSet.load();
         fileDataSet.getTestingInputRow(5);
     }
