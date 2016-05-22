@@ -8,9 +8,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * FileDataSet extends abstract class DataSet to implement required 
- * methods in needs of being specified for File processing, and any
- * adjacent methods required to aid File data set source management.
+ * FileDataSet extends abstract class DataSet to implement required defined
+ * methods, use already instated default logic, and deal with the specifics 
+ * of loading a file into memory. 
  * 
  * @author Vasco
  *
@@ -33,7 +33,7 @@ public class FileDataSet extends DataSet {
     private int numberOfVectorColumns = 0;
 
     /**
-     * Constructing with FileAttributes to allow changes to requirements of
+     * Constructing with FileAttributes to allow changes to requirements of 
      * the load to be set away from this class.
      * 
      * @param fileAttributes
@@ -65,20 +65,70 @@ public class FileDataSet extends DataSet {
      */
     @Override
     public void load() {
+        // Validate possible new index ranges supplied.
+        validateStartAndEndIndexes();
+
         // The number of columns in file
         calculateNumberOfColumnsInFile();
 
         // Ensure maps are loaded or with defaults 
         prepareMaps();
 
-        // Calculate the total amount of columns in the final vector
+        // Calculate the total amount of columns in the final vector which is 
+        // given by the number of elements in both input and output maps 
+        // together.
         numberOfVectorColumns = outputColumnMap.size() + inputColumnMap.size();
 
-        // Load the training data into memory
-        loadTraining();
+        // Load Training and Testing data sets in one single pass.
+        loadData();
+    }
+
+    /**
+     * Checking all the start and end indexes supplied.
+     * Start and ending rows cannot overlap.
+     */
+    private void validateStartAndEndIndexes() {
+        // If no range has been set, complain about it.
+        if ( ! fileAttributes.isHasTestingRange() & ! fileAttributes.isHasTrainingRange() )
+            throw new IllegalArgumentException("No range set");
         
-        // Load testing data into memory
-        loadTesting();
+        // Zero or negative rows do not count.
+        if ( fileAttributes.isHasTestingRange() & ( fileAttributes.getTestingStartIndex() <= 0 | 
+                fileAttributes.getTestingEndIndex() <= 0 ) ) {
+            throw new IllegalArgumentException("Cannot have zero or negative row indexes.");
+        }
+        if ( fileAttributes.isHasTrainingRange() & ( fileAttributes.getTrainingStartIndex() <= 0 | 
+                fileAttributes.getTrainingEndIndex() <= 0 ) ) {
+            throw new IllegalArgumentException("Cannot have zero or negative row indexes.");
+        }
+        
+        // Starts before endings...
+        if ( fileAttributes.getTestingStartIndex() > fileAttributes.getTestingEndIndex() )
+            if ( fileAttributes.isHasTestingRange() )
+                throw new IllegalArgumentException("Testing end row cannot be before the starting row.");
+        if ( fileAttributes.getTrainingStartIndex() > fileAttributes.getTrainingEndIndex() )
+            if ( fileAttributes.isHasTrainingRange() )
+                throw new IllegalArgumentException("Training end row cannot be before the starting row.");
+
+        // The following only matters if both ranges are expected to be used.
+        if ( fileAttributes.isHasTestingRange() & fileAttributes.isHasTrainingRange() ) {
+            // Overlap happen when both data set endings are bigger than both data set starts.
+            if ( fileAttributes.getTrainingEndIndex() > fileAttributes.getTestingStartIndex() & 
+                 fileAttributes.getTestingEndIndex() > fileAttributes.getTrainingStartIndex() ) {
+                    throw new IllegalArgumentException("Cannot overlap data sets.");
+            }
+            // Start of the next must be after the end of previous.
+            if ( fileAttributes.getTrainingStartIndex() < fileAttributes.getTestingStartIndex() ) {
+                if ( fileAttributes.getTrainingEndIndex() >= fileAttributes.getTestingStartIndex() )
+                    throw new IllegalArgumentException("Cannot overlap data sets.");
+            }
+            // Start of the next must be after the end of previous.
+            if ( fileAttributes.getTestingStartIndex() < fileAttributes.getTrainingStartIndex() ) {
+                if ( fileAttributes.getTestingEndIndex() >= fileAttributes.getTrainingStartIndex() )
+                    throw new IllegalArgumentException("Cannot overlap data sets.");
+            }
+        }
+        
     }
 
     /**
@@ -124,8 +174,7 @@ public class FileDataSet extends DataSet {
     }
     
     /**
-     * Finds the first row within ranges specified, calculate the number of 
-     * columns found in it.
+     * Finds the first non header row to calculate the number of columns.
      */
     private void calculateNumberOfColumnsInFile() {
         // Get the buffer handler ready..
@@ -135,25 +184,16 @@ public class FileDataSet extends DataSet {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
-        // The file pointer.
-        int currentRowPosition = 0;
         
         try {
             // Skip header rows.
             if ( fileAttributes.getHeaderRows() > 0 ) {
                 int ignoreRows = fileAttributes.getHeaderRows();
-                while ( bf.readLine() != null & ignoreRows-- > 0 ) { currentRowPosition++; };
+                while ( bf.readLine() != null & ignoreRows-- > 0 );
             }
 
-            // Only consider rows within the range specified.
-            String line = null;
-            do {
-                line = bf.readLine();
-                currentRowPosition++;
-            }
-            while ( line != null & ( fileAttributes.getTestingStartIndex() > currentRowPosition 
-            		| fileAttributes.getTrainingStartIndex() > currentRowPosition ) );
+            // Grab first data line
+            String line = bf.readLine();
 
             // Now we know the columns
             numberOfSourceColumnsPerRow = line.split(fileAttributes.getSeparator()).length;
@@ -164,52 +204,105 @@ public class FileDataSet extends DataSet {
     }
 
     /**
-     * {@inheritDoc}
+     * Allocates in memory the space that needs to be had for data sets.
      */
-    @Override
-    public void loadTraining() {
-        int startIndex        = fileAttributes.getTrainingStartIndex();
-        int endIndex          = fileAttributes.getTrainingEndIndex();
-        int totalTrainingRows = endIndex - startIndex;
-        super.trainingDataSet = new double[totalTrainingRows][numberOfVectorColumns];
+    private void initialiseDataSets() {
+        // start 1 to 2 means 1 and 2 = 2 rows. Same for start 3 to 3 means 1 row
+        int startTrainingIndex = fileAttributes.getTrainingStartIndex();
+        int endTrainingIndex   = fileAttributes.getTrainingEndIndex();
+        int totalTrainingRows  = endTrainingIndex - startTrainingIndex + 1;
+        if ( fileAttributes.isHasTrainingRange()) super.trainingDataSet  = new double[totalTrainingRows][numberOfVectorColumns];
+        int startTestingIndex  = fileAttributes.getTestingStartIndex();
+        int endTestingIndex    = fileAttributes.getTestingEndIndex();
+        int totalTestingRows   = endTestingIndex - startTestingIndex + 1;
+        if ( fileAttributes.isHasTestingRange()) super.testingDataSet   = new double[totalTestingRows][numberOfVectorColumns];
+    }
+
+    /**
+     * Loading both data sets in one go, finding which is to load first.
+     */
+    private void loadData() {
+        // Allocate space in memory for this.
+        initialiseDataSets();
 
         // Get the buffer handler ready..
-        BufferedReader bf = null;
+        BufferedReader bufferedReader = null;
         try {
-            bf = new BufferedReader(new FileReader(fileAttributes.getFilename()));
+            bufferedReader = new BufferedReader(new FileReader(fileAttributes.getFilename()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
-        int currentRowPosition   = 0;
-        int trainingDataSetIndex = 0;
+        int currentRowPosition = 1;
 
         try {
-            // If any header rows, ignore them, move bf header to next rows.
+            // If any header rows, ignore them, move buffered reader header to next rows.
             int ignoreRows = fileAttributes.getHeaderRows();
             if ( ignoreRows > 0 ) {
-                while ( ignoreRows-- > 0 ) {
-                    String line = bf.readLine();
-                	if ( line == null ) break;
-                	currentRowPosition++; 
+                // Move the file pointer to the end of the header rows.
+                currentRowPosition += ignoreRows; 
+                while ( ignoreRows > 0 ) {
+                    String line = bufferedReader.readLine();
+                    ignoreRows--;
+                    // If the file finishes here, nothing else to load.
+                    if ( line == null ) return;
                 }
             }
 
-            // If first testing or training index is further down, keep skipping...
-            if ( startIndex > currentRowPosition+1 ) {
-                while ( bf.readLine() != null & startIndex > currentRowPosition+1 ) { currentRowPosition++; }
+            // If both are expected to be used
+            if (fileAttributes.isHasTestingRange() & fileAttributes.isHasTrainingRange() ) {
+                // Check what came first.. the test or the training.
+                if ( fileAttributes.getTrainingStartIndex() < fileAttributes.getTestingStartIndex() ) {
+                    while ( fileAttributes.getTrainingStartIndex() > currentRowPosition ) { 
+                        // Premature end of file, finishes loading.
+                        if ( bufferedReader.readLine() == null ) return; 
+                        currentRowPosition++; 
+                    }
+                }
+                else {
+                    while ( fileAttributes.getTestingStartIndex() > currentRowPosition ) { 
+                        // Premature end of file, finishes loading.
+                        if ( bufferedReader.readLine() == null ) return; 
+                        currentRowPosition++; 
+                    }
+                }
+
+                // If Testing starts after, Training loads first
+                if ( fileAttributes.getTrainingStartIndex() < fileAttributes.getTestingStartIndex() ) {
+                    currentRowPosition = loadTraining(bufferedReader, currentRowPosition);
+                    currentRowPosition = loadTesting(bufferedReader, currentRowPosition);
+                }
+                else {
+                    currentRowPosition = loadTesting(bufferedReader, currentRowPosition);
+                    currentRowPosition = loadTraining(bufferedReader, currentRowPosition);
+                }
+            }
+            else {
+                // Check which one to use.
+                if ( fileAttributes.isHasTrainingRange() ) {
+                    while ( fileAttributes.getTrainingStartIndex() > currentRowPosition ) { 
+                        // Premature end of file, finishes loading.
+                        if ( bufferedReader.readLine() == null ) return; 
+                        currentRowPosition++; 
+                    }
+                }
+                else {
+                    while ( fileAttributes.getTestingStartIndex() > currentRowPosition ) { 
+                        // Premature end of file, finishes loading.
+                        if ( bufferedReader.readLine() == null ) return; 
+                        currentRowPosition++; 
+                    }
+                }
+
+                if ( fileAttributes.isHasTestingRange() ) {
+                    loadTesting(bufferedReader, currentRowPosition);
+                }
+                else {
+                    loadTraining(bufferedReader, currentRowPosition);
+                }
             }
 
-            // Load all lines to training applying map rules...
-            do {
-                String line = bf.readLine(); 
-                if ( line == null ) break;
-                trainingDataSet[trainingDataSetIndex] = getParsedRow(line);
-                currentRowPosition++; 
-                trainingDataSetIndex++;
-            } while ( endIndex > currentRowPosition );
-            
-            bf.close();
+            bufferedReader.close();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -217,52 +310,63 @@ public class FileDataSet extends DataSet {
     }
     
     /**
-     * {@inheritDoc}
+     * Loads the Training data set from file into memory and returns the row 
+     * position in file for further processing.
+     * 
+     * @param bufferedReader BufferedReader
+     * @param currentRowPosition int
+     * @return int currentRowPosition
      */
-    @Override
-    public void loadTesting() {
-    	int startIndex        = fileAttributes.getTestingStartIndex();
-        int endIndex          = fileAttributes.getTestingEndIndex();
-        int totalTestingRows = endIndex - startIndex;
-        super.testingDataSet = new double[totalTestingRows][numberOfVectorColumns];
-
-        // Get the buffer handler ready..
-        BufferedReader bf = null;
+    private int loadTraining(BufferedReader bufferedReader, int currentRowPosition) {
+        int trainingDataSetIndex = 0;
         try {
-            bf = new BufferedReader(new FileReader(fileAttributes.getFilename()));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        int currentRowPosition   = 0;
-        int testingDataSetIndex = 0;
-
-        try {
-            // If any header rows, ignore them, move bf header to next rows.
-            if ( fileAttributes.getHeaderRows() > 0 ) {
-                int ignoreRows = fileAttributes.getHeaderRows();
-                while ( bf.readLine() != null & ignoreRows-- > 0 ) { currentRowPosition++; }
-            }
-
-            // If first testing or training index is further down, keep skipping...
-            if ( startIndex > currentRowPosition ) {
-                while ( bf.readLine() != null & startIndex > currentRowPosition ) { currentRowPosition++; }
-            }
-
-            // Load all lines to training applying map rules...
-            while ( endIndex > currentRowPosition ) { 
-                String line = bf.readLine(); 
-                if ( line == null ) break;
+            do {
+                String line = bufferedReader.readLine();
+                // Premature end of file is a sign of something going wrong somewhere.
+                if ( line == null ) 
+                    throw new ArrayIndexOutOfBoundsException("File contains only: "+(currentRowPosition-1)+" rows.");
+                trainingDataSet[trainingDataSetIndex] = getParsedRow(line);
                 currentRowPosition++; 
-                testingDataSet[testingDataSetIndex] = getParsedRow(line);
-                testingDataSetIndex++;
-            }
+                trainingDataSetIndex++;
 
-            bf.close();
+            } while ( fileAttributes.getTrainingEndIndex() >= currentRowPosition );
 
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        } 
+
+        return currentRowPosition;
+    }
+    
+    /**
+     * Loads the Testing data set from file into memory and returns the row 
+     * position in file for further processing.
+     * 
+     * @param bufferedReader BufferedReader
+     * @param currentRowPosition int
+     * @return int currentRowPosition
+     */
+    private int loadTesting(BufferedReader bufferedReader, int currentRowPosition) {
+        int testingDataSetIndex = 0;
+        try {
+            do {
+                String line;
+                line = bufferedReader.readLine();
+                currentRowPosition++; 
+                // Premature end of file is a sign of something going wrong somewhere.
+                if ( line == null ) 
+                    throw new ArrayIndexOutOfBoundsException("File contains only: "+(currentRowPosition-1)+" rows.");
+                if ( testingDataSetIndex > testingDataSet.length ) 
+                    throw new IllegalArgumentException("Attempting to load more rows than initially allocated for.");
+                testingDataSet[testingDataSetIndex] = getParsedRow(line);
+                testingDataSetIndex++;
+            } while ( fileAttributes.getTestingEndIndex() >= currentRowPosition );
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } 
+        
+        return currentRowPosition;
     }
 
     /**
