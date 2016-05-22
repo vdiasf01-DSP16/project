@@ -717,6 +717,78 @@ public class TestFileDataSet {
     }
 
     /**
+     * Check if training load was implemented correctly.
+     */
+    @Test
+    public void testLoadAtMiddleRangeWasImplementedCorrectlyTrainingOnly() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTrainingRangeIndex(2, 4);
+        fileAttributes.setHasTestingRange(false);
+        fileDataSet.load();
+        double[] foundRow = fileDataSet.getTrainingInputRow(0);
+        assertNotNull(foundRow);
+        assertTrue(4 == foundRow.length);
+        assertTrue(1.0 == foundRow[0]);
+        assertTrue(1.1 == foundRow[1]);
+        assertTrue(1.2 == foundRow[2]);
+        assertTrue(1.3 == foundRow[3]);
+    }
+
+    /**
+     * Check if testing load was implemented correctly.
+     */
+    @Test
+    public void testLoadAtMiddleRangeWasImplementedCorrectlyTestingOnly() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(3, 4);
+        fileAttributes.setHasTrainingRange(false);
+        fileDataSet.load();
+        double[] foundRow = fileDataSet.getTestingInputRow(0);
+        assertNotNull(foundRow);
+        assertTrue(4 == foundRow.length);
+        assertTrue(2.0 == foundRow[0]);
+        assertTrue(2.1 == foundRow[1]);
+        assertTrue(2.2 == foundRow[2]);
+        assertTrue(2.3 == foundRow[3]);
+    }
+
+    /**
+     * Check if testing load was implemented correctly.
+     */
+    @Test
+    public void testLoadAtMiddleRangeWasImplementedCorrectlyTestingAndTraining() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(1, 2);
+        fileAttributes.setTrainingRangeIndex(4, 5);
+        fileDataSet.load();
+        double[] foundRow = fileDataSet.getTrainingInputRow(0);
+        assertNotNull(foundRow);
+        assertTrue(4 == foundRow.length);
+        assertTrue(3.0 == foundRow[0]);
+        assertTrue(3.1 == foundRow[1]);
+        assertTrue(3.2 == foundRow[2]);
+        assertTrue(3.3 == foundRow[3]);
+    }
+
+    /**
+     * Check if testing load was implemented correctly.
+     */
+    @Test
+    public void testLoadAtMiddleRangeWasImplementedCorrectlyTrainingAndTesting() {
+        DataSet fileDataSet = new FileDataSet(fileAttributes);
+        fileAttributes.setTestingRangeIndex(4, 5);
+        fileAttributes.setTrainingRangeIndex(1, 2);
+        fileDataSet.load();
+        double[] foundRow = fileDataSet.getTestingInputRow(0);
+        assertNotNull(foundRow);
+        assertTrue(4 == foundRow.length);
+        assertTrue(3.0 == foundRow[0]);
+        assertTrue(3.1 == foundRow[1]);
+        assertTrue(3.2 == foundRow[2]);
+        assertTrue(3.3 == foundRow[3]);
+    }
+
+    /**
      * Training.
      * Check file loaded successfully when no input map is supplied.
      */

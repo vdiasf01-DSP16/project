@@ -324,7 +324,14 @@ public class FileDataSet extends DataSet {
                 String line = bufferedReader.readLine();
                 // Premature end of file is a sign of something going wrong somewhere.
                 if ( line == null ) 
-                    throw new ArrayIndexOutOfBoundsException("File contains only: "+(currentRowPosition-1)+" rows.");
+                    throw new ArrayIndexOutOfBoundsException("File contains only: "+currentRowPosition+" rows.");
+                if ( trainingDataSetIndex >= trainingDataSet.length ) 
+                    throw new IllegalArgumentException("Attempting to load more rows than initially allocated for.");
+
+                if ( currentRowPosition < fileAttributes.getTrainingStartIndex() ) {
+                    currentRowPosition++; 
+                    continue;
+                }
                 trainingDataSet[trainingDataSetIndex] = getParsedRow(line);
                 currentRowPosition++; 
                 trainingDataSetIndex++;
@@ -352,14 +359,20 @@ public class FileDataSet extends DataSet {
             do {
                 String line;
                 line = bufferedReader.readLine();
-                currentRowPosition++; 
                 // Premature end of file is a sign of something going wrong somewhere.
                 if ( line == null ) 
-                    throw new ArrayIndexOutOfBoundsException("File contains only: "+(currentRowPosition-1)+" rows.");
-                if ( testingDataSetIndex > testingDataSet.length ) 
+                    throw new ArrayIndexOutOfBoundsException("File contains only: "+currentRowPosition+" rows.");
+
+                if ( testingDataSetIndex >= testingDataSet.length ) 
                     throw new IllegalArgumentException("Attempting to load more rows than initially allocated for.");
+                
+                if ( currentRowPosition < fileAttributes.getTestingStartIndex() ) {
+                    currentRowPosition++; 
+                    continue;
+                }
                 testingDataSet[testingDataSetIndex] = getParsedRow(line);
                 testingDataSetIndex++;
+                currentRowPosition++; 
             } while ( fileAttributes.getTestingEndIndex() >= currentRowPosition );
 
         } catch (IOException e) {
