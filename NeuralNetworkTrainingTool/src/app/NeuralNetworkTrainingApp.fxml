@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.input.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.NeuralNetworkTrainingAppController">
+   <children>
+      <MenuBar>
+        <menus>
+          <Menu mnemonicParsing="true" text="File">
+            <items>
+              <MenuItem fx:id="fileNewProjectId" mnemonicParsing="false" onAction="#fileNewProjectAction" text="New Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="N" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="fileEditProjectId" mnemonicParsing="false" onAction="#fileEditProjectAction" text="Edit Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="E" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="fileLoadProjectId" mnemonicParsing="false" onAction="#fileLoadProjectAction" text="Load Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="O" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="fileSaveProjectId" mnemonicParsing="false" onAction="#fileSaveProjectAction" text="Save Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="fileCloseProjectId" mnemonicParsing="false" onAction="#fileCloseProjectAction" text="Close Project">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Import">
+                     <items>
+                        <MenuItem fx:id="fileImportNeuralNetworkConfigId" mnemonicParsing="false" onAction="#fileImportNeuralNetworkConfigAction" text="Neural Network Config .." />
+                     </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <Menu mnemonicParsing="false" text="Export">
+                     <items>
+                        <MenuItem fx:id="fileExportNeuralNetworkConfigId" mnemonicParsing="false" onAction="#fileExportNeuralNetworkConfigAction" text="Neural Network Config .." />
+                        <MenuItem fx:id="fileExportEncogId" mnemonicParsing="false" onAction="#fileExportEncogAction" text="Encog .." />
+                        <MenuItem fx:id="fileExportReportId" mnemonicParsing="false" onAction="#fileExportReportAction" text="Report .." />
+                     </items>
+                  </Menu>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="filePreferencesId" mnemonicParsing="false" onAction="#filePreferencesAction" text="Preferences ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="P" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem id="fileQuit" fx:id="fileCloseId" onAction="#fileCloseAction" text="Close">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="Q" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+               <accelerator>
+                  <KeyCodeCombination alt="UP" code="F" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+               </accelerator>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Neural Network">
+            <items>
+              <MenuItem fx:id="neuralNetworkNewConfigId" mnemonicParsing="false" onAction="#neuralNetworkNewConfigAction" text="New Config ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="N" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="neuralNetworkEditConfigId" mnemonicParsing="false" onAction="#neuralNetworkEditConfigAction" text="Edit Config ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="E" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="neuralNetworkCloseConfigId" mnemonicParsing="false" onAction="#neuralNetworkCloseConfigAction" text="Close Config">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="W" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Run">
+            <items>
+              <MenuItem fx:id="runTrainingId" mnemonicParsing="false" onAction="#runTrainingAction" text="Training ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="T" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="runTestingId" mnemonicParsing="false" onAction="#runTestingAction" text="Testing ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="Y" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="runResetTrainingId" mnemonicParsing="false" onAction="#runResetTrainingAction" text="Reset Training">
+                     <accelerator>
+                        <KeyCodeCombination alt="DOWN" code="R" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Window">
+               <items>
+                  <Menu mnemonicParsing="false" text="View" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="windowShowTrainingReportId" mnemonicParsing="false" onAction="#windowShowTrainingReportAction" text="Show Training Report ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="windowShowTestingReportId" mnemonicParsing="false" onAction="#windowShowTestingReportAction" text="Show Testing Report ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="Y" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="windowShowPlayerId" mnemonicParsing="false" onAction="#windowShowPlayerAction" text="Show Player ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="windowShowPlotId" mnemonicParsing="false" onAction="#windowShowPlotAction" text="Show Plot ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="windowShowProgressId" mnemonicParsing="false" onAction="#windowShowProgressAction" text="Show Progress ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="I" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <MenuItem fx:id="windowShowLogId" mnemonicParsing="false" onAction="#windowShowLogAction" text="Show Log ..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="U" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem fx:id="helpContentsId" mnemonicParsing="false" onAction="#helpContentsAction" text="Help Contents">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="helpAboutId" mnemonicParsing="false" onAction="#helpAboutAction" text="About" />
+               </items>
+            </Menu>
+        </menus>
+      </MenuBar>
+      <Pane id="backgroundImage" prefHeight="773.0" prefWidth="1280.0" styleClass="css/application.css" />
+   </children>
+</VBox>
