@@ -56,7 +56,4 @@ public abstract class ApplicationViewFactory {
         // TODO Auto-generated method stub
     }
 
-    public static void startFileCloseController(Controller mainController) {
-        // TODO Auto-generated method stub
-    };
 }
