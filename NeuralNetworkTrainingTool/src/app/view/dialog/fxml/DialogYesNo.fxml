@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="130.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="130.0" prefWidth="400.0">
+         <children>
+            <Button fx:id="NoId" layoutX="302.0" layoutY="72.0" mnemonicParsing="false" onAction="#noAction" prefHeight="40.0" prefWidth="75.0" text="No" />
+            <Pane fx:id="iconId" layoutX="14.0" layoutY="14.0" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: AAFFAA;" />
+            <Label fx:id="messageId" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="125.0" layoutY="15.0" lineSpacing="5.0" prefHeight="50.0" prefWidth="252.0" textAlignment="CENTER" wrapText="true" />
+            <Button fx:id="yesId" layoutX="125.0" layoutY="72.0" mnemonicParsing="false" onAction="#yesAction" prefHeight="40.0" prefWidth="75.0" text="Yes" />
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

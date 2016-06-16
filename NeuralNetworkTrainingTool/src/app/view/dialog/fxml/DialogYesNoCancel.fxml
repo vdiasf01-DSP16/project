@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="86.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane prefHeight="90.0" prefWidth="205.0">
+         <children>
+            <Label fx:id="messageId" layoutX="14.0" layoutY="14.0" text="Label" />
+            <Button fx:id="yesId" layoutX="11.0" layoutY="49.0" mnemonicParsing="false" onAction="#yesAction" text="Yes" />
+            <Button fx:id="NoId" layoutX="75.0" layoutY="49.0" mnemonicParsing="false" onAction="#noAction" text="No" />
+            <Button fx:id="CancelId" layoutX="135.0" layoutY="49.0" mnemonicParsing="false" onAction="#cancelAction" text="Cancel" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

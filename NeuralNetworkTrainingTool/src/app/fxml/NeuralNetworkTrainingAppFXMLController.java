@@ -3,7 +3,7 @@ package app.fxml;
 import app.controller.Controller;
 import app.controller.ControllerImpl;
 import app.controller.FXMLController;
-import app.view.ApplicationDialog;
+import app.view.ApplicationDialogResults;
 import app.view.ApplicationDialogFactory;
 import app.view.ApplicationViewFactory;
 import javafx.fxml.FXML;
@@ -190,7 +190,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     public void fileCloseAction() {
     	if ( mainController.isOkToQuit() ) { 
     		String answer = ApplicationDialogFactory.askUserYesNo(QUIT_APPLICATION_TEXT);
-    		if ( answer.equals(ApplicationDialog.YES) ) {
+    		if ( answer.equals(ApplicationDialogResults.YES) ) {
     			closeApp();
     		}
     	}
@@ -198,11 +198,11 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     		// Ask if user wants to save data changes or close without save
     		String answer = ApplicationDialogFactory.askUserYesNoCancel(SAVE_CHANGES_TEXT);
 
-    		if ( answer.equals(ApplicationDialog.YES) ) {
+    		if ( answer.equals(ApplicationDialogResults.YES) ) {
     			mainController.saveAll();
     			closeApp();
     		}
-    		else if ( answer.equals(ApplicationDialog.NO) ) {
+    		else if ( answer.equals(ApplicationDialogResults.NO) ) {
     			closeApp();
     		}
     	}

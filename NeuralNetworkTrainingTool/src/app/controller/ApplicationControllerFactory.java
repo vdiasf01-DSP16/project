@@ -1,7 +1,7 @@
 package app.controller;
 
 import app.fxml.NeuralNetworkTrainingAppFXMLController;
-import app.view.ApplicationDialog;
+import app.view.ApplicationDialogResults;
 import app.view.dialog.fxml.DialogYesNoCancelFXMLController;
 import app.view.dialog.fxml.DialogYesNoFXMLController;
 import app.view.menu.file.fxml.FileNewProjectFXMLController;
@@ -40,7 +40,7 @@ public abstract class ApplicationControllerFactory {
 	 * @param message String
 	 * @return FXMLController
 	 */
-	public static FXMLController getDialogYesNoCancelFXMLController(ApplicationDialog mainController, String message) {
+	public static FXMLController getDialogYesNoCancelFXMLController(ApplicationDialogResults mainController, String message) {
 		return new DialogYesNoCancelFXMLController(mainController, message);
 	}
 
@@ -51,7 +51,7 @@ public abstract class ApplicationControllerFactory {
 	 * @param message String
 	 * @return FXMLController
 	 */
-	public static Object getDialogYesNoFXMLController(ApplicationDialog mainController, String message) {
+	public static Object getDialogYesNoFXMLController(ApplicationDialogResults mainController, String message) {
 		return new DialogYesNoFXMLController(mainController, message);
 	}
 }
