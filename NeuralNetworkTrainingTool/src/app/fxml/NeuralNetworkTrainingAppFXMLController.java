@@ -31,8 +31,6 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      * and the user wants to quit the application.
      */
     private final String SAVE_CHANGES_TEXT = "Save unsaved changes?";
-    private final String QUIT_APPLICATION_TEXT = "Do you really want to quit the application"
-    		+ "?";
     
     /*************************************************************************
      *                          FXML ATTRIBUTES                              *
@@ -185,14 +183,14 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
 
     /**
      * The File Close Action.
+     * Asks the controller if it is safe to quit, closing the application 
+     * immediately if true, otherwise, asks the user if any of the loss of
+     * closing the application now is acceptable or if work should be saved.
      */
     @FXML
     public void fileCloseAction() {
     	if ( mainController.isOkToQuit() ) { 
-    		String answer = ApplicationDialogFactory.askUserYesNo(QUIT_APPLICATION_TEXT);
-    		if ( answer.equals(ApplicationDialogResults.YES) ) {
-    			closeApp();
-    		}
+    		closeApp();
     	}
     	else {
     		// Ask if user wants to save data changes or close without save
