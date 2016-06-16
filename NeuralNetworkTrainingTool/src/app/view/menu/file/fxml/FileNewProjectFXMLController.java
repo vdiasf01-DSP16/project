@@ -1,6 +1,10 @@
 package app.view.menu.file.fxml;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 import app.controller.Controller;
 import app.controller.FXMLController;
@@ -23,7 +27,17 @@ import javafx.stage.Stage;
  */
 public class FileNewProjectFXMLController implements FXMLController {
 
-    /**
+	/**
+	 * The FileChooser title.
+	 */
+	private final String FILE_CHOOSER_TITLE = "New Project";
+
+	/**
+	 * The extension list to be shown when saving the new project.
+	 */
+	private final List<Map<String,String>> EXTENSION_LIST;
+
+	/**
      * The Cancel button.
      */
     @FXML
@@ -77,6 +91,10 @@ public class FileNewProjectFXMLController implements FXMLController {
      */
     public FileNewProjectFXMLController(Controller mainController) {
         this.mainController = mainController;
+        this.EXTENSION_LIST = new LinkedList<>();
+        Map<String,String> extensionProject = new HashMap<>();
+        extensionProject.put("Project File", "*.prj");
+        this.EXTENSION_LIST.add(extensionProject);
     }
     
     /**
@@ -93,22 +111,70 @@ public class FileNewProjectFXMLController implements FXMLController {
      */
     @FXML
     private void projectCreateAction() {
-    	FileChooser fileChooser = new FileChooser();
-    	fileChooser.setTitle("New Project");
-    	fileChooser.getExtensionFilters().addAll(
-    			new ExtensionFilter("Text Files", "*.txt", "*.csv"),
-    			new ExtensionFilter("All Files", "*.*")
-    			);
-    	File file = fileChooser.showOpenDialog((Stage) projectCancelId.getScene().getWindow());
-    	System.out.println(file);
+    	// Retrieves data supplied from the user.
+    	ProjectData projectData = getProjectData();
+
+    	// Asks user where to save this new project.
+    	File file = getFile();
+
+    	// If no file returned, the user has cancelled the operation.
+    	if ( file != null ) {
+    		
+    		// Set the project file
+        	mainController.setProjectFile(file);
+        	
+        	// Set the project data details
+        	mainController.setProjectData(projectData);
+
+        	// Close the widget.
+        	Stage stage = (Stage) projectNameId.getScene().getWindow();
+        	stage.close();
+    	}
+    }
+    
+    /**
+     * Retrieves the data from the GUI into a structured
+     * object ProjectData which is then returned
+     * 
+     * @return ProjectData
+     */
+    private ProjectData getProjectData() {
+    	// TODO: Validate input data
         ProjectData projectData = new ProjectDetails();
         projectData.setProjectName(projectNameId.getText());
         projectData.setProjectAbstract(projectAbstractId.getText());
         projectData.setProjectAuthors(projectAuthorsId.getText());
         projectData.setProjectDescription(projectDescriptionId.getText());
         projectData.setProjectSummary(projectSummaryId.getText());
-        mainController.saveProject(projectData);
-        Stage stage = (Stage) projectNameId.getScene().getWindow();
-        stage.close();
+        return projectData;
+    }
+    
+    /**
+     * Asks the user for a file where the project should be saved on.
+     * 
+     * @return File
+     */
+    private File getFile() {
+    	FileChooser fileChooser = new FileChooser();
+
+    	// Derive the previous path from the old project file.
+    	File oldProjectFile = mainController.getProjectFile();
+    	
+    	// If file, pick up the old path and start from there.
+    	if ( oldProjectFile != null ) fileChooser.setInitialDirectory(new File(oldProjectFile.getParent()));
+
+    	// Set the title
+    	fileChooser.setTitle(FILE_CHOOSER_TITLE);
+
+    	// Load the possible extensions to save with.
+    	for( Map<String,String> extension : EXTENSION_LIST ) {
+        	fileChooser.getExtensionFilters().add( 
+        			new ExtensionFilter(extension.keySet().iterator().next(), extension.values().iterator().next()) );
+    	}
+    	// Ask user to supply a file when this project is meant to be in.
+    	File file = fileChooser.showSaveDialog(new Stage());
+    	
+    	// Return the file regardless if null.
+    	return file;
     }
 }

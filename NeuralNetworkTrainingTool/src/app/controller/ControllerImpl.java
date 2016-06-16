@@ -1,5 +1,7 @@
 package app.controller;
 
+import java.io.File;
+
 import app.model.project.ProjectData;
 
 /**
@@ -9,12 +11,24 @@ import app.model.project.ProjectData;
  *
  */
 public class ControllerImpl implements Controller {
+
+	private File projectFile;
+	private ProjectData projectData;
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void saveProject(ProjectData projectDetails) {
+	public boolean isAllSaved() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void saveAll() {
 		// TODO Auto-generated method stub
 	}
 
@@ -22,14 +36,32 @@ public class ControllerImpl implements Controller {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isOkToQuit() {
+	public File getProjectFile() {
 		// TODO Auto-generated method stub
-		return true;
+		return projectFile;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void saveAll() {
+	public void setProjectFile(File file) {
+		this.projectFile = file;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void closeProject() {
 		// TODO Auto-generated method stub
-		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setProjectData(ProjectData projectData) {
+		this.projectData = projectData;
 	}
 }

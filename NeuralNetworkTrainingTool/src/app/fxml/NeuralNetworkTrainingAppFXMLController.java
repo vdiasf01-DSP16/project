@@ -106,7 +106,23 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void fileNewProjectAction() {
-        ApplicationViewFactory.startFileNewProjectController(mainController);
+    	if ( mainController.isAllSaved() ) { 
+            ApplicationViewFactory.startFileNewProjectController(mainController);
+    	}
+    	else {
+    		// Ask if user wants to save data changes or close without save
+    		String answer = ApplicationDialogFactory.askUserYesNoCancel(SAVE_CHANGES_TEXT);
+
+    		if ( answer.equals(ApplicationDialogResults.YES) ) {
+    			mainController.saveAll();
+    			mainController.closeProject();
+                ApplicationViewFactory.startFileNewProjectController(mainController);
+    		}
+    		else if ( answer.equals(ApplicationDialogResults.NO) ) {
+    			mainController.closeProject();
+                ApplicationViewFactory.startFileNewProjectController(mainController);
+    		}
+    	}
     }
 
     /**
@@ -189,7 +205,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void fileCloseAction() {
-    	if ( mainController.isOkToQuit() ) { 
+    	if ( mainController.isAllSaved() ) { 
     		closeApp();
     	}
     	else {
