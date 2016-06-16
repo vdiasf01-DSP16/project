@@ -9,9 +9,26 @@ import app.model.project.ProjectData;
  *
  */
 public class ControllerImpl implements Controller {
-
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void saveProject(ProjectData projectDetails) {
+		// TODO Auto-generated method stub
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean isOkToQuit() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public void saveAll() {
 		// TODO Auto-generated method stub
 		
 	}
