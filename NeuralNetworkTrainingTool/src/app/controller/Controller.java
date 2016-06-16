@@ -1,7 +1,6 @@
 package app.controller;
 
 import app.model.project.ProjectData;
-import javafx.stage.Stage;
 
 /**
  * Main application controller between the view the the model.
@@ -10,20 +9,6 @@ import javafx.stage.Stage;
  *
  */
 public interface Controller {
-
-	/**
-	 * The application Stage.
-	 * 
-	 * @return Stage
-	 */
-	public Stage getStage();
-
-	/**
-	 * Setting the application Stage.
-	 * 
-	 * @return Stage
-	 */
-	public void setStage(Stage stage);
 
 	/**
 	 * Saves received project details.
