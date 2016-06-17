@@ -38,6 +38,7 @@ public abstract class ApplicationViewFactory {
      * @param mainController Controller
      */
     public static void startFileLoadProjectController(Controller mainController) {
+        new FileLoadProjectController(mainController);
     }
 
     public static void startFileSaveProjectController(Controller mainController) {
