@@ -105,7 +105,7 @@ public class FileEditProjectFXMLController implements FXMLController {
     }
 
     /**
-     * Create a new Project with data given by the user.
+     * Save updates made by user to loaded Project.
      */
     @FXML
     private void projectCreateAction() {
