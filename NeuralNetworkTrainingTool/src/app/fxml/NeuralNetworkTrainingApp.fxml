@@ -32,9 +32,14 @@
                      <accelerator>
                         <KeyCodeCombination alt="DOWN" code="S" control="UP" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
+                  <MenuItem fx:id="fileSaveProjectAsId" mnemonicParsing="false" onAction="#fileSaveProjectAsAction" text="Save Project as..">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
                   <MenuItem fx:id="fileCloseProjectId" mnemonicParsing="false" onAction="#fileCloseProjectAction" text="Close Project">
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="W" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <Menu mnemonicParsing="false" text="Import">

@@ -4,6 +4,7 @@ import app.controller.Controller;
 import app.view.menu.file.FileEditProjectController;
 import app.view.menu.file.FileLoadProjectController;
 import app.view.menu.file.FileNewProjectController;
+import app.view.menu.file.FileSaveProjectAsController;
 
 /**
  * The Application menu views.
@@ -41,12 +42,13 @@ public abstract class ApplicationViewFactory {
         new FileLoadProjectController(mainController);
     }
 
-    public static void startFileSaveProjectController(Controller mainController) {
-        // TODO Auto-generated method stub
-    }
-
-    public static void startFileCloseProjectController(Controller mainController) {
-        // TODO Auto-generated method stub
+    /**
+     * User saves all pending changes to file.
+     * 
+     * @param mainController Controller
+     */
+    public static void startFileSaveAsProjectController(Controller mainController) {
+        new FileSaveProjectAsController(mainController);
     }
 
     public static void startFileImportNeuralNetworkConfigController(Controller mainController) {

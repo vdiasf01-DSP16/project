@@ -5,16 +5,10 @@ import java.io.File;
 import app.controller.Controller;
 import app.view.menu.ApplicationMenu;
 import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
+import javafx.stage.FileChooser.ExtensionFilter;
 
-/**
- * The Load File Project view.
- * 
- * @author Vasco
- *
- */
-public class FileLoadProjectController implements ApplicationMenu {
+public class FileSaveProjectAsController implements ApplicationMenu {
 
     /**
      * The File Chooser title for loading a new project.
@@ -22,11 +16,11 @@ public class FileLoadProjectController implements ApplicationMenu {
     private final String FILE_CHOOSER_TITLE = "Load Project";
 
     /**
-     * Initialising the File Load Project receiving the controller.
+     * Initialising the File Save as. Project receiving the controller.
      * 
      * @param mainController
      */
-    public FileLoadProjectController(Controller mainController) {
+    public FileSaveProjectAsController(Controller mainController) {
         
         FileChooser fileChooser = new FileChooser();
 
@@ -44,9 +38,10 @@ public class FileLoadProjectController implements ApplicationMenu {
         );
 
         // Ask user to supply a file when this project is meant to be in.
-        File file = fileChooser.showOpenDialog(new Stage());
+        File file = fileChooser.showSaveDialog(new Stage());
 
         // Setting the new project file.
-        mainController.loadProjectFile(file);
+        mainController.setProjectFile(file);
+        mainController.saveAll();
     }
 }

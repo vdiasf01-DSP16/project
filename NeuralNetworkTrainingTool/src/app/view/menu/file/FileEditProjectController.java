@@ -35,7 +35,7 @@ public class FileEditProjectController implements ApplicationMenu {
     private final String STAGE_TITLE = "Edit Project";
     		
     /**
-     * Initialising the File New Project receiving the controller.
+     * Initialising the File Edit Project receiving the controller.
      * 
      * @param mainController
      */

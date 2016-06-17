@@ -17,9 +17,21 @@ import app.model.project.ProjectData;
  */
 public class ControllerImpl implements Controller {
 
+	/**
+	 * The Project File where all data is stored.
+	 */
 	private File projectFile;
+	
+	/**
+	 * The Project details to be stored in file.
+	 */
 	private ProjectData projectData;
+	
+	/**
+	 * Flag to indicate if all changes have been saved.
+	 */
 	private boolean projectIsSaved = true;
+
 	
 	/**
 	 * {@inheritDoc}
@@ -35,7 +47,8 @@ public class ControllerImpl implements Controller {
 	 */
 	@Override
 	public void saveAll() {
-		// TODO Auto-generated method stub
+		saveProject();
+		// TODO: Add more parts of the project that needs saving
 		projectIsSaved = true;
 	}
 
@@ -53,7 +66,6 @@ public class ControllerImpl implements Controller {
 	@Override
 	public void setProjectFile(File file) {
 		this.projectFile = file;
-		projectIsSaved = false;
 	}
 
 	/**
@@ -61,8 +73,9 @@ public class ControllerImpl implements Controller {
 	 */
 	@Override
 	public void closeProject() {
-		projectIsSaved = false;
-		// TODO Auto-generated method stub
+		this.projectData = null;
+		this.projectFile = null;
+		this.projectIsSaved = true;
 	}
 
 	/**
