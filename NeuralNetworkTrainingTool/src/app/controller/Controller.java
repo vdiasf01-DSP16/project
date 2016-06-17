@@ -65,4 +65,12 @@ public interface Controller {
 	 */
 	public void saveProject();
 
+	/**
+	 * When loading a new project file, the project data needs to be 
+	 * loaded and updated across all controller attributes.
+	 * 
+	 * @param file File
+	 */
+	public void loadProjectFile(File file);
+
 }

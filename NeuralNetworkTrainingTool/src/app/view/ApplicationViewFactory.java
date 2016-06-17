@@ -2,6 +2,7 @@ package app.view;
 
 import app.controller.Controller;
 import app.view.menu.file.FileEditProjectController;
+import app.view.menu.file.FileLoadProjectController;
 import app.view.menu.file.FileNewProjectController;
 
 /**
@@ -31,8 +32,12 @@ public abstract class ApplicationViewFactory {
         new FileEditProjectController(mainController);
     }
 
+    /**
+     * User selects a project file to load and updates it on the controller.
+     * 
+     * @param mainController Controller
+     */
     public static void startFileLoadProjectController(Controller mainController) {
-        // TODO Auto-generated method stub
     }
 
     public static void startFileSaveProjectController(Controller mainController) {

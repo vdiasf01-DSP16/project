@@ -3,12 +3,11 @@ package app.fxml;
 import app.controller.Controller;
 import app.controller.ControllerImpl;
 import app.controller.FXMLController;
-import app.view.ApplicationDialogResults;
 import app.view.ApplicationDialogFactory;
+import app.view.ApplicationDialogResults;
 import app.view.ApplicationViewFactory;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -63,16 +62,15 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML private MenuItem helpAboutId;
     @FXML private Pane backgroundPaneId;
 
-    @FXML private Label testLabelId;
-
-
     /**
      * Initial settings.
      */
     public void initialize() {
 //        fileNewProjectId.setDisable(true);
-//        fileEditProjectId.setDisable(true);
-        fileLoadProjectId.setDisable(true);
+    	// Edits are disabled until new project is loaded or created.
+        fileEditProjectId.setDisable(true);
+//        fileLoadProjectId.setDisable(true);
+
         fileSaveProjectId.setDisable(true);
         fileCloseProjectId.setDisable(true);
         fileImportNeuralNetworkConfigId.setDisable(true);
@@ -108,6 +106,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     public void fileNewProjectAction() {
     	if ( mainController.isAllSaved() ) { 
             ApplicationViewFactory.startFileNewProjectController(mainController);
+            updateToProjectLoaded();
     	}
     	else {
     		// Ask if user wants to save data changes or close without save
@@ -117,15 +116,17 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     			mainController.saveAll();
     			mainController.closeProject();
                 ApplicationViewFactory.startFileNewProjectController(mainController);
+                updateToProjectLoaded();
     		}
     		else if ( answer.equals(ApplicationDialogResults.NO) ) {
     			mainController.closeProject();
                 ApplicationViewFactory.startFileNewProjectController(mainController);
+                updateToProjectLoaded();
     		}
     	}
     }
-
-    /**
+ 
+	/**
      * The File Edit Project Action.
      */
     @FXML
@@ -139,6 +140,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML
     public void fileLoadProjectAction() {
         ApplicationViewFactory.startFileLoadProjectController(mainController);
+        updateToProjectLoaded();
     }
 
     /**
@@ -381,4 +383,15 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
 		Stage stage = (Stage) scene.getWindow();
 		stage.close();
     }
+
+    /**
+     * A project was loaded and is now available.
+     * Change menus where applicable from disabled to enable,
+     * on the functions that can be now applied.
+     */
+	private void updateToProjectLoaded() {
+        fileEditProjectId.setDisable(false);
+        // TODO: check what else need to be enabled.
+	}
+
 }
