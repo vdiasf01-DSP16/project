@@ -1,5 +1,6 @@
 package app.view;
 
+import app.view.dialog.DialogSayController;
 import app.view.dialog.DialogYesNoCancelController;
 import app.view.dialog.DialogYesNoController;
 
@@ -34,5 +35,14 @@ public abstract class ApplicationDialogFactory extends ApplicationDialogResults 
 	public static String askUserYesNo(String message) {
 		ApplicationDialogResults applicationDialog = new DialogYesNoController(message);
 		return applicationDialog.getResult();
+	}
+
+	/**
+	 * Inform the user about some message.
+	 * 
+	 * @param message String
+	 */
+	public static void say(String message) {
+		new DialogSayController(message);
 	}
 }

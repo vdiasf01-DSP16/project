@@ -69,6 +69,6 @@ public class FileNewProjectController implements ApplicationMenu {
         stage.setTitle(STAGE_TITLE);
 
         // Starting the show...
-        stage.show();
+        stage.showAndWait();
     }
 }

@@ -68,6 +68,6 @@ public class FileEditProjectController implements ApplicationMenu {
         stage.setTitle(STAGE_TITLE);
 
         // Starting the show...
-        stage.show();
+        stage.showAndWait();
     }
 }

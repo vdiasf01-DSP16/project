@@ -1,6 +1,5 @@
 package app.view.dialog;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URL;
 
@@ -13,17 +12,17 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
- * The Yes No Cancel Dialog controller.
+ * The Informative Dialog to say something to the user.
  * 
  * @author Vasco
  *
  */
-public class DialogYesNoCancelController extends ApplicationDialogResults {
+public class DialogSayController extends ApplicationDialogResults {
 
     /**
      * The FXML resource filename.
      */
-    private final String RESOURCE_FILENAME = "fxml/DialogYesNoCancel.fxml";
+    private final String RESOURCE_FILENAME = "fxml/DialogSay.fxml";
     
     /**
      * CSS resource file name to be used.
@@ -31,33 +30,18 @@ public class DialogYesNoCancelController extends ApplicationDialogResults {
     private final String CSS_RESOURCE = "../../css/application.css";
     
     /**
-     * The window width.
-     */
-    private final int WINDOW_WIDTH = 205;
-
-    /**
-     * The window height.
-     */
-    private final int WINDOW_HEIGH = 120;
-
-    /**
-     * The result.
-     */
-    private String result = "";
-    
-    /**
-     * Initialising the File New Project receiving the controller.
+     * Initialising the Dialog.
      * 
      * @param message String
      */
-    public DialogYesNoCancelController(String message) {
+    public DialogSayController(String message) {
         URL startupLocation = getClass().getResource(RESOURCE_FILENAME);
 
         FXMLLoader fxmlLoader = new FXMLLoader(startupLocation);
 
         // Sets FXML controller as instructed by Factory with this class 
         // to return the result.
-        fxmlLoader.setController(ApplicationControllerFactory.getDialogYesNoCancelFXMLController(this, message));
+        fxmlLoader.setController(ApplicationControllerFactory.getDialogSayFXMLController(message));
         
         Parent root = null;
         try {
@@ -80,27 +64,8 @@ public class DialogYesNoCancelController extends ApplicationDialogResults {
         
         // Make sure the user responds to this before anything else.
         stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setResizable(false);
-        stage.setWidth(WINDOW_WIDTH);
-        stage.setHeight(WINDOW_HEIGH);
-        stage.setX(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2 - WINDOW_WIDTH/2);
-        stage.setY(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2 - WINDOW_HEIGH/2);
 
         // Starting the show...
         stage.showAndWait();
-    }
-
-    /**
-     * The result given by the user.
-     */
-    public String getResult() {
-    	return result;
-    }
-
-    /**
-     * Setting the result by the GUI.
-     */
-    public void setResult(String result) {
-    	this.result = result;
     }
 }

@@ -138,6 +138,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML
     public void fileEditProjectAction() {
         ApplicationViewFactory.startFileEditProjectController(mainController);
+        ApplicationDialogFactory.say("Updates saved");
     }
 
     /**
@@ -156,6 +157,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     public void fileSaveProjectAction() {
         if ( ! mainController.isAllSaved() ) { 
             mainController.saveAll();
+            ApplicationDialogFactory.say("Project saved");
         }
     }
 
@@ -165,6 +167,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML
     public void fileSaveProjectAsAction() {
         ApplicationViewFactory.startFileSaveAsProjectController(mainController);
+        ApplicationDialogFactory.say("Project saved");
     }
 
     /**
@@ -175,6 +178,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
         if ( mainController.isAllSaved() ) {
             mainController.closeProject();
             updateToNoProjectLoaded();
+            ApplicationDialogFactory.say("Project closed");
         } 
         else {
             String answer = ApplicationDialogFactory.askUserYesNoCancel(CLOSE_PROJECT_TEXT);
@@ -182,10 +186,12 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
                 mainController.saveAll();
                 mainController.closeProject();
                 updateToNoProjectLoaded();
+                ApplicationDialogFactory.say("Project closed");
             }
             else if ( answer.equals(ApplicationDialogResults.NO) ) {
                 mainController.closeProject();
                 updateToNoProjectLoaded();
+                ApplicationDialogFactory.say("Project closed");
             }
         }
     }
