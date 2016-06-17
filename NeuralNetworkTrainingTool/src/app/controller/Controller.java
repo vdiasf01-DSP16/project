@@ -53,4 +53,16 @@ public interface Controller {
 	 */
 	public void setProjectData(ProjectData projectData);
 
+	/**
+	 * The project data.
+	 * 
+	 * @return ProjectData.
+	 */
+	public ProjectData getProjectData();
+
+	/**
+	 * Saves the project file with all project data.
+	 */
+	public void saveProject();
+
 }

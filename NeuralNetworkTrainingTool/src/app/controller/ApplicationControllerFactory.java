@@ -4,6 +4,7 @@ import app.fxml.NeuralNetworkTrainingAppFXMLController;
 import app.view.ApplicationDialogResults;
 import app.view.dialog.fxml.DialogYesNoCancelFXMLController;
 import app.view.dialog.fxml.DialogYesNoFXMLController;
+import app.view.menu.file.fxml.FileEditProjectFXMLController;
 import app.view.menu.file.fxml.FileNewProjectFXMLController;
 
 /**
@@ -34,6 +35,16 @@ public abstract class ApplicationControllerFactory {
 	}
 
 	/**
+	 * The File Edit Project FXML controller to be used.
+	 * 
+	 * @param mainController Controller
+	 * @return FXMLController
+	 */
+	public static FXMLController getFileEditProjectFXMLController(Controller mainController) {
+		return new FileEditProjectFXMLController(mainController);
+	}
+
+	/**
 	 * The Dialog Yes No Cancel FXML controller to be used.
 	 * 
 	 * @param mainController ApplicationDialog
@@ -54,4 +65,5 @@ public abstract class ApplicationControllerFactory {
 	public static Object getDialogYesNoFXMLController(ApplicationDialogResults mainController, String message) {
 		return new DialogYesNoFXMLController(mainController, message);
 	}
+
 }

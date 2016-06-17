@@ -7,6 +7,11 @@ import java.util.Date;
  */
 public class ProjectDetails implements ProjectData {
     /**
+	 * The generated serial version ID.
+	 */
+	private static final long serialVersionUID = 632943668404336587L;
+
+	/**
      * The project name.
      */
     private String projectName;

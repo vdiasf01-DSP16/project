@@ -12,12 +12,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * The File New Project view.
+ * The Edit File Project view.
  * 
  * @author Vasco
  *
  */
-public class FileNewProjectController implements ApplicationMenu {
+public class FileEditProjectController implements ApplicationMenu {
 
     /**
      * The FXML resource filename.
@@ -30,22 +30,22 @@ public class FileNewProjectController implements ApplicationMenu {
     private final String STYLE_SHEET_FILENAME = "css/menuFileNewProject.css";
     
     /**
-     * The Stage title for File New Project.
+     * The Stage title for File Edit.
      */
-    private final String STAGE_TITLE = "New Project";
+    private final String STAGE_TITLE = "Edit Project";
     		
     /**
      * Initialising the File New Project receiving the controller.
      * 
      * @param mainController
      */
-    public FileNewProjectController(Controller mainController) {
+    public FileEditProjectController(Controller mainController) {
         URL startupLocation = getClass().getResource(RESOURCE_FILENAME);
 
         FXMLLoader fxmlLoader = new FXMLLoader(startupLocation);
 
         // Sets FXML controller as instructed by Factory
-        fxmlLoader.setController(ApplicationControllerFactory.getFileNewProjectFXMLController(mainController));
+        fxmlLoader.setController(ApplicationControllerFactory.getFileEditProjectFXMLController(mainController));
         
         Parent root = null;
         try {
@@ -64,8 +64,7 @@ public class FileNewProjectController implements ApplicationMenu {
 
         // Adding the scene to the application. 
         stage.setScene(scene);
-
-        // The Stage title.
+        
         stage.setTitle(STAGE_TITLE);
 
         // Starting the show...

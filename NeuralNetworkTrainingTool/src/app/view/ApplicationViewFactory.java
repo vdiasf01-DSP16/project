@@ -1,6 +1,7 @@
 package app.view;
 
 import app.controller.Controller;
+import app.view.menu.file.FileEditProjectController;
 import app.view.menu.file.FileNewProjectController;
 
 /**
@@ -20,8 +21,14 @@ public abstract class ApplicationViewFactory {
         new FileNewProjectController(mainController);
     }
 
+    /**
+     * Starts the File Edit Project View, passing the Controller to 
+     * show what is currently loaded and allowing editing.
+     * 
+     * @param mainController Controller
+     */
     public static void startFileEditProjectController(Controller mainController) {
-        // TODO Auto-generated method stub
+        new FileEditProjectController(mainController);
     }
 
     public static void startFileLoadProjectController(Controller mainController) {

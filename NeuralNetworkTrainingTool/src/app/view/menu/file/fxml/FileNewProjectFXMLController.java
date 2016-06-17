@@ -19,7 +19,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
- * The Menu File New Project Controller, received data from the user
+ * The Menu File New Project Controller, receives data from the user
  * and sends it down through the controller.
  * 
  * @author Vasco
@@ -119,12 +119,15 @@ public class FileNewProjectFXMLController implements FXMLController {
 
     	// If no file returned, the user has cancelled the operation.
     	if ( file != null ) {
-    		
+
     		// Set the project file
         	mainController.setProjectFile(file);
         	
         	// Set the project data details
         	mainController.setProjectData(projectData);
+
+        	// Save the file
+        	mainController.saveProject();
 
         	// Close the widget.
         	Stage stage = (Stage) projectNameId.getScene().getWindow();

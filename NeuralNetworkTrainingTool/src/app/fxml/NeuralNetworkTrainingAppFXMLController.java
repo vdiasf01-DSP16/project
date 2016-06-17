@@ -71,7 +71,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     public void initialize() {
 //        fileNewProjectId.setDisable(true);
-        fileEditProjectId.setDisable(true);
+//        fileEditProjectId.setDisable(true);
         fileLoadProjectId.setDisable(true);
         fileSaveProjectId.setDisable(true);
         fileCloseProjectId.setDisable(true);

@@ -1,6 +1,9 @@
 package app.controller;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import app.model.project.ProjectData;
 
@@ -63,5 +66,39 @@ public class ControllerImpl implements Controller {
 	@Override
 	public void setProjectData(ProjectData projectData) {
 		this.projectData = projectData;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void saveProject() {
+		// TODO: Deal with the exceptions
+		if ( projectFile != null ) {
+			if ( ! projectFile.exists() ) {
+				try {
+					projectFile.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			} 
+			if ( projectFile.canWrite() ) {
+				try {
+					FileOutputStream fout = new FileOutputStream(projectFile);
+					ObjectOutputStream oos = new ObjectOutputStream(fout);
+					oos.writeObject(projectData);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public ProjectData getProjectData() {
+		return projectData;
 	}
 }
