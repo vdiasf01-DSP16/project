@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 /**
@@ -100,8 +102,7 @@ public class FileEditProjectFXMLController implements FXMLController {
      */
     @FXML
     private void projectCancelAction() {
-        Stage stage = (Stage) projectCancelId.getScene().getWindow();
-        stage.close();
+    	closeWindow();
     }
 
     /**
@@ -129,7 +130,19 @@ public class FileEditProjectFXMLController implements FXMLController {
             stage.close();
         }
     }
-    
+
+    /**
+     * If escape is pressed, close the window.
+     * 
+     * @param keyEvent
+     */
+    @FXML
+    public void keyTypedAction(KeyEvent keyEvent) {
+    	if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
+    		closeWindow();
+    	}
+    }
+
     /**
      * Retrieves the data from the GUI into a structured
      * object ProjectData which is then returned
@@ -145,5 +158,13 @@ public class FileEditProjectFXMLController implements FXMLController {
         projectData.setProjectDescription(projectDescriptionId.getText());
         projectData.setProjectSummary(projectSummaryId.getText());
         return projectData;
+    }
+
+    /**
+     * Closing the window and lose any changes made without warning.
+     */
+    private void closeWindow() {
+    	Stage stage = (Stage) projectNameId.getScene().getWindow();
+        stage.close();
     }
 }

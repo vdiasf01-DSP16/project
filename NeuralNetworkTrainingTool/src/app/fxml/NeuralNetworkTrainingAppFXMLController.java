@@ -112,7 +112,6 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     public void fileNewProjectAction() {
         if ( mainController.isAllSaved() ) { 
             ApplicationViewFactory.startFileNewProjectController(mainController);
-            projectLoaded(true);
         }
         else {
             // Ask if user wants to save data changes or close without save
@@ -122,14 +121,13 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
                 mainController.saveAll();
                 mainController.closeProject();
                 ApplicationViewFactory.startFileNewProjectController(mainController);
-                projectLoaded(true);
             }
             else if ( answer.equals(ApplicationDialogResults.NO) ) {
                 mainController.closeProject();
                 ApplicationViewFactory.startFileNewProjectController(mainController);
-                projectLoaded(true);
             }
         }
+        updateProjectLoaded();
     }
  
     /**
@@ -138,7 +136,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML
     public void fileEditProjectAction() {
         ApplicationViewFactory.startFileEditProjectController(mainController);
-        ApplicationDialogFactory.say("Updates saved");
+        updateProjectLoaded();
     }
 
     /**
@@ -147,7 +145,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML
     public void fileLoadProjectAction() {
         ApplicationViewFactory.startFileLoadProjectController(mainController);
-        projectLoaded(true);
+        updateProjectLoaded();
     }
 
     /**
@@ -158,6 +156,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
         if ( ! mainController.isAllSaved() ) { 
             mainController.saveAll();
         }
+        updateProjectLoaded();
     }
 
     /**
@@ -166,6 +165,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     @FXML
     public void fileSaveProjectAsAction() {
         ApplicationViewFactory.startFileSaveAsProjectController(mainController);
+        updateProjectLoaded();
     }
 
     /**
@@ -175,20 +175,18 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     public void fileCloseProjectAction() {
         if ( mainController.isAllSaved() ) {
             mainController.closeProject();
-            projectLoaded(false);
         } 
         else {
             String answer = ApplicationDialogFactory.askUserYesNoCancel(CLOSE_PROJECT_TEXT);
             if ( answer.equals(ApplicationDialogResults.YES) ) {
                 mainController.saveAll();
                 mainController.closeProject();
-                projectLoaded(false);
             }
             else if ( answer.equals(ApplicationDialogResults.NO) ) {
                 mainController.closeProject();
-                projectLoaded(false);
             }
         }
+        updateProjectLoaded();
     }
 
     /**
@@ -417,13 +415,12 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
     }
 
     /**
-     * A project is loaded if true, not loaded otherwise. 
-     * Change menus accordingly.
+     * Check if a project is loaded or not and change menus accordingly.
      * 
      * @param status true if loaded
      */
-    private void projectLoaded(boolean loaded) {
-    	if ( loaded ) { 
+    private void updateProjectLoaded() {
+    	if ( mainController.getProjectData() != null ) { 
             fileEditProjectId.setDisable(false);
             fileSaveProjectId.setDisable(false);
             fileSaveProjectAsId.setDisable(false);

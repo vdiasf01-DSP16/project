@@ -22,12 +22,12 @@ public class FileEditProjectController implements ApplicationMenu {
     /**
      * The FXML resource filename.
      */
-    private final String RESOURCE_FILENAME = "fxml/FileNewProject.fxml";
+    private final String RESOURCE_FILENAME = "fxml/FileProject.fxml";
     
     /**
      * The Style sheet filename.
      */
-    private final String STYLE_SHEET_FILENAME = "css/menuFileNewProject.css";
+    private final String STYLE_SHEET_FILENAME = "css/menuFileProject.css";
     
     /**
      * The Stage title for File Edit.

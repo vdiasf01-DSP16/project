@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -37,12 +39,6 @@ public class FileNewProjectFXMLController implements FXMLController {
 	 */
 	private final List<Map<String,String>> EXTENSION_LIST;
 
-	/**
-     * The Cancel button.
-     */
-    @FXML
-    private Button projectCancelId;
-    
     /**
      * The Create button.
      */
@@ -98,15 +94,6 @@ public class FileNewProjectFXMLController implements FXMLController {
     }
     
     /**
-     * Discarding all data and closing the window.
-     */
-    @FXML
-    private void projectCancelAction() {
-        Stage stage = (Stage) projectCancelId.getScene().getWindow();
-        stage.close();
-    }
-
-    /**
      * Create a new Project with data given by the user.
      */
     @FXML
@@ -132,6 +119,26 @@ public class FileNewProjectFXMLController implements FXMLController {
         	// Close the widget.
         	Stage stage = (Stage) projectNameId.getScene().getWindow();
         	stage.close();
+    	}
+    }
+    
+    /**
+     * Cancels any change and closes the window.
+     */
+    @FXML
+    private void projectCancelAction() {
+    	closeWindow();
+    }
+    
+    /**
+     * If escape is pressed, close the window.
+     * 
+     * @param keyEvent
+     */
+    @FXML
+    public void keyTypedAction(KeyEvent keyEvent) {
+    	if (keyEvent.getCode().equals(KeyCode.ESCAPE)) {
+    		closeWindow();
     	}
     }
     
@@ -179,5 +186,13 @@ public class FileNewProjectFXMLController implements FXMLController {
     	
     	// Return the file regardless if null.
     	return file;
+    }
+
+    /**
+     * Closing the window and lose any changes made without warning.
+     */
+    private void closeWindow() {
+    	Stage stage = (Stage) projectNameId.getScene().getWindow();
+        stage.close();
     }
 }
