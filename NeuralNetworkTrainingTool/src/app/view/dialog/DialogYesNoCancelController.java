@@ -28,7 +28,7 @@ public class DialogYesNoCancelController extends ApplicationDialogResults {
     /**
      * CSS resource file name to be used.
      */
-    private final String CSS_RESOURCE = "../../css/application.css";
+    private final String CSS_RESOURCE = "css/dialogYesNoCancel.css";
     
     /**
      * The window width.
