@@ -11,11 +11,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import app.model.dataSet.DataSet;
-import app.model.dataSet.FileAttributes;
 import app.model.dataSet.FileDataSet;
 import app.model.dataSet.MapTransform;
 import app.model.dataSet.MathOperator;
 import app.model.dataSet.VectorMap;
+import app.model.serializable.DataSetFileAttributes;
+import app.model.serializable.FileAttributes;
 
 /**
  * Testing the FileDataSet class implementation from DataSet abstract class.
@@ -78,7 +79,7 @@ public class TestFileDataSet {
      */
     @Before
     public void before() {
-        fileAttributes = new FileAttributes();
+        fileAttributes = new DataSetFileAttributes();
         fileAttributes.setHeaderRows(0);
         fileAttributes.setFooterRows(0);
         fileAttributes.setTestingRangeIndex(TESTING_START_INDEX, TESTING_END_INDEX);
@@ -86,7 +87,7 @@ public class TestFileDataSet {
         fileAttributes.setFilename(FILENAME);
         fileAttributes.setSeparator(SEPARATOR);
 
-        fileHeaderAttributes = new FileAttributes();
+        fileHeaderAttributes = new DataSetFileAttributes();
         fileHeaderAttributes.setHeaderRows(HEADER_ROWS);
         fileHeaderAttributes.setFooterRows(FOOTER_ROWS);
         fileHeaderAttributes.setTestingRangeIndex(HEADER_TESTING_START_INDEX, HEADER_TESTING_END_INDEX);

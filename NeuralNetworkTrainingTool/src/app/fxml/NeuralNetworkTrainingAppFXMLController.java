@@ -90,8 +90,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
         fileExportEncogId.setDisable(true);
         fileExportReportId.setDisable(true);
         filePreferencesId.setDisable(true);
-//        fileCloseId.setDisable(true);
-        neuralNetworkNewConfigId.setDisable(true);
+
         neuralNetworkEditConfigId.setDisable(true);
         neuralNetworkCloseConfigId.setDisable(true);
         runTrainingId.setDisable(true);
@@ -270,8 +269,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void neuralNetworkNewConfigAction() {
-        //TODO
-        System.out.println("neuralNetworkNewConfigAction not implemented");
+        ApplicationViewFactory.startNeuralNetworkNewConfigurationController(mainController);
     }
 
     /**

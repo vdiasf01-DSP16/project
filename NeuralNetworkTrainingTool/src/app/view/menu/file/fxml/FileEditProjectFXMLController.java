@@ -4,8 +4,8 @@ import java.io.File;
 
 import app.controller.Controller;
 import app.controller.FXMLController;
-import app.model.project.ProjectData;
-import app.model.project.ProjectDetails;
+import app.model.serializable.ProjectData;
+import app.model.serializable.ProjectDetails;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;

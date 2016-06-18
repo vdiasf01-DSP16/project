@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<TabPane fx:id="tabPaneId" onKeyTyped="#keyTypedAction" prefHeight="505.0" prefWidth="500.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <tabs>
+      <Tab fx:id="dataSetTabId" text="Data Set">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" onKeyPressed="#keyTypedAction" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Pane maxHeight="1.7976931348623157E308" onKeyPressed="#keyTypedAction" prefHeight="473.0" prefWidth="500.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="18.0" text="Data Set File:" />
+                        <Separator layoutY="45.0" prefHeight="17.0" prefWidth="500.0" />
+                        <Button fx:id="dataSetNextId" defaultButton="true" layoutX="411.0" layoutY="434.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#dataSetNextAction" prefWidth="75.0" text="&gt;&gt;" />
+                        <Label fx:id="dataSetFileId" layoutX="96.0" layoutY="18.0" prefHeight="17.0" prefWidth="307.0" />
+                        <Button fx:id="dataSetSelectedId" layoutX="411.0" layoutY="14.0" mnemonicParsing="false" onAction="#selectDataSetAction" prefWidth="75.0" text="Select" />
+                        <Label layoutX="14.0" layoutY="62.0" prefHeight="17.0" prefWidth="77.0" text="Header Lines:" />
+                        <Label layoutX="149.0" layoutY="62.0" text="Footer Lines:" />
+                        <Label layoutX="285.0" layoutY="62.0" text="Separator:" />
+                        <TextField fx:id="headerLinesId" layoutX="91.0" layoutY="58.0" onKeyTyped="#validateIntegerAction" prefHeight="25.0" prefWidth="50.0" />
+                        <TextField fx:id="footerLinesId" layoutX="225.0" layoutY="58.0" onKeyTyped="#validateIntegerAction" prefHeight="25.0" prefWidth="50.0" />
+                        <TextField fx:id="separatorId" layoutX="345.0" layoutY="58.0" prefHeight="25.0" prefWidth="50.0" />
+                        <Separator layoutY="82.0" prefHeight="17.0" prefWidth="500.0" />
+                        <Button fx:id="dataSetAttributesId" layoutX="411.0" layoutY="58.0" mnemonicParsing="false" onAction="#dataSetAttributesAction" prefWidth="75.0" text="Apply" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab fx:id="neuralNetworkTabId" onSelectionChanged="#neuralNetworkTabAction" text="Neural Network">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Pane maxHeight="1.7976931348623157E308" onKeyPressed="#keyTypedAction" prefHeight="473.0" prefWidth="500.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="18.0" text="Project name:" />
+                        <TextField fx:id="projectNameId2" layoutX="100.0" layoutY="14.0" prefHeight="25.0" prefWidth="384.0" />
+                        <Separator layoutY="45.0" prefHeight="17.0" prefWidth="500.0" />
+                        <Button fx:id="neuralNetworkNextId" defaultButton="true" layoutX="411.0" layoutY="434.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#neuralNetworkNextAction" prefWidth="75.0" text="&gt;&gt;" />
+                        <Button fx:id="neuralNetworkPreviousId" defaultButton="true" layoutX="322.0" layoutY="434.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#neuralNetworkPreviousAction" prefWidth="75.0" text="&lt;&lt;" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+      <Tab fx:id="mappingTabId" onSelectionChanged="#mappingTabAction" text="Mapping">
+         <content>
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <Pane maxHeight="1.7976931348623157E308" onKeyPressed="#keyTypedAction" prefHeight="473.0" prefWidth="500.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="18.0" text="Project name:" />
+                        <TextField fx:id="projectNameId1" layoutX="100.0" layoutY="14.0" prefHeight="25.0" prefWidth="384.0" />
+                        <Separator layoutY="45.0" prefHeight="17.0" prefWidth="500.0" />
+                        <Button fx:id="mappingApplyId" defaultButton="true" layoutX="411.0" layoutY="434.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#mappingApplyAction" prefWidth="75.0" text="Done" />
+                        <Button fx:id="mappingPreviousId" defaultButton="true" layoutX="322.0" layoutY="434.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#mappingPreviousAction" prefWidth="75.0" text="&lt;&lt;" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+         </content>
+      </Tab>
+   </tabs>
+</TabPane>

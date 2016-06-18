@@ -5,6 +5,7 @@ import app.view.menu.file.FileEditProjectController;
 import app.view.menu.file.FileLoadProjectController;
 import app.view.menu.file.FileNewProjectController;
 import app.view.menu.file.FileSaveProjectAsController;
+import app.view.menu.neuralNetwork.NeuralNetworkNewConfigurationController;
 
 /**
  * The Application menu views.
@@ -70,5 +71,9 @@ public abstract class ApplicationViewFactory {
     public static void startFilePreferencesController(Controller mainController) {
         // TODO Auto-generated method stub
     }
+
+	public static void startNeuralNetworkNewConfigurationController(Controller mainController) {
+        new NeuralNetworkNewConfigurationController(mainController);
+	}
 
 }

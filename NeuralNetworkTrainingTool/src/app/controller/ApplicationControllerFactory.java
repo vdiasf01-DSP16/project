@@ -7,6 +7,7 @@ import app.view.dialog.fxml.DialogYesNoCancelFXMLController;
 import app.view.dialog.fxml.DialogYesNoFXMLController;
 import app.view.menu.file.fxml.FileEditProjectFXMLController;
 import app.view.menu.file.fxml.FileNewProjectFXMLController;
+import app.view.menu.neuralNetwork.fxml.NeuralNetworkConfigurationFXMLController;
 
 /**
  * The application controller factory for the FXML controllers.
@@ -46,6 +47,17 @@ public abstract class ApplicationControllerFactory {
 	}
 
 	/**
+	 * The Neural Network FXML controller to be used.
+	 * 
+	 * @param mainController Controller
+	 * @return FXMLController
+	 */
+	public static FXMLController getNeuralNetworkNewConfigurationFXMLController(Controller mainController) {
+		return new NeuralNetworkConfigurationFXMLController(mainController);
+	}
+
+
+	/**
 	 * The Dialog Yes No Cancel FXML controller to be used.
 	 * 
 	 * @param mainController ApplicationDialog
@@ -76,5 +88,4 @@ public abstract class ApplicationControllerFactory {
 	public static FXMLController getDialogSayFXMLController(String message) {
 		return new DialogSayFXMLController(message);
 	}
-
 }

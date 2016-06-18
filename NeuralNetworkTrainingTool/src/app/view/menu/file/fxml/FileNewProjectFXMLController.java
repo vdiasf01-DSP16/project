@@ -8,16 +8,15 @@ import java.util.Map;
 
 import app.controller.Controller;
 import app.controller.FXMLController;
-import app.model.project.ProjectData;
-import app.model.project.ProjectDetails;
+import app.model.serializable.ProjectData;
+import app.model.serializable.ProjectDetails;
+import app.view.ApplicationDialogFactory;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
@@ -102,7 +101,7 @@ public class FileNewProjectFXMLController implements FXMLController {
     	ProjectData projectData = getProjectData();
 
     	// Asks user where to save this new project.
-    	File file = getFile();
+    	File file = ApplicationDialogFactory.openFile(mainController, FILE_CHOOSER_TITLE, EXTENSION_LIST);
 
     	// If no file returned, the user has cancelled the operation.
     	if ( file != null ) {
@@ -159,35 +158,6 @@ public class FileNewProjectFXMLController implements FXMLController {
         return projectData;
     }
     
-    /**
-     * Asks the user for a file where the project should be saved on.
-     * 
-     * @return File
-     */
-    private File getFile() {
-    	FileChooser fileChooser = new FileChooser();
-
-    	// Derive the previous path from the old project file.
-    	File oldProjectFile = mainController.getProjectFile();
-    	
-    	// If file, pick up the old path and start from there.
-    	if ( oldProjectFile != null ) fileChooser.setInitialDirectory(new File(oldProjectFile.getParent()));
-
-    	// Set the title
-    	fileChooser.setTitle(FILE_CHOOSER_TITLE);
-
-    	// Load the possible extensions to save with.
-    	for( Map<String,String> extension : EXTENSION_LIST ) {
-        	fileChooser.getExtensionFilters().add( 
-        			new ExtensionFilter(extension.keySet().iterator().next(), extension.values().iterator().next()) );
-    	}
-    	// Ask user to supply a file when this project is meant to be in.
-    	File file = fileChooser.showSaveDialog(new Stage());
-    	
-    	// Return the file regardless if null.
-    	return file;
-    }
-
     /**
      * Closing the window and lose any changes made without warning.
      */

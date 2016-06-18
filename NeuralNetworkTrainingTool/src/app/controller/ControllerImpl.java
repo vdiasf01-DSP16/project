@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import app.model.project.ProjectData;
+import app.model.serializable.DataSetFileAttributes;
+import app.model.serializable.FileAttributes;
+import app.model.serializable.ProjectData;
 
 /**
  * The Main Application Controller.
@@ -32,6 +34,10 @@ public class ControllerImpl implements Controller {
 	 */
 	private boolean projectIsSaved = true;
 
+	/**
+	 * The selected data set file with all its attributes.
+	 */
+	private FileAttributes dataSetFileAttributes;
 	
 	/**
 	 * {@inheritDoc}
@@ -160,6 +166,25 @@ public class ControllerImpl implements Controller {
 					}
 				}
 			}
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public void setDataSetFile(File selectedFile) {
+		this.dataSetFileAttributes = new DataSetFileAttributes();
+		dataSetFileAttributes.setFilename(selectedFile.getAbsolutePath());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public void setDataSetAttributes(Integer headerLines, Integer footerLines, String separator) {
+		if ( dataSetFileAttributes != null ) {
+			dataSetFileAttributes.setHeaderRows(headerLines);
+			dataSetFileAttributes.setFooterRows(footerLines);
+			dataSetFileAttributes.setSeparator(separator);
 		}
 	}
 }

@@ -2,7 +2,7 @@ package app.controller;
 
 import java.io.File;
 
-import app.model.project.ProjectData;
+import app.model.serializable.ProjectData;
 
 /**
  * Main application controller between the view the the model.
@@ -72,5 +72,21 @@ public interface Controller {
 	 * @param file File
 	 */
 	public void loadProjectFile(File file);
+
+	/**
+	 * Setting the data set file.
+	 * 
+	 * @param selectedFile File
+	 */
+	public void setDataSetFile(File selectedFile);
+
+	/**
+	 * Setting the data set attributes.
+	 * 
+	 * @param headerLines Integer
+	 * @param footerLines Integer
+	 * @param separator String
+	 */
+	public void setDataSetAttributes(Integer headerLines, Integer footerLines, String separator);
 
 }

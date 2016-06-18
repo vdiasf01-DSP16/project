@@ -1,4 +1,4 @@
-package app.model.dataSet;
+package app.model.serializable;
 
 /**
  * File Attributes to be passed in whenever a file needs to be defined
@@ -11,7 +11,12 @@ package app.model.dataSet;
  * @author Vasco
  *
  */
-public class FileAttributes {
+public class DataSetFileAttributes implements FileAttributes {
+
+	/**
+	 * The serial version UID.
+	 */
+	private static final long serialVersionUID = 510506102823934905L;
 
 	/**
 	 * The number of header rows in file.
@@ -63,140 +68,124 @@ public class FileAttributes {
 	 */
 	private boolean hasTestingRange;
 
-	/**
-	 * The Header rows.
-	 * 
-	 * @return int
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getHeaderRows()
 	 */
+	@Override
 	public int getHeaderRows() {
 		return headerRows;
 	}
 
-	/**
-	 * Set the number of file header rows.
-	 * 
-	 * @param headerRows 
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setHeaderRows(int)
 	 */
+	@Override
 	public void setHeaderRows(int headerRows) {
 		this.headerRows = headerRows;
 	}
 
-	/**
-	 * The Footer rows.
-	 * 
-	 * @return int
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getFooterRows()
 	 */
+	@Override
 	public int getFooterRows() {
 		return footerRows;
 	}
 
-	/**
-	 * Set the number of file footer rows.
-	 * 
-	 * @param footerRows 
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setFooterRows(int)
 	 */
+	@Override
 	public void setFooterRows(int footerRows) {
 		this.footerRows = footerRows;
 	}
 
-	/**
-	 * The file name.
-	 * 
-	 * @return String
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getFilename()
 	 */
+	@Override
 	public String getFilename() {
 		return filename;
 	}
 
-	/**
-	 * The file name.
-	 * 
-	 * @param filename
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setFilename(java.lang.String)
 	 */
+	@Override
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
 
-	/**
-	 * The file data separator.
-	 * 
-	 * @return String
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getSeparator()
 	 */
+	@Override
 	public String getSeparator() {
 		return separator;
 	}
 
-	/**
-	 * The file data separator.
-	 * 
-	 * @param separator
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setSeparator(java.lang.String)
 	 */
+	@Override
 	public void setSeparator(String separator) {
 		this.separator = separator;
 	}
 
-	/**
-	 * Sets the start and end row index for the testing set.
-	 * 
-	 * @param testingStartIndex
-	 * @param testingEndIndex
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setTestingRangeIndex(int, int)
 	 */
+	@Override
 	public void setTestingRangeIndex(int testingStartIndex, int testingEndIndex) {
 		this.testingStartIndex = testingStartIndex;
 		this.testingEndIndex = testingEndIndex;
 		this.setHasTestingRange(true);
 	}
 
-	/**
-	 * The testing starting row index.
-	 * 
-	 * @return int
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getTestingStartIndex()
 	 */
+	@Override
 	public int getTestingStartIndex() {
 		return testingStartIndex;
 	}
 
-	/**
-	 * The testing end row index.
-	 * 
-	 * @return int
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getTestingEndIndex()
 	 */
+	@Override
 	public int getTestingEndIndex() {
 		return testingEndIndex;
 	}
 
-	/**
-	 * The training start and end row index.
-	 *  
-	 * @param trainingStartIndex
-	 * @param trainingEndIndex
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setTrainingRangeIndex(int, int)
 	 */
+	@Override
 	public void setTrainingRangeIndex(int trainingStartIndex, int trainingEndIndex) {
 		this.trainingStartIndex = trainingStartIndex;
 		this.trainingEndIndex = trainingEndIndex;
 		this.setHasTrainingRange(true);
 	}
 
-	/**
-	 * The training start row index.
-	 * 
-	 * @return int
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getTrainingStartIndex()
 	 */
+	@Override
 	public int getTrainingStartIndex() {
 		return trainingStartIndex;
 	}
 
-	/**
-	 * The training end row index.
-	 * 
-	 * @return int
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#getTrainingEndIndex()
 	 */
+	@Override
 	public int getTrainingEndIndex() {
 		return trainingEndIndex;
 	}
 
-	/**
-	 * The default print of all data set.
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#toString()
 	 */
 	@Override
 	public String toString() {
@@ -208,38 +197,34 @@ public class FileAttributes {
 				+ "TrainingRange: "+trainingStartIndex+" to "+trainingEndIndex+"\n";
 	}
 
-	/**
-	 * If set to false, the Training range is to be ignored.
-	 * 
-	 * @return true if has valid Training range.
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#isHasTrainingRange()
 	 */
+	@Override
 	public boolean isHasTrainingRange() {
 		return hasTrainingRange;
 	}
 
-	/**
-	 * Sets the Training range to be considered.
-	 * 
-	 * @param hasTrainingRange
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setHasTrainingRange(boolean)
 	 */
+	@Override
 	public void setHasTrainingRange(boolean hasTrainingRange) {
 		this.hasTrainingRange = hasTrainingRange;
 	}
 
-	/**
-	 * If set to false, the Testing range is to be ignored.
-	 * 
-	 * @return true if has valid Traing range.
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#isHasTestingRange()
 	 */
+	@Override
 	public boolean isHasTestingRange() {
 		return hasTestingRange;
 	}
 
-	/**
-	 * Sets the Testing range to be considered.
-	 * 
-	 * @param hasTestingRange
+	/* (non-Javadoc)
+	 * @see app.model.dataSet.FileAttributes#setHasTestingRange(boolean)
 	 */
+	@Override
 	public void setHasTestingRange(boolean hasTestingRange) {
 		this.hasTestingRange = hasTestingRange;
 	}

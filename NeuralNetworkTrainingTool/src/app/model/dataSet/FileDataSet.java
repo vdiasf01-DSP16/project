@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import app.model.serializable.FileAttributes;
+
 /**
  * FileDataSet extends abstract class DataSet to implement required defined
  * methods, use already instated default logic, and deal with the specifics 

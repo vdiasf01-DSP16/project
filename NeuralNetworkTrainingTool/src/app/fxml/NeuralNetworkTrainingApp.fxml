@@ -34,7 +34,7 @@
                      </accelerator></MenuItem>
                   <MenuItem fx:id="fileSaveProjectAsId" mnemonicParsing="false" onAction="#fileSaveProjectAsAction" text="Save Project as..">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator>
                   </MenuItem>
                   <MenuItem fx:id="fileCloseProjectId" mnemonicParsing="false" onAction="#fileCloseProjectAction" text="Close Project">
@@ -71,17 +71,17 @@
             <items>
               <MenuItem fx:id="neuralNetworkNewConfigId" mnemonicParsing="false" onAction="#neuralNetworkNewConfigAction" text="New Config ..">
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="N" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="neuralNetworkEditConfigId" mnemonicParsing="false" onAction="#neuralNetworkEditConfigAction" text="Edit Config ..">
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="E" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="E" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="neuralNetworkCloseConfigId" mnemonicParsing="false" onAction="#neuralNetworkCloseConfigAction" text="Close Config">
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="W" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="UP" code="W" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
             </items>
           </Menu>
