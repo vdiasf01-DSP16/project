@@ -37,6 +37,12 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     private final String CLOSE_PROJECT_TEXT = "Save unsaved changes before closing the project?";
     
+    /**
+     * The Application default title.
+     */
+    private final String APPLICATION_TITLE = "Neural Network Toolkit";
+
+
     /*************************************************************************
      *                          FXML ATTRIBUTES                              *
      *************************************************************************/
@@ -428,8 +434,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
             fileCloseProjectId.setDisable(false);
             
             // Update the application title
-            Stage stage = (Stage) backgroundPaneId.getScene().getWindow();
-            stage.setTitle("Neural Network Training Toolkit - "+mainController.getProjectData().getProjectName());
+            setAppTitle(" - "+mainController.getProjectData().getProjectName());
     	}
     	else {
             fileEditProjectId.setDisable(true);
@@ -438,8 +443,18 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
             fileCloseProjectId.setDisable(true);
 
             // Update the application title
-            Stage stage = (Stage) backgroundPaneId.getScene().getWindow();
-            stage.setTitle("Neural Network Training Toolkit");
+            setAppTitle("");
         }
+    }
+    
+    /**
+     * Setting up the application title.
+     * 
+     * @param title
+     */
+    private void setAppTitle(String title) {
+        // Update the application title
+        Stage stage = (Stage) backgroundPaneId.getScene().getWindow();
+        stage.setTitle(APPLICATION_TITLE+title);
     }
 }

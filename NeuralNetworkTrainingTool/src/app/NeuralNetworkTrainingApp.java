@@ -65,6 +65,7 @@ public class NeuralNetworkTrainingApp extends Application {
         
         // Adding the scene to the application. 
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Neural Network Toolkit");
         
         // Starting the show...
         primaryStage.show();
