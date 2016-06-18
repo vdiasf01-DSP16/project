@@ -416,6 +416,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
 
     /**
      * Check if a project is loaded or not and change menus accordingly.
+     * Also update the main application title accordingly.
      * 
      * @param status true if loaded
      */
@@ -425,12 +426,20 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
             fileSaveProjectId.setDisable(false);
             fileSaveProjectAsId.setDisable(false);
             fileCloseProjectId.setDisable(false);
+            
+            // Update the application title
+            Stage stage = (Stage) backgroundPaneId.getScene().getWindow();
+            stage.setTitle("Neural Network Training Toolkit - "+mainController.getProjectData().getProjectName());
     	}
     	else {
             fileEditProjectId.setDisable(true);
             fileSaveProjectId.setDisable(true);
             fileSaveProjectAsId.setDisable(true);
             fileCloseProjectId.setDisable(true);
+
+            // Update the application title
+            Stage stage = (Stage) backgroundPaneId.getScene().getWindow();
+            stage.setTitle("Neural Network Training Toolkit");
         }
     }
 }

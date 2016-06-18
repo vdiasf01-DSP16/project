@@ -9,6 +9,7 @@ import app.view.menu.ApplicationMenu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 /**
@@ -66,6 +67,7 @@ public class FileEditProjectController implements ApplicationMenu {
         stage.setScene(scene);
         
         stage.setTitle(STAGE_TITLE);
+        stage.initModality(Modality.APPLICATION_MODAL);
 
         // Starting the show...
         stage.showAndWait();
