@@ -12,7 +12,7 @@
       <AnchorPane prefHeight="130.0" prefWidth="400.0">
          <children>
             <Pane fx:id="iconId" layoutX="14.0" layoutY="14.0" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: AAFFAA;" />
-            <Label fx:id="messageId" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="125.0" layoutY="15.0" lineSpacing="5.0" prefHeight="50.0" prefWidth="252.0" textAlignment="CENTER" wrapText="true" />
+            <Label fx:id="messageId" alignment="CENTER" contentDisplay="CENTER" graphicTextGap="10.0" layoutX="125.0" layoutY="15.0" lineSpacing="5.0" prefHeight="50.0" prefWidth="252.0" textAlignment="CENTER" wrapText="true" />
             <Button fx:id="okId" layoutX="214.0" layoutY="74.0" mnemonicParsing="false" onAction="#okAction" prefHeight="40.0" prefWidth="75.0" text="OK" />
          </children>
       </AnchorPane>

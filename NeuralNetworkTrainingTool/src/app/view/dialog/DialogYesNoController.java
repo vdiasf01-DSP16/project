@@ -1,6 +1,5 @@
 package app.view.dialog;
 
-import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URL;
 
@@ -29,16 +28,6 @@ public class DialogYesNoController extends ApplicationDialogResults {
      */
     private final String CSS_RESOURCE = "css/dialogYesNo.css";
     
-    /**
-     * The window width.
-     */
-    private final int WINDOW_WIDTH = 400;
-
-    /**
-     * The window height.
-     */
-    private final int WINDOW_HEIGH = 160;
-
     /**
      * The result.
      */
@@ -80,15 +69,6 @@ public class DialogYesNoController extends ApplicationDialogResults {
         // Make sure the user responds to this before anything else.
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setResizable(false);
-        stage.setWidth(WINDOW_WIDTH);
-        stage.setHeight(WINDOW_HEIGH);
-        double middleScreenX = Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2;
-        double middleScreenY = Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2;
-        double stageMiddleScreenX = stage.getWidth();
-        double stageMiddleScreenY = stage.getHeight();
-        System.out.println("Got st md X: "+stageMiddleScreenX);
-//        stage.setX(Toolkit.getDefaultToolkit().getScreenSize().getWidth()/2 - WINDOW_WIDTH/2);
-//        stage.setY(Toolkit.getDefaultToolkit().getScreenSize().getHeight()/2 - WINDOW_HEIGH/2);
 
         // Starting the show...
         stage.showAndWait();

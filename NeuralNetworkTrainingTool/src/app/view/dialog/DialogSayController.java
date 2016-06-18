@@ -27,7 +27,7 @@ public class DialogSayController extends ApplicationDialogResults {
     /**
      * CSS resource file name to be used.
      */
-    private final String CSS_RESOURCE = "../../css/application.css";
+    private final String CSS_RESOURCE = "css/dialogSay.css";
     
     /**
      * Initialising the Dialog.
@@ -64,6 +64,9 @@ public class DialogSayController extends ApplicationDialogResults {
         
         // Make sure the user responds to this before anything else.
         stage.initModality(Modality.APPLICATION_MODAL);
+
+        // Not resizable.
+        stage.setResizable(false);
 
         // Starting the show...
         stage.showAndWait();
