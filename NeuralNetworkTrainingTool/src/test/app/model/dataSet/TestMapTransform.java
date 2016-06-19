@@ -7,8 +7,8 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-import app.model.dataSet.MapTransform;
-import app.model.dataSet.MathOperator;
+import app.core.dataSet.MapTransform;
+import app.core.dataSet.MathOperator;
 
 /**
  * Testing the MapTransform implementation.

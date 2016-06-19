@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import app.model.dataSet.MapTransform;
-import app.model.dataSet.MathOperator;
-import app.model.dataSet.VectorMap;
+import app.core.dataSet.MapTransform;
+import app.core.dataSet.MathOperator;
+import app.core.dataSet.VectorMap;
 
 /**
  * Unit tests for the Vector Map class.

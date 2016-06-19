@@ -1,4 +1,4 @@
-package app.model.dataSet;
+package app.core.dataSet;
 
 /**
  * List of all the known mathematical operators that can be used 

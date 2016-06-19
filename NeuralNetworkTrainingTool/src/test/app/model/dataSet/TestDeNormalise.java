@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import app.model.dataSet.DeNormalize;
+import app.core.dataSet.DeNormalize;
 
 /**
  * Testing the DeNormalise class implementation.

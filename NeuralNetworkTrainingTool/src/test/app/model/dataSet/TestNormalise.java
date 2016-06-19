@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import app.model.dataSet.Normalize;
+import app.core.dataSet.Normalize;
 
 /**
  * Testing the Normalise class implementation.

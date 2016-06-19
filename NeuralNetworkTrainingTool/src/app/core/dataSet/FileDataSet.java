@@ -1,4 +1,4 @@
-package app.model.dataSet;
+package app.core.dataSet;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

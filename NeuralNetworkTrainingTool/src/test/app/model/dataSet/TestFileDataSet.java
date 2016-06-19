@@ -10,11 +10,11 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import app.model.dataSet.DataSet;
-import app.model.dataSet.FileDataSet;
-import app.model.dataSet.MapTransform;
-import app.model.dataSet.MathOperator;
-import app.model.dataSet.VectorMap;
+import app.core.dataSet.DataSet;
+import app.core.dataSet.FileDataSet;
+import app.core.dataSet.MapTransform;
+import app.core.dataSet.MathOperator;
+import app.core.dataSet.VectorMap;
 import app.model.serializable.DataSetFileAttributes;
 import app.model.serializable.FileAttributes;
 
