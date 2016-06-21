@@ -9,7 +9,7 @@ package app.core.neuralNetwork;
 public enum NeuralNetworkPatternKey {
 	ADALINEPattern,
 	ART1Pattern,
-//	BAMPattern,
+	BAMPattern,
 //	BoltzmannPattern,
 //	CPNPattern,
 //	ElmanPattern,

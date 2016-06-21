@@ -16,18 +16,16 @@ public abstract class NeuralNetworkPatternFactory {
 	 * @return NeuralNetworkPatternCore
 	 */
 	private static NeuralNetworkPatternCore<?> getNetworkPattern(NeuralNetworkPatternKey neuralNetworkPattern) {
-		if ( NeuralNetworkPatternKey.FeedForwardPattern.equals(neuralNetworkPattern) ) {
+		if ( NeuralNetworkPatternKey.FeedForwardPattern.equals(neuralNetworkPattern) ) 
 			return new FeedForwardPatternAdaptor();
-		}
-		if ( NeuralNetworkPatternKey.ADALINEPattern.equals(neuralNetworkPattern) ) {
+		if ( NeuralNetworkPatternKey.ADALINEPattern.equals(neuralNetworkPattern) ) 
 			return new ADALINEPatternAdaptor();
-		}
-		if ( NeuralNetworkPatternKey.HopfieldPattern.equals(neuralNetworkPattern) ) {
+		if ( NeuralNetworkPatternKey.HopfieldPattern.equals(neuralNetworkPattern) ) 
 			return new HopfieldPatternAdaptor();
-		}
-		if ( NeuralNetworkPatternKey.ART1Pattern.equals(neuralNetworkPattern) ) {
+		if ( NeuralNetworkPatternKey.ART1Pattern.equals(neuralNetworkPattern) )
 			return new ART1PatternAdaptor();
-		}
+		if ( NeuralNetworkPatternKey.BAMPattern.equals(neuralNetworkPattern) )
+			return new BAMPatternAdaptor();
 		return null;
 	}
 
