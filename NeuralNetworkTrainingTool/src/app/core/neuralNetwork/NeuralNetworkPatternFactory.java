@@ -30,6 +30,18 @@ public abstract class NeuralNetworkPatternFactory {
 			return new BoltzmannPatternAdaptor();
 		if ( NeuralNetworkPatternKey.CPNPattern.equals(neuralNetworkPattern) )
 			return new CPNPatternAdaptor();
+		if ( NeuralNetworkPatternKey.ElmanPattern.equals(neuralNetworkPattern) )
+			return new ElmanPatternAdaptor();
+		if ( NeuralNetworkPatternKey.JordanPattern.equals(neuralNetworkPattern) )
+			return new JordanPatternAdaptor();
+		if ( NeuralNetworkPatternKey.PNNPattern.equals(neuralNetworkPattern) )
+			return new PNNPatternAdaptor();
+		if ( NeuralNetworkPatternKey.RadialBasisPattern.equals(neuralNetworkPattern) )
+			return new RadialBasisPatternAdaptor();
+		if ( NeuralNetworkPatternKey.SOMPattern.equals(neuralNetworkPattern) )
+			return new SomPatternAdaptor();
+		if ( NeuralNetworkPatternKey.SVMPattern.equals(neuralNetworkPattern) )
+			return new SVMPatternAdaptor();
 		return null;
 	}
 
