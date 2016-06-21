@@ -198,8 +198,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
                         neuralNetworkTopologyId.getSelectionModel().getSelectedIndex()));
     }
     
-    
-    
     /**
      * Closing the window and lose any changes made without warning.
      */
