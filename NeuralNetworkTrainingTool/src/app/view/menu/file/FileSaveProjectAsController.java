@@ -42,6 +42,6 @@ public class FileSaveProjectAsController implements ApplicationMenu {
 
         // Setting the new project file.
         mainController.setProjectFile(file);
-        mainController.saveAll();
+        mainController.saveProject();
     }
 }

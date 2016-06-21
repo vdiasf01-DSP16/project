@@ -101,7 +101,7 @@ public class FileNewProjectFXMLController implements FXMLController {
     	ProjectData projectData = getProjectData();
 
     	// Asks user where to save this new project.
-    	File file = ApplicationDialogFactory.openFile(mainController, FILE_CHOOSER_TITLE, EXTENSION_LIST);
+    	File file = ApplicationDialogFactory.saveFile(mainController, FILE_CHOOSER_TITLE, EXTENSION_LIST);
 
     	// If no file returned, the user has cancelled the operation.
     	if ( file != null ) {

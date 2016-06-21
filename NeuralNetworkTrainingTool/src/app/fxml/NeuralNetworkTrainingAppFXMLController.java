@@ -115,7 +115,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void fileNewProjectAction() {
-        if ( mainController.isAllSaved() ) { 
+        if ( mainController.isProjectSaved() ) { 
             ApplicationViewFactory.startFileNewProjectController(mainController);
         }
         else {
@@ -123,7 +123,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
             String answer = ApplicationDialogFactory.askUserYesNoCancel(SAVE_CHANGES_TEXT);
 
             if ( answer.equals(ApplicationDialogResults.YES) ) {
-                mainController.saveAll();
+                mainController.saveProject();
                 mainController.closeProject();
                 ApplicationViewFactory.startFileNewProjectController(mainController);
             }
@@ -158,8 +158,8 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void fileSaveProjectAction() {
-        if ( ! mainController.isAllSaved() ) { 
-            mainController.saveAll();
+        if ( ! mainController.isProjectSaved() ) { 
+            mainController.saveProject();
         }
         updateProjectLoaded();
     }
@@ -178,13 +178,13 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void fileCloseProjectAction() {
-        if ( mainController.isAllSaved() ) {
+        if ( mainController.isProjectSaved() ) {
             mainController.closeProject();
         } 
         else {
             String answer = ApplicationDialogFactory.askUserYesNoCancel(CLOSE_PROJECT_TEXT);
             if ( answer.equals(ApplicationDialogResults.YES) ) {
-                mainController.saveAll();
+                mainController.saveProject();
                 mainController.closeProject();
             }
             else if ( answer.equals(ApplicationDialogResults.NO) ) {
@@ -242,7 +242,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
      */
     @FXML
     public void fileCloseAction() {
-        if ( mainController.isAllSaved() ) { 
+        if ( mainController.isProjectSaved() ) { 
             closeApp();
         }
         else {
@@ -250,7 +250,7 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
             String answer = ApplicationDialogFactory.askUserYesNoCancel(SAVE_CHANGES_TEXT);
 
             if ( answer.equals(ApplicationDialogResults.YES) ) {
-                mainController.saveAll();
+                mainController.saveProject();
                 closeApp();
             }
             else if ( answer.equals(ApplicationDialogResults.NO) ) {

@@ -6,10 +6,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
+import app.core.neuralNetwork.NeuralNetworkPatternFactory;
+import app.core.neuralNetwork.NeuralNetworkPatternKey;
 import app.model.serializable.DataSetFileAttributes;
 import app.model.serializable.FileAttributes;
 import app.model.serializable.ProjectData;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellDataFeatures;
+import javafx.util.Callback;
 
 /**
  * The Main Application Controller.
@@ -43,19 +55,9 @@ public class ControllerImpl implements Controller {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isAllSaved() {
+	public boolean isProjectSaved() {
 		if ( projectIsSaved ) return true;
 		return false;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void saveAll() {
-		saveProject();
-		// TODO: Add more parts of the project that needs saving
-		projectIsSaved = true;
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class ControllerImpl implements Controller {
 	 */
 	@Override
 	public void saveProject() {
-		// TODO: Deal with the exceptions
+		// TODO: Deal with exceptions
 		if ( projectFile != null ) {
 			if ( ! projectFile.exists() ) {
 				try {
@@ -112,9 +114,16 @@ public class ControllerImpl implements Controller {
 				try {
 					fout = new FileOutputStream(projectFile);
 					oos = new ObjectOutputStream(fout);
+					
+					// The list of objects that must be then read back 
+					// in the same order. Note: Changing this will result
+					// in older projects to not be readable anymore.
 					oos.writeObject(projectData);
+					oos.writeObject(dataSetFileAttributes);
+
 					projectIsSaved = true;
-				} catch (IOException e) {
+
+				} catch (IOException e) { 
 					e.printStackTrace();
 				} finally {
 					try {
@@ -140,7 +149,7 @@ public class ControllerImpl implements Controller {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void loadProjectFile(File file) {
+	public void loadProject(File file) {
 		if ( file != null ) {
 			if ( file.exists() & file.canRead() ) {
 				projectFile = file;
@@ -150,7 +159,14 @@ public class ControllerImpl implements Controller {
 					fin = new FileInputStream(file);
 					ois = new ObjectInputStream(fin);
 					try {
+
+						// The list of objects that must be then read back 
+						// in the same order in which they were saved. 
+						// Note: Changing this will result in older projects 
+						// to not be readable anymore.
 						projectData = (ProjectData) ois.readObject();
+						dataSetFileAttributes = (FileAttributes) ois.readObject();
+
 					} catch (ClassNotFoundException e) {
 						e.printStackTrace();
 					}
@@ -186,5 +202,79 @@ public class ControllerImpl implements Controller {
 			dataSetFileAttributes.setFooterRows(footerLines);
 			dataSetFileAttributes.setSeparator(separator);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("rawtypes")
+	@Override public TableColumn<ObservableList, ?> getDataSetColumnHeader() {
+		TableColumn<ObservableList, ?> allcols = new TableColumn<>();
+
+		// TODO: The file received must be parsed with the new information
+		// then we can have access to the results here and do the trick.
+        List<String> columnHeader = new ArrayList<String>();
+    	for( int i = 0; i < 10; i++ ) {
+    		columnHeader.add("CH "+i);
+    	}
+        for(int i = 0 ; i < columnHeader.size(); i++) {
+            int j = i;
+            TableColumn<ObservableList,String> col = new TableColumn<>(columnHeader.get(i));
+            col.setCellValueFactory(new Callback<CellDataFeatures<ObservableList,String>,ObservableValue<String>>(){
+               public ObservableValue<String> call(CellDataFeatures<ObservableList, String> param) {
+                   return new SimpleStringProperty(param.getValue().get(j).toString());
+                }
+            });
+            allcols.getColumns().add(col);
+//            tableId.getColumns().add(col);
+        }
+
+		return allcols;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@SuppressWarnings("rawtypes")
+	@Override public List<ObservableList> getDataSetDataRows() {
+        List<ObservableList> rowList = new LinkedList<>();
+
+        for(int i = 0; i < 10; i++ ) {
+        	ObservableList<String> row = FXCollections.observableArrayList();
+            row.addAll("A"+i,"B"+i,"C"+i,"D"+i,"E"+i,"F"+i,"G"+i,"H"+i,"I"+i,"J"+i);
+            rowList.add(row);
+        }
+        
+		return rowList;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public List<String> getNeuralNetworkPatternList() {
+		List<String> list = new LinkedList<>();
+		for( NeuralNetworkPatternKey key : NeuralNetworkPatternKey.values() ) {
+			list.add(NeuralNetworkPatternFactory.getName(key));
+		}
+		return list;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public String getNeuralNetworkPatternDescription(NeuralNetworkPatternKey neuralNetworkPattern) {
+		return NeuralNetworkPatternFactory.getDescription(neuralNetworkPattern);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public String getNeuralNetworkPatternDescription(int neuralNetworkId) {
+		int index = 0;
+		for( NeuralNetworkPatternKey key : NeuralNetworkPatternKey.values() ) {
+			if ( neuralNetworkId == index ) return NeuralNetworkPatternFactory.getDescription(key);
+			index++;
+		}
+		return null;
 	}
 }

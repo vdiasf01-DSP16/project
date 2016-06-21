@@ -47,6 +47,6 @@ public class FileLoadProjectController implements ApplicationMenu {
         File file = fileChooser.showOpenDialog(new Stage());
 
         // Setting the new project file.
-        mainController.loadProjectFile(file);
+        mainController.loadProject(file);
     }
 }
