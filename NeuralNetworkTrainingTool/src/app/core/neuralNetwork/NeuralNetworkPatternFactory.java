@@ -26,6 +26,10 @@ public abstract class NeuralNetworkPatternFactory {
 			return new ART1PatternAdaptor();
 		if ( NeuralNetworkPatternKey.BAMPattern.equals(neuralNetworkPattern) )
 			return new BAMPatternAdaptor();
+		if ( NeuralNetworkPatternKey.BoltzmannPattern.equals(neuralNetworkPattern) )
+			return new BoltzmannPatternAdaptor();
+		if ( NeuralNetworkPatternKey.CPNPattern.equals(neuralNetworkPattern) )
+			return new CPNPatternAdaptor();
 		return null;
 	}
 
