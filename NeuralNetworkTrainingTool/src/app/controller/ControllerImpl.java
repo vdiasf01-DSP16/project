@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import app.core.activationFunction.ActivationFunctionFactory;
+import app.core.activationFunction.ActivationFunctionKey;
 import app.core.neuralNetwork.NeuralNetworkPatternFactory;
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
 import app.model.serializable.DataSetFileAttributes;
@@ -276,5 +278,16 @@ public class ControllerImpl implements Controller {
 			index++;
 		}
 		return null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public List<String> getActivationFunctionList() {
+		List<String> list = new LinkedList<>();
+		for( ActivationFunctionKey key : ActivationFunctionKey.values() ) {
+			list.add(ActivationFunctionFactory.getName(key));
+		}
+		return list;
 	}
 }

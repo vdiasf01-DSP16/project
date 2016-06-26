@@ -127,4 +127,11 @@ public interface Controller {
 	 */
 	public String getNeuralNetworkPatternDescription(int neuralNetworkId);
 
+	/**
+	 * The list of all the activation functions available.
+	 * 
+	 * @return List of String
+	 */
+	public List<String> getActivationFunctionList();
+
 }
