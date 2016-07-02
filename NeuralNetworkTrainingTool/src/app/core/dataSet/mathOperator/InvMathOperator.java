@@ -14,7 +14,7 @@ public class InvMathOperator implements MathOperatorCore<Double> {
     /**
      * The operation description.
      */
-    public final String DESCRIPTION = "Inverting all future received values to 1 if zero and 0 otherwise.";
+    public final String DESCRIPTION = "Inverts received values to 1 if zero, 0 otherwise.";
     
     /**
      * The operation user friendly name.

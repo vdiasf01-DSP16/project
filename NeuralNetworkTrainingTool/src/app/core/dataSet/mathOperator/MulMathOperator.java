@@ -16,7 +16,7 @@ public class MulMathOperator implements MathOperatorCore<Double> {
     /**
      * The operation description.
      */
-    public final String DESCRIPTION = "Multiplying supplied initial value to all future received values";
+    public final String DESCRIPTION = "Multiplies initial value to received value.";
     
     /**
      * The operation user friendly name.

@@ -14,7 +14,7 @@ import app.core.dataSet.mathOperator.SubMathOperator;
  * @author Vasco
  */
 public abstract class MathOperatorFactory {
-	
+    
     /**
      * Get the matching Math Operation available.
      * Given no initial bias value was supplied, the operation will 
@@ -22,15 +22,17 @@ public abstract class MathOperatorFactory {
      * 
      * @param activationFunction ActivationFunctionKey
      * @return ActivationFunctionCore
+     * @throws IllegalStateException
      */
-    public static MathOperatorCore<?> getMathOperation(MathOperatorKey mathOperator) {
+    public static MathOperatorCore<?> getMathOperation(MathOperatorKey mathOperator) 
+            throws IllegalStateException {
         if ( MathOperatorKey.ADD.equals(mathOperator) ) return new AddMathOperator();
         if ( MathOperatorKey.SUB.equals(mathOperator) ) return new SubMathOperator();
         if ( MathOperatorKey.MUL.equals(mathOperator) ) return new MulMathOperator();
         if ( MathOperatorKey.DIV.equals(mathOperator) ) return new DivMathOperator();
         if ( MathOperatorKey.INV.equals(mathOperator) ) return new InvMathOperator();
         if ( MathOperatorKey.BIN.equals(mathOperator) ) return new BinMathOperator();
-        return null;
+        throw new IllegalStateException("Unknown Math Operation "+mathOperator);
     }
 
     /**
@@ -41,16 +43,45 @@ public abstract class MathOperatorFactory {
      * @param mathOperator
      * @param value double bias value
      * @return MathOperatorCore
+     * @throws IllegalStateException
      */
-    public static MathOperatorCore<?> getMathOperation(MathOperatorKey mathOperator, Double value) {
+    public static MathOperatorCore<?> getMathOperation(MathOperatorKey mathOperator, Double value) 
+            throws IllegalStateException {
         if ( MathOperatorKey.ADD.equals(mathOperator) ) return new AddMathOperator(value);
         if ( MathOperatorKey.SUB.equals(mathOperator) ) return new SubMathOperator(value);
         if ( MathOperatorKey.MUL.equals(mathOperator) ) return new MulMathOperator(value);
         if ( MathOperatorKey.DIV.equals(mathOperator) ) return new DivMathOperator(value);
         if ( MathOperatorKey.INV.equals(mathOperator) ) return new InvMathOperator(value);
         if ( MathOperatorKey.BIN.equals(mathOperator) ) return new BinMathOperator(value);
-        return null;
+        throw new IllegalStateException("Unknown Math Operation "+mathOperator);
     }
+
+    /**
+     * Get the matching Math Operation available.
+     * This converts a string that matches the Math Key into the
+     * respective Math Operator object.
+     * 
+     * @param mathOperator String
+     * @return ActivationFunctionCore
+     * @throws IllegalStateException
+     */
+    public static MathOperatorCore<?> getMathOperation(String mathOperator) 
+            throws IllegalStateException {
+        if ( getMathOperation(MathOperatorKey.ADD).getName().equals(mathOperator) ) 
+            return new AddMathOperator();
+        if ( getMathOperation(MathOperatorKey.SUB).getName().equals(mathOperator) ) 
+            return new SubMathOperator();
+        if ( getMathOperation(MathOperatorKey.MUL).getName().equals(mathOperator) ) 
+            return new MulMathOperator();
+        if ( getMathOperation(MathOperatorKey.DIV).getName().equals(mathOperator) ) 
+            return new DivMathOperator();
+        if ( getMathOperation(MathOperatorKey.INV).getName().equals(mathOperator) ) 
+            return new InvMathOperator();
+        if ( getMathOperation(MathOperatorKey.BIN).getName().equals(mathOperator) ) 
+            return new BinMathOperator();
+        throw new IllegalStateException("Unknown Math Operation "+mathOperator);
+    }
+
 
     /**
      * The Description associated with the given math operator.
