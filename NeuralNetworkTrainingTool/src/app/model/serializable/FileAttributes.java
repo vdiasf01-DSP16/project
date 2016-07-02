@@ -2,6 +2,13 @@ package app.model.serializable;
 
 import java.io.Serializable;
 
+/**
+ * The data set file attributes, set for training or testing 
+ * on a neural network.
+ *  
+ * @author Vasco
+ *
+ */
 public interface FileAttributes extends Serializable {
 
 	/**

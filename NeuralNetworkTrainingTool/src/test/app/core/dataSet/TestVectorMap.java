@@ -6,8 +6,9 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-import app.core.dataSet.MapTransform;
-import app.core.dataSet.MathOperator;
+import app.core.dataSet.MathOperatorCore;
+import app.core.dataSet.MathOperatorFactory;
+import app.core.dataSet.MathOperatorKey;
 import app.core.dataSet.VectorMap;
 
 /**
@@ -36,14 +37,14 @@ public class TestVectorMap {
 	/**
 	 * The transformation required.
 	 */
-	private MapTransform mapTransform;
+	private MathOperatorCore<?> mapTransform;
 
 	/**
 	 * Initialise tests.
 	 */
 	@Before
 	public void before() {
-		mapTransform = new MapTransform(MathOperator.ADD, 2.1);
+		mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.1);
 		vectorMap = new VectorMap(SOURCE_INDEX, mapTransform);
 	}
 

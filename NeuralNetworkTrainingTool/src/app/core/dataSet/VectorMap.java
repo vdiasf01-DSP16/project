@@ -14,7 +14,7 @@ public class VectorMap {
 	 * The transformation function to convert source data 
 	 * into ready final data.
 	 */
-	private final MapTransform mapTransform;
+	private final MathOperatorCore<?> mapTransform;
 
 	/**
 	 * The source index this map corresponds to.
@@ -32,7 +32,7 @@ public class VectorMap {
 	 * @param sourceIndex int
 	 * @param mapTransform MpaTransform
 	 */
-	public VectorMap(int sourceIndex, MapTransform mapTransform) {
+	public VectorMap(int sourceIndex, MathOperatorCore<?> mapTransform) {
 		this.mapTransform = mapTransform;
 		this.sourceIndex = sourceIndex;
 	}

@@ -8,8 +8,8 @@ import java.util.LinkedList;
 import org.junit.Test;
 
 import app.core.dataSet.DataSet;
-import app.core.dataSet.MapTransform;
-import app.core.dataSet.MathOperator;
+import app.core.dataSet.MathOperatorFactory;
+import app.core.dataSet.MathOperatorKey;
 import app.core.dataSet.VectorMap;
 
 /**
@@ -427,7 +427,7 @@ public class TestDataSet extends DataSet {
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
         inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
+        inputColumnMap.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 1.3)));
         double[] found = getTrainingInputRow(0); 
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
@@ -443,7 +443,7 @@ public class TestDataSet extends DataSet {
         testingDataSet = new double[2][3];
         testingDataSet[0][1] = 5.3;
         inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
+        inputColumnMap.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 1.3)));
         double[] found = getTestingInputRow(0); 
         assertNotNull(found);
         assertTrue(0.0 == found[0]);
@@ -459,7 +459,7 @@ public class TestDataSet extends DataSet {
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
         inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
+        inputColumnMap.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 1.3)));
         int found = getNumberOfInputColumns(); 
         assertTrue(1 == found);
     }
@@ -472,7 +472,7 @@ public class TestDataSet extends DataSet {
         trainingDataSet = new double[2][3];
         trainingDataSet[0][1] = 5.3;
         inputColumnMap = new LinkedList<VectorMap>();
-        inputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
+        inputColumnMap.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 1.3)));
         outputColumnMap = new LinkedList<>();
         int found = getNumberOfOutputColumns();
         assertTrue(0 == found);
@@ -486,7 +486,7 @@ public class TestDataSet extends DataSet {
         trainingDataSet = new double[2][3];
         trainingDataSet[1][0] = 5.3;
         outputColumnMap = new LinkedList<VectorMap>();
-        outputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
+        outputColumnMap.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 1.3)));
         double found[] = getTrainingOutputRow(1);
         assertNotNull(found);
         assertTrue(1 == found.length);
@@ -501,7 +501,7 @@ public class TestDataSet extends DataSet {
         testingDataSet = new double[2][3];
         testingDataSet[1][0] = 5.3;
         outputColumnMap = new LinkedList<VectorMap>();
-        outputColumnMap.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 1.3)));
+        outputColumnMap.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 1.3)));
         double found[] = getTestingOutputRow(1);
         assertNotNull(found);
         assertTrue(1 == found.length);

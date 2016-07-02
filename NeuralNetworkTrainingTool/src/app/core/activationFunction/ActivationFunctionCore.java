@@ -6,7 +6,7 @@ package app.core.activationFunction;
  * @author Vasco
  *
  */
-public interface ActivationFunctionCore <T> {
+public interface ActivationFunctionCore<T> {
 
     /**
      * The Activation Function description.

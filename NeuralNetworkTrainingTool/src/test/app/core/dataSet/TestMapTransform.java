@@ -7,8 +7,11 @@ import java.util.function.Function;
 
 import org.junit.Test;
 
-import app.core.dataSet.MapTransform;
-import app.core.dataSet.MathOperator;
+import app.core.dataSet.MathOperatorCore;
+import app.core.dataSet.MathOperatorFactory;
+import app.core.dataSet.MathOperatorKey;
+import app.core.dataSet.mathOperator.AddMathOperator;
+import app.core.dataSet.mathOperator.SubMathOperator;
 
 /**
  * Testing the MapTransform implementation.
@@ -40,7 +43,7 @@ public class TestMapTransform {
     @Test
     public void testNoMathExpression() {
         // Instantiate new object with no math operation
-        Function<Double,Double> mapTransform = new MapTransform();
+        Function<Double,Double> mapTransform = new AddMathOperator();
         // Check if expected value matches returned one.
         double expectedValue = 12.34;
         double foundValue = mapTransform.apply(expectedValue);
@@ -54,7 +57,7 @@ public class TestMapTransform {
     @Test
     public void testNoMathExpressionSmallDouble() {
         // Instantiate new object with no math operation
-        Function<Double,Double> mapTransform = new MapTransform();
+        Function<Double,Double> mapTransform = new SubMathOperator();
         // Check if expected value matches returned one.
         double expectedValue = 12.34E-90;
         double foundValue = mapTransform.apply(expectedValue);
@@ -68,7 +71,7 @@ public class TestMapTransform {
     @Test
     public void testNoMathExpressionBigDouble() {
         // Instantiate new object with no math operation
-        Function<Double,Double> mapTransform = new MapTransform();
+        Function<Double,Double> mapTransform = new SubMathOperator();
         // Check if expected value matches returned one.
         double expectedValue = 12.34E90;
         double foundValue = mapTransform.apply(expectedValue);
@@ -82,7 +85,7 @@ public class TestMapTransform {
     @Test
     public void testNoMathExpressioVerySmallDouble() {
         // Instantiate new object with no math operation
-        Function<Double,Double> mapTransform = new MapTransform();
+        Function<Double,Double> mapTransform = new AddMathOperator();
         // Check if expected value matches returned one.
         double expectedValue = 12.34E-90;
         double foundValue = mapTransform.apply(expectedValue);
@@ -95,7 +98,7 @@ public class TestMapTransform {
     @Test
     public void testMathAddition() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.ADD,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD,INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.add(INITIAL_VALUE).doubleValue();
@@ -109,7 +112,7 @@ public class TestMapTransform {
     @Test
     public void testMathSubtraction() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.SUB,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.SUB,INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.subtract(INITIAL_VALUE).doubleValue();
@@ -123,7 +126,7 @@ public class TestMapTransform {
     @Test
     public void testMathMultiplication() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.MUL,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.MUL,INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.multiply(INITIAL_VALUE).doubleValue();
@@ -137,7 +140,7 @@ public class TestMapTransform {
     @Test
     public void testMathDivision() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.DIV,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.DIV,INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.doubleValue() / INITIAL_VALUE.doubleValue();
@@ -151,7 +154,7 @@ public class TestMapTransform {
     @Test(expected=ArithmeticException.class)
     public void testMathDivisionByZero() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.DIV,0);
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.DIV,0.0);
         mapTransform.apply(GIVEN_VALUE.doubleValue());
     }
 
@@ -161,7 +164,7 @@ public class TestMapTransform {
     @Test
     public void testMathINV() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.INV);
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.INV);
         double expectedValue = GIVEN_VALUE.doubleValue() > 0 ? 0 : 1;
         double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
         assertTrue(expectedValue == foundValue);
@@ -173,7 +176,7 @@ public class TestMapTransform {
     @Test
     public void testMathBIN() {
         // Instantiate new object with math operation
-        MapTransform mapTransform = new MapTransform(MathOperator.BIN);
+        MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.BIN);
         double expectedValue = GIVEN_VALUE.doubleValue() > 0 ? 1 : 0;
         double foundValue = mapTransform.apply(GIVEN_VALUE.doubleValue());
         assertTrue(expectedValue == foundValue);

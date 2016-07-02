@@ -7,7 +7,7 @@ package app.core.dataSet;
  * @author Vasco
  *
  */
-public enum MathOperator {
+public enum MathOperatorKey {
 	/**
 	 * Adds given number to instantiated one .
 	 */

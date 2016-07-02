@@ -12,8 +12,8 @@ import org.junit.Test;
 
 import app.core.dataSet.DataSet;
 import app.core.dataSet.FileDataSet;
-import app.core.dataSet.MapTransform;
-import app.core.dataSet.MathOperator;
+import app.core.dataSet.MathOperatorFactory;
+import app.core.dataSet.MathOperatorKey;
 import app.core.dataSet.VectorMap;
 import app.model.serializable.DataSetFileAttributes;
 import app.model.serializable.FileAttributes;
@@ -985,7 +985,7 @@ public class TestFileDataSet {
         outputColumns.add(new VectorMap(0, null));
         outputColumns.add(new VectorMap(1, null));
         outputColumns.add(new VectorMap(2, null));
-        outputColumns.add(new VectorMap(2, new MapTransform(MathOperator.ADD, 2)));
+        outputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.0)));
         fileDataSet.setOutputColumns(outputColumns);
         fileDataSet.load();
 
@@ -1114,7 +1114,7 @@ public class TestFileDataSet {
         outputColumns.add(new VectorMap(0, null));
         outputColumns.add(new VectorMap(1, null));
         outputColumns.add(new VectorMap(2, null));
-        outputColumns.add(new VectorMap(2, new MapTransform(MathOperator.ADD, 2)));
+        outputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.0)));
         fileDataSet.setOutputColumns(outputColumns);
         fileDataSet.load();
 
@@ -1172,13 +1172,13 @@ public class TestFileDataSet {
         
         // The output transform
         List<VectorMap> outputColumns = new LinkedList<>();
-        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 2.4)));
+        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.4)));
 
         // The input transform
         List<VectorMap> inputColumns = new LinkedList<>();
-        inputColumns.add(new VectorMap(1, new MapTransform(MathOperator.ADD, 2.5)));
-        inputColumns.add(new VectorMap(2, new MapTransform(MathOperator.ADD, 2.5)));
-        inputColumns.add(new VectorMap(3, new MapTransform(MathOperator.ADD, 2.5)));
+        inputColumns.add(new VectorMap(1, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
+        inputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
+        inputColumns.add(new VectorMap(3, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
         
         fileDataSet.setInputColumns(inputColumns);
         fileDataSet.setOutputColumns(outputColumns);
@@ -1257,13 +1257,13 @@ public class TestFileDataSet {
         
         // The output transform
         List<VectorMap> outputColumns = new LinkedList<>();
-        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.ADD, 2.4)));
+        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.4)));
 
         // The input transform
         List<VectorMap> inputColumns = new LinkedList<>();
-        inputColumns.add(new VectorMap(1, new MapTransform(MathOperator.ADD, 2.5)));
-        inputColumns.add(new VectorMap(2, new MapTransform(MathOperator.ADD, 2.5)));
-        inputColumns.add(new VectorMap(3, new MapTransform(MathOperator.ADD, 2.5)));
+        inputColumns.add(new VectorMap(1, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
+        inputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
+        inputColumns.add(new VectorMap(3, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
         
         fileDataSet.setInputColumns(inputColumns);
         fileDataSet.setOutputColumns(outputColumns);
@@ -1825,8 +1825,8 @@ public class TestFileDataSet {
         fileDataSet.setInputColumns(inputColumns);
 
         List<VectorMap> outputColumns = new LinkedList<>();
-        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.BIN)));
-        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.INV)));
+        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.BIN)));
+        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.INV)));
         fileDataSet.setOutputColumns(outputColumns);
 
         fileDataSet.load();
@@ -1972,8 +1972,8 @@ public class TestFileDataSet {
         fileDataSet.setInputColumns(inputColumns);
 
         List<VectorMap> outputColumns = new LinkedList<>();
-        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.BIN)));
-        outputColumns.add(new VectorMap(0, new MapTransform(MathOperator.INV)));
+        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.BIN)));
+        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.INV)));
         fileDataSet.setOutputColumns(outputColumns);
 
         fileDataSet.load();
