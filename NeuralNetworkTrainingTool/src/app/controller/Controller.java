@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
+import app.model.serializable.NeuralNetworkConfig;
 import app.model.serializable.ProjectData;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -94,7 +95,7 @@ public interface Controller {
 	 * @return TableColumn
 	 */
 	@SuppressWarnings("rawtypes")
-	public TableColumn<ObservableList, ?> getDataSetColumnHeader();
+	public TableColumn<ObservableList, ?> getDataSetTableColumnHeader();
 
 	/**
 	 * The DataSet data rows matching the column header.
@@ -102,7 +103,7 @@ public interface Controller {
 	 * @return List of ObservableList
 	 */
 	@SuppressWarnings("rawtypes")
-	public List<ObservableList> getDataSetDataRows();
+	public List<ObservableList> getDataSetTableRows(int dataRows);
 
 	/**
 	 * The List of all the neural network patterns available.
@@ -133,5 +134,19 @@ public interface Controller {
 	 * @return List of String
 	 */
 	public List<String> getActivationFunctionList();
+
+	/**
+	 * The header line or first data line if no header was set.
+	 * 
+	 * @return List String
+	 */
+	public List<String> getHeaderColumns();
+
+	/**
+	 * The user set Neural Network configuration.
+	 * 
+	 * @return NeuralNetworkConfig
+	 */
+	public NeuralNetworkConfig getNeuralNetworkConfig();
 
 }
