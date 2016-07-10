@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.List;
 
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
-import app.model.serializable.NeuralNetworkConfig;
 import app.model.serializable.ProjectData;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
@@ -142,11 +141,64 @@ public interface Controller {
 	 */
 	public List<String> getHeaderColumns();
 
+//	/**
+//	 * The user set Neural Network configuration.
+//	 * 
+//	 * @return NeuralNetworkConfig
+//	 */
+//	public NeuralNetworkConfig getNeuralNetworkConfig();
+//
 	/**
-	 * The user set Neural Network configuration.
+	 * The currently set Data Set map selection to be used from the
+	 * data set input columns into the neural network input.
 	 * 
-	 * @return NeuralNetworkConfig
+	 * List index + 1 returns true for respective column in data set, 
+	 * if to be used, and false if not.
+	 * 
+	 * @return List of Boolean
 	 */
-	public NeuralNetworkConfig getNeuralNetworkConfig();
+	public List<Boolean> getInputMapDataSetSelection();
+
+	/**
+	 * Setting the index value of the list with the new selection.
+	 * 
+	 * @param index int
+	 * @param newValue Boolean
+	 */
+	public void setInputMapDataSetSelection(int index, Boolean newValue);
+
+	/**
+	 * Setting the input layer size number of neurons required.
+	 * 
+	 * @param inputLayerSize int
+	 */
+	public void setInputLayerSize(int inputLayerSize);
+
+	/**
+	 * Setting the output layer size number of neurons required.
+	 * 
+	 * @param outputLayerSize int
+	 */
+	public void setOutputLayerSize(int outputLayerSize);
+
+	/**
+	 * The output layer number of neurons.
+	 * 
+	 * @return int
+	 */
+	public int getOutputLayerSize();
+
+	/**
+	 * Setting the hidden layer number and amount of neurons required.
+	 * 
+	 * @param hiddenLayerSizes
+	 */
+	public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes);
+
+	/**
+	 * Resets all data possibly set for the neural network configuration.
+	 */
+	public void resetNeuralNetworkConfiguration();
+
 
 }

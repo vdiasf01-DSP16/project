@@ -351,15 +351,20 @@ public class DataSetFileAttributes implements FileAttributes, FileParser, DataSe
      */
     private List<String> getParsedRow(String rowLine) {
         List<String> parsedRow = new LinkedList<>();
-        
 
+        // if no separator set, don't attempt to split...
+        if ( separator == null | separator.length() == 0 ) {
+        	parsedRow.add(rowLine);
+        	return parsedRow;
+        }
+        
         String[] splitRow = rowLine.split(separator);
         
         if ( headerColumns < splitRow.length ) headerColumns = splitRow.length;
 
         for( int i = 0; i < headerColumns; i++ ) {
             if ( splitRow.length > i ) {
-              parsedRow.add(splitRow[i]);
+                parsedRow.add(splitRow[i]);
             }
             else {
                 parsedRow.add("");

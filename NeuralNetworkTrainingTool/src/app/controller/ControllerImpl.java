@@ -61,6 +61,13 @@ public class ControllerImpl implements Controller {
     private NeuralNetworkConfig neuralNetworkConfig;
 
     /**
+     * The selection from the user on which columns from the
+     * data set should be included into the neural network
+     * inputs.
+     */
+    private List<Boolean> inputMapDataSetSelection;
+    
+    /**
      * Controller Constructor to initialise required objects.
      */
     public ControllerImpl() {
@@ -210,6 +217,7 @@ public class ControllerImpl implements Controller {
     @Override public void setDataSetFile(File selectedFile) {
         this.dataSetFileAttributes = new DataSetFileAttributes();
         dataSetFileAttributes.setFilename(selectedFile.getAbsolutePath());
+        inputMapDataSetSelection = null;
     }
 
     /**
@@ -221,6 +229,7 @@ public class ControllerImpl implements Controller {
             dataSetFileAttributes.setFooterRows(footerLines);
             dataSetFileAttributes.setSeparator(separator);
         }
+        inputMapDataSetSelection = null;
     }
 
     /**
@@ -316,15 +325,12 @@ public class ControllerImpl implements Controller {
     @Override public List<ObservableList> getDataSetTableRows(int dataRows) {
         // Cast to a super set for the non-serializable parsing capabilities.
         DataSetFileGUIReader dataSet = (DataSetFileGUIReader) dataSetFileAttributes;
-        
         if ( dataSet == null ) return null;
 
         List<List<String>> firstDataRows = dataSet.getFirstDataRows(dataRows);
-
         List<ObservableList> rowList = new LinkedList<>();
 
-        // TODO: The real thing
-        for(int i = 0; i < firstDataRows.size(); i++ ) {
+        for( int i = 0; i < firstDataRows.size(); i++ ) {
             ObservableList<String> row = FXCollections.observableArrayList();
             row.addAll(firstDataRows.get(i));
             rowList.add(row);
@@ -336,8 +342,60 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-    @Override
-    public NeuralNetworkConfig getNeuralNetworkConfig() {
-        return neuralNetworkConfig;
-    }
+	@Override public List<Boolean> getInputMapDataSetSelection() {
+		// Instantiate the map list which is based on the data set column amount.
+		if ( inputMapDataSetSelection == null ) {
+			inputMapDataSetSelection = new LinkedList<>();
+			for( int i = 0; i < getHeaderColumns().size(); i++ ) {
+				inputMapDataSetSelection.add(false);
+			}
+		}
+		return inputMapDataSetSelection;
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public void setInputMapDataSetSelection(int index, Boolean newValue) {
+		inputMapDataSetSelection.set(index, newValue);
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public void setInputLayerSize(int inputLayerSize) {
+		neuralNetworkConfig.setInputLayerSize(inputLayerSize);
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public void setOutputLayerSize(int outputLayerSize) {
+		neuralNetworkConfig.setOutputLayerSize(outputLayerSize);
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes) {
+		neuralNetworkConfig.setHiddenLayerSizes(hiddenLayerSizes);
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public int getOutputLayerSize() {
+		return neuralNetworkConfig.getOutputLayerSize();
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public void resetNeuralNetworkConfiguration() {
+		neuralNetworkConfig.setHiddenLayerSizes(null);
+		neuralNetworkConfig.setInputLayerSize(0);
+		neuralNetworkConfig.setOutputLayerSize(0);
+		inputMapDataSetSelection = null;
+	
+	}
 }
