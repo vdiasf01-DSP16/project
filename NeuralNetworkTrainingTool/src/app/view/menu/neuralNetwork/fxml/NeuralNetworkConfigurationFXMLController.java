@@ -187,10 +187,10 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         neuralNetworkTabId.setDisable(false);
     }
 
+    /**
+     * Moving on to next stage: Mapping.
+     */
     @FXML public void neuralNetworkNextAction() {
-    	// Saving neural network configuration supplied by the user.
-        saveNeuralNetworkConfiguration();
-
         mappingTabId.getTabPane().getSelectionModel().select(mappingTabId);
         mappingTabId.setDisable(false);
         
@@ -199,6 +199,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     }
     
     @FXML public void mappingApplyAction() {
+    	saveDataSetData();
+    	saveNeuralNetworkConfiguration();
+    	saveMappingData();
         closeWindow();
     }
 
@@ -552,6 +555,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * not be activated. 
      */
     private void showMappingOutputOptions() {
+    	// TODO: make this work.. :)
+    	
         // Switch pane views.
         mappingPaneInputId.setVisible(false);
         mappingPaneOutputId.setVisible(true);
@@ -766,10 +771,20 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     }
 
     /**
-     * Saving all the neural Network configurations currently set.
+     * Giving back to the controller data set data supplied.
+     */
+	private void saveDataSetData() {
+		// TODO: Give main controller the file attributes
+	}
+
+    /**
+     * Giving back to the controller Neural Network configurations supplied.
      */
     private void saveNeuralNetworkConfiguration() {
-        // Supply the found data given by user.
+    	// TODO: Give main controller the Network Topology selected
+    	// TODO: Give main controller the Activation Function selected
+
+    	// Supply the found data given by user.
         int inputLayerSize = Integer.parseInt(neuronInputLayerAmountId.getText());
         int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
         mainController.setInputLayerSize(inputLayerSize);
@@ -781,7 +796,16 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     		hiddenLayerSizes.add(Integer.parseInt(textField.getText()));
     	}
     	mainController.setHiddenLayerSizes(hiddenLayerSizes);
-    	System.out.println("Saved info");
+    }
+
+    /**
+     * Giving back to the controller mapping data supplied.
+     */
+    private void saveMappingData() {
+    	// TODO: Give main controller the dataset columns for NN input.
+    	// if supervised:
+    	  // TODO: Give main controller the dataset columns for NN output.
+    	  // TODO: Give main controller the function selection per column.
     }
     
     /**
@@ -796,7 +820,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         footerLinesId.setText("");
         separatorId.setText("");
         tableId.getColumns().removeAll(tableId.getColumns());
-    	
     }
 
     /**
@@ -844,6 +867,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Resetting the mapping tab fields and values to it's initial state.
      */
     private void resetMappingTab() {
+    	// TODO: work out what is missing...
         mappingTabId.setDisable(true);
         mappingApplyId.setDisable(true);
 
