@@ -29,7 +29,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.TouchEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -57,13 +56,13 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     /**
      * Data set tab group
      */
+    @SuppressWarnings("rawtypes")
+    @FXML private TableView<ObservableList> tableId;
     @FXML private Button dataSetSelectedId;
     @FXML private Label dataSetFileId;
     @FXML private TextField headerLinesId;
     @FXML private TextField footerLinesId;
     @FXML private TextField separatorId;
-    @SuppressWarnings("rawtypes")
-    @FXML private TableView<ObservableList> tableId;
     @FXML private Button dataSetNextId;
     @FXML private Button dataSetAttributesId;
 
@@ -80,13 +79,22 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     @FXML private Pane topologySetupId;
     @FXML private Separator hiddenLayerSeparatorId;
     @FXML private Pane hiddenLayerSetupPaneId;
-    @FXML private Button neuralNetworkApplyId;
     @FXML private Button neuralNetworkNextId;
     /**
      * The list of hidden layers and neuron amount per layer.
      */
     private List<TextField> hiddenLayers;
-    
+    /**
+     * Defining the change listener to activation function changes,
+     * to update on change the ability to press the button to mapping.
+     */
+    private ChangeListener<String> activationFunctionChangeListener = new ChangeListener<String>() {
+    	@Override
+    	public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        	checkAllNeuralNetworkConfigFilled(null);
+    	}
+	};
+
     /**
      * Mapping tab group
      */
@@ -165,26 +173,20 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      */
     public NeuralNetworkConfigurationFXMLController(Controller mainController) {
         this.mainController = mainController;
-        this.EXTENSION_LIST = new LinkedList<>();
+        EXTENSION_LIST = new LinkedList<>();
         Map<String,String> extension = new HashMap<>();
         extension.put("Data Set Files", "*.*");
         EXTENSION_LIST.add(extension);
     }
-        
+
+    /**
+     * Moving on to next tab from dataSet to NeuralNetwork config tab.
+     */
     @FXML public void dataSetNextAction() {
         neuralNetworkTabId.getTabPane().getSelectionModel().select(neuralNetworkTabId);
         neuralNetworkTabId.setDisable(false);
-        mainController.resetNeuralNetworkConfiguration();
-        neuronHiddenLayerNumberId.addEventFilter(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
-        neuronHiddenLayerNumberId.addEventFilter(KeyEvent.KEY_RELEASED, this::neuralNetworkApplyAction);
-        neuronInputLayerAmountId.addEventFilter(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
-        neuronOutputLayerAmountId.addEventFilter(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
     }
-    
-    @FXML public void neuralNetworkPreviousAction() {
-        dataSetTabId.getTabPane().getSelectionModel().select(dataSetTabId);
-    }
-    
+
     @FXML public void neuralNetworkNextAction() {
     	// Saving neural network configuration supplied by the user.
         saveNeuralNetworkConfiguration();
@@ -194,10 +196,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         
         // Initialise here the mapping selector with input.
         mappingSelectorInOutId.setValue(MAPPING_SELECTOR_INPUT);
-    }
-    
-    @FXML public void mappingPreviousAction() {
-        mappingTabId.getTabPane().getSelectionModel().select(neuralNetworkTabId);
     }
     
     @FXML public void mappingApplyAction() {
@@ -272,15 +270,23 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         }
     }
 
-    /**
+	/**
      * When the select button is pressed.
      */
     @FXML public void neuralNetworkTopologySelectionAction() {
+        activationFunctionSelectionId.valueProperty().removeListener(activationFunctionChangeListener);
+        activationFunctionSelectionId.getItems().clear();
+        activationFunctionSelectionId.getItems().addAll(mainController.getActivationFunctionList());
+        activationFunctionSelectionId.setValue(FIRST_SELECTION_DESCRIPTION);
+        activationFunctionSelectionId.valueProperty().addListener(activationFunctionChangeListener);
+        
         neuronInputLayerAmountId.clear();
         neuronHiddenLayerNumberId.clear();
         neuronOutputLayerAmountId.clear();
-        activationFunctionSelectionId.setValue(FIRST_SELECTION_DESCRIPTION);
-        setNeuralNetworkStateTwo();
+        neuralNetworkTopologyLabelId.setVisible(false); // Hide description
+        topologySetupId.setVisible(true); // Show setup group
+        hiddenLayerSetupPaneId.setVisible(false); // Set hidden layer invisible
+        neuronInputLayerAmountId.setText(mainController.getHeaderColumns().size()+"");
         if ( isNeuralNetworkBasicConditionMet() ) {
         	neuralNetworkNextId.setDisable(false);
         }
@@ -293,6 +299,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * When the selection is made, update the description panel.
      */
     @FXML public void neuralNetworkTopologySelectedAction() {
+    	// The neural network topology description.
         neuralNetworkTopologyLabelId.setText(
                 mainController.getNeuralNetworkPatternDescription(
                         neuralNetworkTopologyId.getSelectionModel().getSelectedIndex()));
@@ -302,7 +309,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         if ( neuralNetworkTopologyId.getSelectionModel().getSelectedIndex() >= 0 ) 
         	neuralNetworkTolopogySelectId.setDisable(false);
 
-        setNeuralNetworkStateOne();
+        neuralNetworkTopologyLabelId.setVisible(true);
+        topologySetupId.setVisible(false);
+        hiddenLayerSetupPaneId.setVisible(false);
     }
 
     /**
@@ -340,8 +349,12 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         }
         else {
             // Hiding from the user all hidden layer detail questions.
-            setNeuralNetworkStateTwo();
-        }
+            neuralNetworkTopologyLabelId.setVisible(false);
+            topologySetupId.setVisible(true);
+            hiddenLayerSetupPaneId.setVisible(false);
+            neuronInputLayerAmountId.setText(mainController.getHeaderColumns().size()+"");
+            neuronInputLayerAmountId.setEditable(true);
+       }
 
         if ( isNeuralNetworkBasicConditionMet() ) {
         	neuralNetworkNextId.setDisable(false);
@@ -359,15 +372,16 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      */
     private boolean isNeuralNetworkBasicConditionMet(){
     	// Input neurons not set
-    	if ( neuronInputLayerAmountId.getText().length() == 0) return false;
+    	if ( neuronInputLayerAmountId.getText().length() == 0 ) return false;
     	// Hidden layers not set
-    	if ( neuronHiddenLayerNumberId.getText().length() == 0) return false;
+    	if ( neuronHiddenLayerNumberId.getText().length() == 0 ) return false;
     	// Output neurons not set
-    	if ( neuronOutputLayerAmountId.getText().length() == 0) return false;
+    	if ( neuronOutputLayerAmountId.getText().length() == 0 ) return false;
     	// Output neurons cannot be zero
-    	if ( Integer.parseInt(neuronOutputLayerAmountId.getText()) == 0) return false;
+    	if ( Integer.parseInt(neuronOutputLayerAmountId.getText()) == 0 ) return false;
     	// Activation Function not set
-    	if ( activationFunctionSelectionId.getSelectionModel().getSelectedIndex() != 0) return false;
+    	if ( activationFunctionSelectionId.getSelectionModel().getSelectedItem()
+    			.equals(FIRST_SELECTION_DESCRIPTION) ) return false;
 
     	if ( Integer.parseInt(neuronHiddenLayerNumberId.getText()) > 0 ) {
         	// With hidden layers set, all must be populated.
@@ -376,7 +390,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         		if ( textField.getText() != null & textField.getText().length() > 0 ) 
         			expectedFilledBoxed--;
         	}
-        	if ( expectedFilledBoxed != 0 ) return false;
+        	if ( expectedFilledBoxed != 0 ) {
+        		return false;
+        	}
     	}
 
     	return true;
@@ -680,27 +696,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     }
     
     /**
-     * Hiding details of the network topology to be selected, and requesting
-     * user to first select the desired topology.
-     */
-    private void setNeuralNetworkStateOne() {
-        neuralNetworkTopologyLabelId.setVisible(true);
-        topologySetupId.setVisible(false);
-        hiddenLayerSetupPaneId.setVisible(false);
-    }
-
-    /**
-     * Asking user for the details of the network topology selected
-     * on the amount of hidden layers to have amongst other details.
-     */
-    private void setNeuralNetworkStateTwo() {
-        neuralNetworkTopologyLabelId.setVisible(false);
-        topologySetupId.setVisible(true);
-        hiddenLayerSetupPaneId.setVisible(false);
-        neuronInputLayerAmountId.setText(mainController.getHeaderColumns().size()+"");
-    }
-
-    /**
      * Asking user for further details on the hidden layers for the 
      * network topology selected.
      */
@@ -788,42 +783,83 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     	mainController.setHiddenLayerSizes(hiddenLayerSizes);
     	System.out.println("Saved info");
     }
+    
+    /**
+     * Resetting the dataSet tab fields and values to it's initial state.
+     */
+    private void resetDataSetTab() {
+        dataSetTabId.setDisable(false);
+        dataSetNextId.setDisable(true);
+        dataSetAttributesId.setDisable(true);
+    	
+        headerLinesId.setText("");
+        footerLinesId.setText("");
+        separatorId.setText("");
+        tableId.getColumns().removeAll(tableId.getColumns());
+    	
+    }
+
+    /**
+     * Resetting the neural network tab fields and values to it's initial state.
+     */
+    private void resetNeuralNetworkTab() {
+        mainController.resetNeuralNetworkConfiguration();
+
+        neuralNetworkTolopogySelectId.setDisable(false);
+        neuralNetworkTabId.setDisable(true);
+        neuralNetworkTolopogySelectId.setDisable(true);
+        neuralNetworkNextId.setDisable(true);
+
+        // Initialise the Neural Network pattern lists available to use.
+        neuralNetworkTopologyId.getItems().clear();
+        neuralNetworkTopologyId.getItems().addAll(mainController.getNeuralNetworkPatternList());
+        neuralNetworkTopologyId.setValue(FIRST_SELECTION_DESCRIPTION);
+
+        // Initialise the Activation Functions available to use.
+        activationFunctionSelectionId.valueProperty().removeListener(activationFunctionChangeListener);
+        activationFunctionSelectionId.getItems().clear();
+        activationFunctionSelectionId.getItems().addAll(mainController.getActivationFunctionList());
+        activationFunctionSelectionId.setValue(FIRST_SELECTION_DESCRIPTION);
+        activationFunctionSelectionId.valueProperty().addListener(activationFunctionChangeListener);
+
+        // Initial Neural Network state.
+        neuralNetworkTopologyLabelId.setVisible(true);
+        topologySetupId.setVisible(false);
+        hiddenLayerSetupPaneId.setVisible(false);
+
+        neuralNetworkTopologyLabelId.setText("");
+
+        hiddenLayers = null;
+        neuronHiddenLayerNumberId.clear();
+        neuronOutputLayerAmountId.clear();
+        neuronInputLayerAmountId.clear();
+        neuronHiddenLayerNumberId.addEventFilter(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
+        neuronHiddenLayerNumberId.addEventFilter(KeyEvent.KEY_RELEASED, this::neuralNetworkApplyAction);
+        neuronInputLayerAmountId.addEventFilter(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
+        neuronOutputLayerAmountId.addEventFilter(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
+        
+    }
+
+    /**
+     * Resetting the mapping tab fields and values to it's initial state.
+     */
+    private void resetMappingTab() {
+        mappingTabId.setDisable(true);
+        mappingApplyId.setDisable(true);
+
+        // Initialise the Mapping combo selections.
+        mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
+        mappingSelectorLabelId.setAlignment(Pos.CENTER);
+      
+    }
 
     /**
      * When loading a new file, restore all initial settings.
      */
     private void resetAll() {
-        // Only DataSet Tab on to start with
-        dataSetTabId.setDisable(false);
-        dataSetNextId.setDisable(true);
-        dataSetAttributesId.setDisable(true);
-        neuralNetworkTabId.setDisable(true);
-        neuralNetworkTolopogySelectId.setDisable(true);
-        neuralNetworkNextId.setDisable(true);
-        mappingTabId.setDisable(true);
-        mappingApplyId.setDisable(true);
-        
-        // Initialise the Neural Network pattern lists available to use.
-        neuralNetworkTopologyId.getItems().addAll(mainController.getNeuralNetworkPatternList());
-        neuralNetworkTopologyId.setValue(FIRST_SELECTION_DESCRIPTION);
-
-        // Initialise the Activation Functions available to use.
-        activationFunctionSelectionId.getItems().addAll(mainController.getActivationFunctionList());
-        activationFunctionSelectionId.setValue(FIRST_SELECTION_DESCRIPTION);
-        activationFunctionSelectionId.addEventFilter(TouchEvent.TOUCH_MOVED, this::checkAllNeuralNetworkConfigFilled);
-
-        // Initialise the Mapping combo selections.
-        mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
-        mappingSelectorLabelId.setAlignment(Pos.CENTER);
-        
-        // Initial Neural Network state.
-        setNeuralNetworkStateOne();
-
-        headerLinesId.setText("");
-        footerLinesId.setText("");
-        separatorId.setText("");
-        tableId.getColumns().removeAll(tableId.getColumns());
-        neuralNetworkTopologyLabelId.setText("");
+    	resetDataSetTab();
+    	resetNeuralNetworkTab();
+    	resetMappingTab();
     }
     
     /**
