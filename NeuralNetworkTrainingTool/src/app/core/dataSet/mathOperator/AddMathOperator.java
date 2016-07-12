@@ -16,7 +16,7 @@ public class AddMathOperator implements MathOperatorCore<Double> {
 	/**
 	 * The operation description.
 	 */
-	public final String DESCRIPTION = "Adding constant to each received value.";
+	public final String DESCRIPTION = "Adding constant to value.";
 	
 	/**
 	 * The operation user friendly name.

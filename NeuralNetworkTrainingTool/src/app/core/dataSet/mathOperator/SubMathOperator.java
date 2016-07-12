@@ -16,7 +16,7 @@ public class SubMathOperator implements MathOperatorCore<Double> {
     /**
      * The operation description.
      */
-    public final String DESCRIPTION = "Subtracts initial value from received value.";
+    public final String DESCRIPTION = "Subtracting from received value.";
     
     /**
      * The operation user friendly name.

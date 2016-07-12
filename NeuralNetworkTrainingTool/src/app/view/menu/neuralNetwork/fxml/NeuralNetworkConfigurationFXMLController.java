@@ -17,11 +17,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Separator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -105,6 +107,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     @FXML private CheckBox mappingSelectAllCheckboxId;
     @FXML private CheckBox mappingSupervisedCheckboxId;
     @FXML private Button mappingApplyId;
+    @FXML private VBox mappingOutVBoxId;
+    @FXML private ScrollPane mappingOutSrollId;
     private List<Boolean> inputMapDataSetSelection;
     
     /**
@@ -382,6 +386,14 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     	if ( neuronOutputLayerAmountId.getText().length() == 0 ) return false;
     	// Output neurons cannot be zero
     	if ( Integer.parseInt(neuronOutputLayerAmountId.getText()) == 0 ) return false;
+    	
+    	// Input neurons selected zero, set to 1 and carry on.
+    	if ( Integer.parseInt(neuronInputLayerAmountId.getText()) == 0 )
+    		neuronInputLayerAmountId.setText("1");
+    	// Input neurons selected more than allowed, set to max and carry on.
+    	if ( Integer.parseInt(neuronInputLayerAmountId.getText()) > mainController.getHeaderColumns().size() )
+    		neuronInputLayerAmountId.setText(mainController.getHeaderColumns().size()+"");
+    	
     	// Activation Function not set
     	if ( activationFunctionSelectionId.getSelectionModel().getSelectedItem()
     			.equals(FIRST_SELECTION_DESCRIPTION) ) return false;
@@ -463,14 +475,14 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             if ( currentValue == null ) currentValue = MAPPING_SELECTOR_INPUT;
             mappingSelectorInOutId.getItems().clear();
             mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT, MAPPING_SELECTOR_OUTPUT);
-            mappingSelectorInOutId.setValue(currentValue);
+            mappingSelectorInOutId.valueProperty().setValue(currentValue);
         }
         else {
             // Unsupervised:
             //   1 - Lock selector to Input only
             mappingSelectorInOutId.getItems().clear();
             mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
-            mappingSelectorInOutId.setValue(MAPPING_SELECTOR_INPUT);
+            mappingSelectorInOutId.valueProperty().setValue(MAPPING_SELECTOR_INPUT);
         }
         mappingSelectorLabelId.setAlignment(Pos.CENTER);
 
@@ -483,10 +495,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         }
         
         // Sub window setup depending on the selection made.
-        // TODO - Ensure data is kept within the controller.
-        if ( mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_INPUT))
+        if ( mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_INPUT) )
             showMappingInputOptions();
-        if ( mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_OUTPUT))
+        if ( mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_OUTPUT) )
             showMappingOutputOptions();
     }
 
@@ -519,7 +530,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         // Plotting the list of check boxes with listeners.
         for ( int row = 0; row <= numberOfDataSetColumns/maxColumns ; row++ ) {
             for ( int column = 0; column < maxColumns; column++ ) {
-                CheckBox cb = new CheckBox(""+(indexId));
+                CheckBox cb = new CheckBox(""+(indexId+1));
                 cb.setId(""+indexId);
                 cb.setSelected(inputMapDataSetSelection.get(indexId));
                 cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -555,108 +566,75 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * not be activated. 
      */
     private void showMappingOutputOptions() {
-    	// TODO: make this work.. :)
-    	
         // Switch pane views.
         mappingPaneInputId.setVisible(false);
         mappingPaneOutputId.setVisible(true);
-        
-        // TODO: Do not clear. Read what was already set, and show it to user.
-        mappingPaneOutputId.getChildren().clear();
 
-        if ( mappingSupervisedCheckboxId.isSelected() ) {
-            // 1 - Show all neural network output ids that may require a function.
-            // 2 - On the right of the neural network output id, show a drop down
-            //     with all the available functions that can be applied.
-            GridPane gridpane = new GridPane();
-            gridpane.setHgap(5);
-            gridpane.setVgap(5);
-            gridpane.setPrefWidth(472);
-            gridpane.setPrefHeight(320);
-            gridpane.setAlignment(Pos.TOP_LEFT);
+        // Reset VBox with a new GridPane
+        GridPane gridpane = new GridPane();
+        gridpane.setHgap(5);
+        gridpane.setVgap(5);
+        gridpane.setPrefWidth(450);
+        gridpane.setPrefHeight(300);
+        gridpane.setAlignment(Pos.TOP_LEFT);
+        mappingOutVBoxId.getChildren().clear();
+        mappingOutVBoxId.setPrefWidth(460);
+        mappingOutVBoxId.setPrefHeight(300);
+        mappingOutVBoxId.setAlignment(Pos.CENTER_RIGHT);
+        mappingOutVBoxId.setPadding(new Insets(5, 5, 5, 5));
+        mappingOutVBoxId.getChildren().add(gridpane);
 
-            VBox vBox = new VBox();
-            vBox.setPrefWidth(472);
-            vBox.setPrefHeight(320);
-            vBox.getChildren().add(gridpane);
-            vBox.setAlignment(Pos.CENTER_RIGHT);
+        int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
 
-            for( int outputId = 0; outputId < mainController.getOutputLayerSize() ; outputId++ ) {
-                ComboBox<String> functionDropDown = new ComboBox<>();
-                functionDropDown.getItems().addAll(
-                        NO_FUNCTION_DESCRIPTION,
-                        MathOperatorFactory.getName(MathOperatorKey.ADD),
-                        MathOperatorFactory.getName(MathOperatorKey.BIN),
-                        MathOperatorFactory.getName(MathOperatorKey.DIV),
-                        MathOperatorFactory.getName(MathOperatorKey.INV),
-                        MathOperatorFactory.getName(MathOperatorKey.MUL),
-                        MathOperatorFactory.getName(MathOperatorKey.SUB)
-                        );
-                functionDropDown.setValue(NO_FUNCTION_DESCRIPTION);
-                functionDropDown.setId(""+outputId);
-                functionDropDown.valueProperty().addListener(new ChangeListener<String>() {
-                    @Override public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                        applyExtraFunctionOptions(functionDropDown, observable.getValue(), 4);
-                    }
-                });
+        // 1 - Show all neural network output ids that may require a function.
+        // [Neuron Output label] [Data set input] [Function] [optional value]
+        for( int outputId = 0; outputId < outputLayerSize ; outputId++ ) {
+        	// Data Set input drop down
+        	ComboBox<String> inputIdDropDown = new ComboBox<>();
+// TODO: Collect the number of available data set inputs in a list of strings
+            inputIdDropDown.getItems().addAll("1","2","3");
+// TODO: Set the initial value to something that requires to be set before ok to proceed
+            inputIdDropDown.setValue("1");
+// TODO: Add a listener to check all inputs if set to some value before allowing the done button to be displayed.
+            inputIdDropDown.setId(""+outputId);
+        	
+        	// Output Neuron label
+            Label outputIdLabel = new Label("->"+(outputId+1));
+            outputIdLabel.setId("L"+outputId);
 
-                TextField initialValue = new TextField();
-                initialValue.setVisible(false); // Not showing for no function
-                initialValue.setMaxWidth(50);
-                initialValue.addEventHandler(KeyEvent.KEY_TYPED, this::validateDoubleAction);
-                initialValue.setId(""+outputId);
+        	// Function options drop down
+            ComboBox<String> functionDropDown = new ComboBox<>();
+            functionDropDown.setPrefSize(115, 25);
+            functionDropDown.getItems().addAll(
+                    NO_FUNCTION_DESCRIPTION,
+                    MathOperatorFactory.getName(MathOperatorKey.ADD),
+                    MathOperatorFactory.getName(MathOperatorKey.BIN),
+                    MathOperatorFactory.getName(MathOperatorKey.DIV),
+                    MathOperatorFactory.getName(MathOperatorKey.INV),
+                    MathOperatorFactory.getName(MathOperatorKey.MUL),
+                    MathOperatorFactory.getName(MathOperatorKey.SUB));
 
-                Label functionDescriptionLabel = new Label();
-                functionDescriptionLabel.setMaxWidth(350);
-                functionDescriptionLabel.setId("F"+outputId);
-                
-                Label outputIdLabel = new Label(""+outputId);
-                outputIdLabel.setId("L"+outputId);
-
-                gridpane.add(outputIdLabel,            0, outputId); // Neural network output neuron
-                gridpane.add(functionDropDown,         1, outputId); // Optional function
-                gridpane.add(initialValue,             2, outputId); // Initial bias value
-                gridpane.add(functionDescriptionLabel, 3, outputId); // Short function description
-            }
-            mappingPaneOutputId.getChildren().add(vBox);
-//            // 1 - Pick up the data set columns that were not selected for input
-//            //     and display these on each drop down.
-//            // 2 - On the right of each drop down, show the neural network output 
-//            //     id that will be linked to.
-//            // 3 - On the right of the neural network output id, show a drop down
-//            //     with all the available functions that can be applied.
-//            GridPane gridpane = new GridPane();
-//            gridpane.setHgap(5);
-//            gridpane.setVgap(5);
-//            gridpane.setPrefWidth(472);
-//            gridpane.setPrefHeight(320);
-//            gridpane.setAlignment(Pos.CENTER);
-//
-//            // TODO: Need to know how many columns data set will have.
-//            int dataSetColumns = mainController.getDataSetColumns().size();
-//            dataSetColumns = 128;
-//            int maxColumns = 10;
-//            int maxCells = dataSetColumns;
-//            int columnId = 1;
-//            for ( int row = 0; row <= dataSetColumns/maxColumns ; row++ ) {
-//                for ( int column = 0; column < maxColumns; column++ ) {
-//                    CheckBox cb = new CheckBox(""+columnId);
-//                    cb.setSelected(mappingSelectAllCheckboxId.isSelected());
-//                    gridpane.add( cb, column, row);
-//                    columnId++;
-//                    maxCells--;
-//                    if ( maxCells <= 0 ) break;
-//                }
-//                if ( maxCells <= 0 ) break;
-//            }
-//            VBox vBox = new VBox();
-//            vBox.setPrefWidth(472);
-//            vBox.setPrefHeight(320);
-//            vBox.getChildren().add(gridpane);
-//            vBox.setAlignment(Pos.CENTER_RIGHT);
-//            mappingPaneOutputId.getChildren().add(vBox);
-//        }
-//        else {
+            functionDropDown.setValue(NO_FUNCTION_DESCRIPTION);
+            functionDropDown.setId(""+outputId);
+            functionDropDown.valueProperty().addListener(new ChangeListener<String>() {
+                @Override public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                    applyExtraFunctionOptions(functionDropDown, observable.getValue(), 5);
+                }
+            });
+            TextField initialValue = new TextField();
+            initialValue.setVisible(false); // Not showing for no function
+            initialValue.setMaxWidth(50);
+            initialValue.addEventHandler(KeyEvent.KEY_TYPED, this::validateDoubleAction);
+            initialValue.setId(""+outputId);
+            Label functionDescriptionLabel = new Label();
+            functionDescriptionLabel.setMaxWidth(350);
+            functionDescriptionLabel.setId("F"+outputId);
+            
+            gridpane.add(inputIdDropDown,          0, outputId); // Data Set column
+            gridpane.add(outputIdLabel,            1, outputId); // Neural network output neuron
+            gridpane.add(functionDropDown,         2, outputId); // Optional function
+            gridpane.add(initialValue,             3, outputId); // Initial bias value
+            gridpane.add(functionDescriptionLabel, 4, outputId); // Short function description
         }
     }
 
@@ -672,8 +650,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         GridPane gridPane = (GridPane) functionDropDown.getParent();
         int rowId = Integer.parseInt(functionDropDown.getId());
 
-        TextField functionValue = (TextField) gridPane.getChildren().get(rowId*columns+2);
-        Label description = (Label) gridPane.getChildren().get(rowId*columns+3);
+        TextField functionValue = (TextField) gridPane.getChildren().get(rowId*columns+3);
+        Label description = (Label) gridPane.getChildren().get(rowId*columns+4);
         description.setText("");
         functionValue.clear();
         
@@ -781,8 +759,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Giving back to the controller Neural Network configurations supplied.
      */
     private void saveNeuralNetworkConfiguration() {
-    	// TODO: Give main controller the Network Topology selected
-    	// TODO: Give main controller the Activation Function selected
+// TODO: Give main controller the Network Topology selected
+// TODO: Give main controller the Activation Function selected
 
     	// Supply the found data given by user.
         int inputLayerSize = Integer.parseInt(neuronInputLayerAmountId.getText());
@@ -802,10 +780,10 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Giving back to the controller mapping data supplied.
      */
     private void saveMappingData() {
-    	// TODO: Give main controller the dataset columns for NN input.
+// TODO: Give main controller the dataset columns for NN input.
     	// if supervised:
-    	  // TODO: Give main controller the dataset columns for NN output.
-    	  // TODO: Give main controller the function selection per column.
+// TODO: Give main controller the dataset columns for NN output.
+// TODO: Give main controller the function selection per column.
     }
     
     /**
@@ -867,7 +845,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Resetting the mapping tab fields and values to it's initial state.
      */
     private void resetMappingTab() {
-    	// TODO: work out what is missing...
+// TODO: work out what is missing...
         mappingTabId.setDisable(true);
         mappingApplyId.setDisable(true);
 

@@ -22,7 +22,7 @@ public class DivMathOperator implements MathOperatorCore<Double> {
     /**
      * The operation description.
      */
-    public final String DESCRIPTION = "Dividing received value by initial constant.";
+    public final String DESCRIPTION = "Dividing received by this constant.";
     
     /**
      * The operation user friendly name.
