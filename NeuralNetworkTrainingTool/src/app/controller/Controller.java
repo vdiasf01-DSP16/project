@@ -6,6 +6,7 @@ import java.util.List;
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
 import app.model.serializable.ProjectData;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 
 /**
@@ -141,13 +142,6 @@ public interface Controller {
 	 */
 	public List<String> getHeaderColumns();
 
-//	/**
-//	 * The user set Neural Network configuration.
-//	 * 
-//	 * @return NeuralNetworkConfig
-//	 */
-//	public NeuralNetworkConfig getNeuralNetworkConfig();
-//
 	/**
 	 * The currently set Data Set map selection to be used from the
 	 * data set input columns into the neural network input.
@@ -161,11 +155,14 @@ public interface Controller {
 
 	/**
 	 * Setting the index value of the list with the new selection.
+	 * If the selection made is bigger or smaller than the allowed,
+	 * the warning label will be changed accordingly.
 	 * 
 	 * @param index int
 	 * @param newValue Boolean
+	 * @param warning Label
 	 */
-	public void setInputMapDataSetSelection(int index, Boolean newValue);
+	public void setInputMapDataSetSelection(int index, Boolean newValue, Label warning);
 
 	/**
 	 * Setting the input layer size number of neurons required.

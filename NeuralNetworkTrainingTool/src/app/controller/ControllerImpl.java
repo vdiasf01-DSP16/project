@@ -23,6 +23,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellDataFeatures;
 import javafx.util.Callback;
@@ -66,6 +67,15 @@ public class ControllerImpl implements Controller {
      * inputs.
      */
     private List<Boolean> inputMapDataSetSelection;
+    
+    /**
+     * Messages to tell the uses when input data set selections have been made
+     * not been made to match the neural network total number of inputs.
+     */
+    private final String WARNING_TOO_MANY_SELECTED = "Too many data set inputs selected";
+    private final String WARNING_NOT_SELECTED_ENOUGH = "Not enough data set inputs selected";
+    private final String INFO_SELECTION_REQUIREMENTS_MET = "Ready";
+
     
     /**
      * Controller Constructor to initialise required objects.
@@ -342,60 +352,70 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-	@Override public List<Boolean> getInputMapDataSetSelection() {
-		// Instantiate the map list which is based on the data set column amount.
-		if ( inputMapDataSetSelection == null ) {
-			inputMapDataSetSelection = new LinkedList<>();
-			for( int i = 0; i < getHeaderColumns().size(); i++ ) {
-				inputMapDataSetSelection.add(false);
-			}
-		}
-		return inputMapDataSetSelection;
-	}
+    @Override public List<Boolean> getInputMapDataSetSelection() {
+        // Instantiate the map list which is based on the data set column amount.
+        if ( inputMapDataSetSelection == null ) {
+            inputMapDataSetSelection = new LinkedList<>();
+            for( int i = 0; i < getHeaderColumns().size(); i++ ) {
+                inputMapDataSetSelection.add(false);
+            }
+        }
+        return inputMapDataSetSelection;
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
-	@Override public void setInputMapDataSetSelection(int index, Boolean newValue) {
-		inputMapDataSetSelection.set(index, newValue);
-	}
+    @Override public void setInputMapDataSetSelection(int index, Boolean newValue, Label warning) {
+        inputMapDataSetSelection.set(index, newValue);
 
-	/**
+        int dataSetInputSelectionsMade = 0;
+        for ( Boolean value : inputMapDataSetSelection ) if ( value ) dataSetInputSelectionsMade++;
+
+        if ( dataSetInputSelectionsMade > neuralNetworkConfig.getInputLayerSize() )
+            warning.setText(WARNING_TOO_MANY_SELECTED);
+        else if ( dataSetInputSelectionsMade < neuralNetworkConfig.getInputLayerSize() ) 
+            warning.setText(WARNING_NOT_SELECTED_ENOUGH);
+        else 
+            warning.setText(INFO_SELECTION_REQUIREMENTS_MET);
+    }
+
+    /**
      * {@inheritDoc}
      */
-	@Override public void setInputLayerSize(int inputLayerSize) {
-		neuralNetworkConfig.setInputLayerSize(inputLayerSize);
-	}
+    @Override public void setInputLayerSize(int inputLayerSize) {
+        neuralNetworkConfig.setInputLayerSize(inputLayerSize);
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
-	@Override public void setOutputLayerSize(int outputLayerSize) {
-		neuralNetworkConfig.setOutputLayerSize(outputLayerSize);
-	}
+    @Override public void setOutputLayerSize(int outputLayerSize) {
+        neuralNetworkConfig.setOutputLayerSize(outputLayerSize);
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
-	@Override public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes) {
-		neuralNetworkConfig.setHiddenLayerSizes(hiddenLayerSizes);
-	}
+    @Override public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes) {
+        neuralNetworkConfig.setHiddenLayerSizes(hiddenLayerSizes);
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
-	@Override public int getOutputLayerSize() {
-		return neuralNetworkConfig.getOutputLayerSize();
-	}
+    @Override public int getOutputLayerSize() {
+        return neuralNetworkConfig.getOutputLayerSize();
+    }
 
-	/**
+    /**
      * {@inheritDoc}
      */
-	@Override public void resetNeuralNetworkConfiguration() {
-		neuralNetworkConfig.setHiddenLayerSizes(null);
-		neuralNetworkConfig.setInputLayerSize(0);
-		neuralNetworkConfig.setOutputLayerSize(0);
-		inputMapDataSetSelection = null;
-	
-	}
+    @Override public void resetNeuralNetworkConfiguration() {
+        neuralNetworkConfig.setHiddenLayerSizes(null);
+        neuralNetworkConfig.setInputLayerSize(0);
+        neuralNetworkConfig.setOutputLayerSize(0);
+        inputMapDataSetSelection = null;
+    
+    }
 }

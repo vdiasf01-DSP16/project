@@ -200,6 +200,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         
         // Initialise here the mapping selector with input.
         mappingSelectorInOutId.setValue(MAPPING_SELECTOR_INPUT);
+        
+        saveNeuralNetworkConfiguration();
     }
     
     @FXML public void mappingApplyAction() {
@@ -450,8 +452,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     	if ( mappingSelectAllCheckboxId.isSelected() ) inputSettingValue = true;
 
     	for( int index = 0 ; index < mainController.getHeaderColumns().size(); index++ ) 
-           	mainController.setInputMapDataSetSelection(index, inputSettingValue);
-
+           	mainController.setInputMapDataSetSelection(index, inputSettingValue, mappingSelectorLabelId);
+    	
         showMappingInputOptions();
     }
     
@@ -508,10 +510,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         mappingPaneInputId.setVisible(true);
         mappingPaneOutputId.setVisible(false);
         mappingPaneInputId.getChildren().clear();
-
+        
         // Building the view.
         GridPane gridpane = new GridPane();
-        gridpane.setHgap(5);
         gridpane.setVgap(5);
         gridpane.setPrefWidth(472);
         gridpane.setPrefHeight(320);
@@ -536,7 +537,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
                 cb.selectedProperty().addListener(new ChangeListener<Boolean>() {
         			public void changed(ObservableValue<? extends Boolean> observableValue, 
         					Boolean oldValue, Boolean newValue) {
-                    	mainController.setInputMapDataSetSelection(Integer.parseInt(cb.getId()), newValue);
+                    	mainController.setInputMapDataSetSelection(Integer.parseInt(cb.getId()), newValue, mappingSelectorLabelId);
                     }
                 });
 
