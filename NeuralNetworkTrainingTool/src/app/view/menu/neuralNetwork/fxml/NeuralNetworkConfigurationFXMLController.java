@@ -698,19 +698,27 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         gridpane.setPrefWidth(472);
         gridpane.setPrefHeight(195);
         gridpane.setAlignment(Pos.TOP_CENTER);
+
         for( int hiddenLayerId = 1; hiddenLayerId <= numberOfHiddenLayers; hiddenLayerId++) {
-            String id = hiddenLayerId+"";
-            Label newLabel = new Label("L"+hiddenLayerId+": ");
-            TextField newText = new TextField();
-            hiddenLayers.add(newText);
+        
+        	String id = hiddenLayerId+"";
+            
+        	Label newLabel = new Label("L"+hiddenLayerId+": ");
             newLabel.setId(id);
             newLabel.setMaxWidth(75);
+            
+            TextField newText = new TextField();
             newText.setId(id);
             newText.setMaxWidth(55);
+
+            hiddenLayers.add(newText);
+            
             // Validate input
             newText.addEventHandler(KeyEvent.KEY_TYPED, this::validateIntegerAction);
+
             // Check if all is now filled to show the next button
             newText.addEventHandler(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
+
             gridpane.add(newLabel, column, row);  // Neural network hidden layer #
             gridpane.add(newText, column+1, row); // Requested neuron amount for layer
 
