@@ -199,6 +199,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      */
     @FXML public void neuralNetworkNextAction() {
         resetMappingTab();
+        mappingSelectorInOutId.getSelectionModel().select(MAPPING_SELECTOR_INPUT);
         mappingTabId.getTabPane().getSelectionModel().select(mappingTabId);
         mappingTabId.setDisable(false);
         
@@ -569,7 +570,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         GridPane gridpane = new GridPane();
         gridpane.setHgap(5);
         gridpane.setVgap(5);
-        gridpane.setPrefWidth(WINDOW_WIDTH-150);
+        gridpane.setPrefWidth(WINDOW_WIDTH-75);
         gridpane.setPrefHeight(300);
         gridpane.setAlignment(Pos.TOP_LEFT);
         mappingOutVBoxId.getChildren().clear();
@@ -586,18 +587,15 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
         // 1 - Show all neural network output ids that may require a function.
         // [Neuron Output label] [Data set input] [Function] [optional value]
-        for( int outputId = 0; outputId < outputLayerSize ; outputId++ ) {
+        for( int outputId = 1; outputId <= outputLayerSize ; outputId++ ) {
             // Data Set input drop down
             ComboBox<String> inputIdDropDown = new ComboBox<>();
-// TODO: Collect the number of available data set inputs in a list of strings
             inputIdDropDown.getItems().addAll(outputLayerIds);
-// TODO: Set the initial value to something that requires to be set before ok to proceed
             inputIdDropDown.setValue("1");
-// TODO: Add a listener to check all inputs if set to some value before allowing the done button to be displayed.
             inputIdDropDown.setId(""+outputId);
             
             // Output Neuron label
-            Label outputIdLabel = new Label("->"+(outputId+1));
+            Label outputIdLabel = new Label("->"+(outputId));
             outputIdLabel.setId("L"+outputId);
 
             // Function options drop down
@@ -851,7 +849,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Resetting the mapping tab fields and values to it's initial state.
      */
     private void resetMappingTab() {
-// TODO: work out what is missing...
         mappingTabId.setDisable(true);
         mappingApplyId.setDisable(true);
 
