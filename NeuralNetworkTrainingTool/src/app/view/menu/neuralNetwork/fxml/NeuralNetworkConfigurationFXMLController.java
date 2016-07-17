@@ -140,18 +140,16 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * The String for the output mapping selector to be used for training.
      */
     private final String MAPPING_SELECTOR_OUTPUT = "Output Mapping";
-    
+
     /**
-     * The text for the input mapping.
+     * Window width size.
      */
-    private final String MAPPING_TEXT_INPUT = 
-            "Please select data set columns to feed neural network inputs.";
-    
+    private final int WINDOW_WIDTH = 600;
+
     /**
-     * The text for the output mapping.
+     * Number of maximum columns on the mapping input selection.
      */
-    private final String MAPPING_TEXT_OUTPUT = 
-            "Please select data set columns to supervise neural network outputs.";
+    private final int MAX_INPUT_COLUMNS = 15;
 
     /**
      * Default value selection for no function to be applied.
@@ -162,6 +160,11 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Only showing these first number of rows on a selected file.
      */
     private final int MAX_DATASET_ROWS = 10;
+    
+    /**
+     * The number of columns for the check boxes under mapping.
+     */
+    private final int MAX_COLUMNS_MAPPING_INPUT = 10;
 
     /**
      * Initialising the various details and selections.
@@ -507,14 +510,12 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         // Building the view.
         GridPane gridpane = new GridPane();
         gridpane.setVgap(5);
-        gridpane.setPrefWidth(472);
+        gridpane.setPrefWidth(WINDOW_WIDTH-50);
         gridpane.setPrefHeight(320);
         gridpane.setAlignment(Pos.CENTER);
 
         // Get number of total header columns existing as options to pick from.
         int numberOfDataSetColumns = mainController.getHeaderColumns().size();
-        // Maximum columns per row.
-        int maxColumns = 10;
         // Total number of cells to display.
         int maxCells = numberOfDataSetColumns;
         // Starting data set column.
@@ -522,8 +523,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
         inputMapDataSetSelection = mainController.getInputMapDataSetSelection();
         // Plotting the list of check boxes with listeners.
-        for ( int row = 0; row <= numberOfDataSetColumns/maxColumns ; row++ ) {
-            for ( int column = 0; column < maxColumns; column++ ) {
+        for ( int row = 0; row <= numberOfDataSetColumns/MAX_INPUT_COLUMNS ; row++ ) {
+            for ( int column = 0; column < MAX_INPUT_COLUMNS; column++ ) {
                 CheckBox cb = new CheckBox(""+(indexId+1));
                 cb.setId(""+indexId);
                 cb.setSelected(inputMapDataSetSelection.get(indexId));
@@ -542,7 +543,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             if ( maxCells <= 0 ) break;
         }
         VBox vBox = new VBox();
-        vBox.setPrefWidth(472);
+        vBox.setPrefWidth(WINDOW_WIDTH-50);
         vBox.setPrefHeight(320);
         vBox.getChildren().add(gridpane);
         vBox.setAlignment(Pos.CENTER_RIGHT);
@@ -568,17 +569,20 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         GridPane gridpane = new GridPane();
         gridpane.setHgap(5);
         gridpane.setVgap(5);
-        gridpane.setPrefWidth(450);
+        gridpane.setPrefWidth(WINDOW_WIDTH-150);
         gridpane.setPrefHeight(300);
         gridpane.setAlignment(Pos.TOP_LEFT);
         mappingOutVBoxId.getChildren().clear();
-        mappingOutVBoxId.setPrefWidth(460);
+        mappingOutVBoxId.setPrefWidth(WINDOW_WIDTH-50);
         mappingOutVBoxId.setPrefHeight(300);
         mappingOutVBoxId.setAlignment(Pos.CENTER_RIGHT);
         mappingOutVBoxId.setPadding(new Insets(5, 5, 5, 5));
         mappingOutVBoxId.getChildren().add(gridpane);
 
         int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
+        List<String> outputLayerIds = new LinkedList<>();
+        for ( int outputId = 1; outputId <= outputLayerSize; outputId++ ) 
+        	outputLayerIds.add(""+outputId);
 
         // 1 - Show all neural network output ids that may require a function.
         // [Neuron Output label] [Data set input] [Function] [optional value]
@@ -586,7 +590,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             // Data Set input drop down
             ComboBox<String> inputIdDropDown = new ComboBox<>();
 // TODO: Collect the number of available data set inputs in a list of strings
-            inputIdDropDown.getItems().addAll("1","2","3");
+            inputIdDropDown.getItems().addAll(outputLayerIds);
 // TODO: Set the initial value to something that requires to be set before ok to proceed
             inputIdDropDown.setValue("1");
 // TODO: Add a listener to check all inputs if set to some value before allowing the done button to be displayed.
@@ -598,7 +602,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
             // Function options drop down
             ComboBox<String> functionDropDown = new ComboBox<>();
-            functionDropDown.setPrefSize(115, 25);
+            functionDropDown.setPrefSize(150, 25);
             functionDropDown.getItems().addAll(
                     NO_FUNCTION_DESCRIPTION,
                     MathOperatorFactory.getName(MathOperatorKey.ADD),
@@ -612,7 +616,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             functionDropDown.setId(""+outputId);
             functionDropDown.valueProperty().addListener(new ChangeListener<String>() {
                 @Override public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                    applyExtraFunctionOptions(functionDropDown, observable.getValue(), 5);
+                    applyExtraFunctionOptions(functionDropDown, observable.getValue(), MAX_COLUMNS_MAPPING_INPUT);
                 }
             });
             TextField initialValue = new TextField();
@@ -689,7 +693,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         GridPane gridpane = new GridPane();
         gridpane.setHgap(5);
         gridpane.setVgap(5);
-        gridpane.setPrefWidth(472);
+        gridpane.setPrefWidth(WINDOW_WIDTH-40);
         gridpane.setPrefHeight(195);
         gridpane.setAlignment(Pos.TOP_CENTER);
 
@@ -724,7 +728,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         }
 
         VBox vBox = new VBox();
-        vBox.setPrefWidth(472);
+        vBox.setPrefWidth(WINDOW_WIDTH-40);
         vBox.setPrefHeight(195);
         vBox.getChildren().add(gridpane);
         vBox.setAlignment(Pos.TOP_CENTER);
@@ -857,7 +861,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         mappingSelectorInOutId.getItems().clear();
         mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
         mappingSelectorLabelId.setAlignment(Pos.CENTER);
-      
     }
 
     /**
