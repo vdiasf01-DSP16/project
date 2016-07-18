@@ -11,6 +11,8 @@ import java.util.List;
 
 import app.core.activationFunction.ActivationFunctionFactory;
 import app.core.activationFunction.ActivationFunctionKey;
+import app.core.dataSet.MathOperatorFactory;
+import app.core.dataSet.MathOperatorKey;
 import app.core.neuralNetwork.NeuralNetworkPatternFactory;
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
 import app.model.file.DataSetFileGUIReader;
@@ -67,6 +69,11 @@ public class ControllerImpl implements Controller {
      * inputs.
      */
     private List<Boolean> inputMapDataSetSelection;
+
+    /**
+     * The list of known operators to be used on the output layer.
+     */
+    private final List<String> operatorsList;
     
     /**
      * Messages to tell the uses when input data set selections have been made
@@ -75,16 +82,18 @@ public class ControllerImpl implements Controller {
     private final String WARNING_TOO_MANY_SELECTED = "Too many data set inputs selected";
     private final String WARNING_NOT_SELECTED_ENOUGH = "Not enough data set inputs selected";
     private final String INFO_SELECTION_REQUIREMENTS_MET = "Ready";
-
     
     /**
      * Controller Constructor to initialise required objects.
      */
     public ControllerImpl() {
         neuralNetworkConfig = new NeuralNetworkConfigImpl();
+        operatorsList = new LinkedList<>();
+        for( MathOperatorKey operator : MathOperatorKey.values() ) {
+        	operatorsList.add(MathOperatorFactory.getName(operator));
+        }
     }
-    
-    
+
     /**
      * {@inheritDoc}
      */
@@ -401,7 +410,7 @@ public class ControllerImpl implements Controller {
         neuralNetworkConfig.setHiddenLayerSizes(hiddenLayerSizes);
     }
 
-    /**
+	/**
      * {@inheritDoc}
      */
     @Override public int getOutputLayerSize() {
@@ -418,4 +427,18 @@ public class ControllerImpl implements Controller {
         inputMapDataSetSelection = null;
     
     }
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public List<String> getOperatorsList() {
+		return operatorsList;
+	}
+
+	@Override
+	public void resetMappingSelections() {
+		inputMapDataSetSelection = null;
+		System.out.println("Resetting stuff");
+	}
 }

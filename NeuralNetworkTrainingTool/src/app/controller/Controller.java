@@ -197,5 +197,17 @@ public interface Controller {
 	 */
 	public void resetNeuralNetworkConfiguration();
 
+	/**
+	 * The operators list for the output functions that can be used and applied
+	 * to the data set inputs, to match found output neural network layer data 
+	 * only if supervised.
+	 * 
+	 * @return String List
+	 */
+	public List<String> getOperatorsList();
 
+	/**
+	 * Resets all data possibly set for the Mapping configuration.
+	 */
+	public void resetMappingSelections();
 }
