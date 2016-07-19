@@ -3,6 +3,7 @@ package app.controller;
 import java.io.File;
 import java.util.List;
 
+import app.controller.menu.neuralNetwork.OutputFunctionDetails;
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
 import app.model.serializable.ProjectData;
 import javafx.collections.ObservableList;

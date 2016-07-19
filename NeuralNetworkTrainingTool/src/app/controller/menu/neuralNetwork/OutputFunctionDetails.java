@@ -1,4 +1,4 @@
-package app.controller;
+package app.controller.menu.neuralNetwork;
 
 /**
  * The Mapping of the function and initial value to an output neuron.

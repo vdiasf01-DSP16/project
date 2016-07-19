@@ -1,4 +1,4 @@
-package app.controller;
+package app.controller.menu.neuralNetwork;
 
 /**
  * The Output Function Details Implementation.

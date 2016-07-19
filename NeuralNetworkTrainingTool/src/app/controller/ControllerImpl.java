@@ -10,6 +10,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import app.controller.menu.neuralNetwork.OutputFunctionDetails;
+import app.controller.menu.neuralNetwork.OutputFunctionDetailsImpl;
 import app.core.activationFunction.ActivationFunctionFactory;
 import app.core.activationFunction.ActivationFunctionKey;
 import app.core.dataSet.DataSet;
