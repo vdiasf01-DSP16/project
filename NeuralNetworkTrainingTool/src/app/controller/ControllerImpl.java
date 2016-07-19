@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import app.controller.menu.neuralNetwork.OutputFunctionDetails;
@@ -431,8 +432,8 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-    @Override public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes) {
-        neuralNetworkConfig.setHiddenLayerSizes(hiddenLayerSizes);
+    @Override public void setHiddenLayerSizes(int layerId, int size) {
+        neuralNetworkConfig.setHiddenLayerSizes(layerId, size);
     }
 
 	/**
@@ -446,7 +447,7 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
     @Override public void resetNeuralNetworkConfiguration() {
-        neuralNetworkConfig.setHiddenLayerSizes(null);
+        neuralNetworkConfig.resetHiddenLayer();
         neuralNetworkConfig.setInputLayerSize(0);
         neuralNetworkConfig.setOutputLayerSize(0);
         inputMapDataSetSelection = null;
@@ -541,6 +542,23 @@ public class ControllerImpl implements Controller {
 		if ( activationFunction == null ) throw new IllegalStateException("Activation function not set.");
 	}
 	
+    /**
+     * {@inheritDoc}
+     */
+	@Override public int getCountNonZeroHiddenLayers() {
+		Map<Integer,Integer> hiddenLayers = neuralNetworkConfig.getHiddenLayerSizes();
+		if ( hiddenLayers == null ) return 0;
+		if ( hiddenLayers.isEmpty() ) return 0;
+		int totalNonZero = 0;
+		for( int layerId : hiddenLayers.keySet() ){
+			if (neuralNetworkConfig.getHiddenLayerSize(layerId) > 0 ) totalNonZero++;
+		}
+		return totalNonZero;
+	}
+
+	/**
+     * {@inheritDoc}
+     */
 	@Override public String toString() {
 		return "DataSet File:   "+dataSetFileAttributes.getFilename()+"\n"
 		     + "Separator:      "+dataSetFileAttributes.getSeparator()+"\n"

@@ -1,6 +1,7 @@
 package app.model.serializable;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The Neural Network Configuration implementation for the serial
@@ -24,7 +25,7 @@ public class NeuralNetworkConfigImpl implements NeuralNetworkConfig {
 	/**
 	 * The hidden layer neuron sizes.
 	 */
-	private List<Integer> hiddenLayerSizes;
+	private Map<Integer,Integer> hiddenLayerSizes = new HashMap<>();
 
 	/**
 	 * The output layer neuron size.
@@ -48,15 +49,15 @@ public class NeuralNetworkConfigImpl implements NeuralNetworkConfig {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public List<Integer> getHiddenLayerSizes() {
+	@Override public Map<Integer,Integer> getHiddenLayerSizes() {
 		return hiddenLayerSizes;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes) {
-		this.hiddenLayerSizes = hiddenLayerSizes;
+	@Override public void setHiddenLayerSizes(int layerId, int size) {
+		hiddenLayerSizes.put(layerId, size);
 	}
 
 	/**
@@ -73,4 +74,20 @@ public class NeuralNetworkConfigImpl implements NeuralNetworkConfig {
 		this.outputLayerSize = outputLayerSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public int getHiddenLayerSize(int layerId) {
+		if ( hiddenLayerSizes.containsKey(layerId) ) {
+			return hiddenLayerSizes.get(layerId);
+		}
+		return 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public void resetHiddenLayer() {
+		hiddenLayerSizes = new HashMap<>();
+	}
 }

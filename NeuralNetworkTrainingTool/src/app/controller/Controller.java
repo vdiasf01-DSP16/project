@@ -189,9 +189,10 @@ public interface Controller {
 	/**
 	 * Setting the hidden layer number and amount of neurons required.
 	 * 
-	 * @param hiddenLayerSizes
+	 * @param layerId int
+	 * @param size int
 	 */
-	public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes);
+	public void setHiddenLayerSizes(int layerId, int size);
 
 	/**
 	 * Resets all data possibly set for the neural network configuration.
@@ -253,4 +254,11 @@ public interface Controller {
 	 * @param activationFunctionName String
 	 */
 	public void setActivationFunction(String activationFunctionName);
+
+	/**
+	 * Total of non-zero hidden layers set.
+	 * 
+	 * @return int
+	 */
+	public int getCountNonZeroHiddenLayers();
 }

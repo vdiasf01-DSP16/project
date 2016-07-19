@@ -82,10 +82,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     @FXML private Separator hiddenLayerSeparatorId;
     @FXML private Pane hiddenLayerSetupPaneId;
     @FXML private Button neuralNetworkNextId;
-    /**
-     * The list of hidden layers and neuron amount per layer.
-     */
-    private List<TextField> hiddenLayers;
+
     /**
      * Defining the change listener to activation function changes,
      * to update on change the ability to press the button to mapping.
@@ -211,7 +208,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
         neuralNetworkTopologyLabelId.setText("");
 
-        hiddenLayers = new LinkedList<>();
         neuronHiddenLayerNumberId.clear();
         neuronOutputLayerAmountId.clear();
         neuronInputLayerAmountId.clear();
@@ -222,8 +218,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         
         mappingTabId.setDisable(true);
         mappingApplyId.setDisable(true);
-
-        hiddenLayers = new LinkedList<>();
 
         // Initialise the Mapping combo selections.
         mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
@@ -319,7 +313,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         mainController.resetMappingSelections();
 
         mappingApplyId.setDisable(true);
-        hiddenLayers = new LinkedList<>();
 
         // Initialise the Mapping combo selections.
         mappingSelectorInOutId.getItems().clear();
@@ -528,15 +521,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
                 .equals(FIRST_SELECTION_DESCRIPTION) ) return false;
 
         if ( Integer.parseInt(neuronHiddenLayerNumberId.getText()) > 0 ) {
-            // With hidden layers set, all must be populated.
-            int expectedFilledBoxed = hiddenLayers.size();
-            for ( TextField textField : hiddenLayers ) {
-                if ( textField.getText() != null & textField.getText().length() > 0 ) 
-                    expectedFilledBoxed--;
-            }
-            if ( expectedFilledBoxed != 0 ) {
-                return false;
-            }
+        	int requestedHiddenLayers = Integer.parseInt(neuronHiddenLayerNumberId.getText());
+        	int populatedHiddenLayers = mainController.getCountNonZeroHiddenLayers();
+        	if ( requestedHiddenLayers != populatedHiddenLayers ) return false;
         }
 
         return true;
@@ -865,9 +852,8 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         topologySetupId.setVisible(true);
         hiddenLayerSetupPaneId.getChildren().clear();
 
-        // Reset any past settings.
-        hiddenLayers = new LinkedList<>();
-
+        mainController.resetNeuralNetworkConfiguration();
+        
         int column = 0;
         int row = 0;
         int numberOfHiddenLayers = Integer.parseInt(neuronHiddenLayerNumberId.getText());
@@ -890,13 +876,14 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             newText.setId(id);
             newText.setMaxWidth(55);
 
-            hiddenLayers.add(newText);
-            
             // Validate input
             newText.addEventHandler(KeyEvent.KEY_TYPED, this::validateIntegerAction);
 
             // Check if all is now filled to show the next button
             newText.addEventHandler(KeyEvent.KEY_RELEASED, this::checkAllNeuralNetworkConfigFilled);
+
+            // Add value to controller
+            newText.addEventHandler(KeyEvent.KEY_RELEASED, this::addHiddenLayerInfoToController);
 
             gridpane.add(newLabel, column, row);  // Neural network hidden layer #
             gridpane.add(newText, column+1, row); // Requested neuron amount for layer
@@ -916,6 +903,21 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         hiddenLayerSetupPaneId.getChildren().add(vBox);
         hiddenLayerSetupPaneId.setVisible(true);
         hiddenLayerSeparatorId.setVisible(false);
+    }
+    
+    /**
+     * Setting up the hidden layers with the controller.
+     * 
+     * @param event KeyEvent
+     */
+    public void addHiddenLayerInfoToController(KeyEvent event) {
+    	TextField data = (TextField) event.getSource();
+    	int layerId = Integer.parseInt(data.getId());
+    	int size = 0;
+    	if ( data.getText().length() > 0 ) {
+    		size = Integer.parseInt(data.getText());
+    	}
+        mainController.setHiddenLayerSizes(layerId, size);
     }
 
     /**
@@ -941,19 +943,19 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      */
     private void saveNeuralNetworkConfiguration() {
 // TODO: Give main controller the Network Topology selected
-// TODO: Give main controller the Activation Function selected
 
         // Supply the input neuron amount to the controller.
         int inputLayerSize = Integer.parseInt(neuronInputLayerAmountId.getText());
         mainController.setInputLayerSize(inputLayerSize);
 
-        // Supplying the hidden layers configuration.
-        List<Integer> hiddenLayerSizes = new LinkedList<>();
-        for ( TextField textField : hiddenLayers ) {
-            hiddenLayerSizes.add(Integer.parseInt(textField.getText()));
-        }
-        mainController.setHiddenLayerSizes(hiddenLayerSizes);
-
+//        // Supplying the hidden layers configuration.
+//        List<Integer> hiddenLayerSizes = new LinkedList<>();
+//        for ( TextField textField : hiddenLayers ) {
+//        	System.err.println(textField);
+//            hiddenLayerSizes.add(Integer.parseInt(textField.getText()));
+//        }
+//        mainController.setHiddenLayerSizes(hiddenLayerSizes);
+//System.out.println(hiddenLayerSizes);
         // Supply the output neuron amount to the controller.
         int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
         mainController.setOutputLayerSize(outputLayerSize);

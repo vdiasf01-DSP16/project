@@ -1,7 +1,7 @@
 package app.model.serializable;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Map;
 
 /**
  * The serializable version of the neural network configuration.
@@ -42,15 +42,30 @@ public interface NeuralNetworkConfig extends Serializable {
 	/**
 	 * The number of neurons per hidden layer.
 	 * 
-	 * @return List Integer
+	 * @return Map Integer,Integer
 	 */
-	public List<Integer> getHiddenLayerSizes();
+	public Map<Integer,Integer> getHiddenLayerSizes();
 
 	/**
 	 * Setting the number of neurons per hidden layer.
 	 * 
-	 * @param hiddenLayerSizes List Integer
+	 * @param layerId int
+	 * @param size int
 	 */
-	public void setHiddenLayerSizes(List<Integer> hiddenLayerSizes);
+	public void setHiddenLayerSizes(int layerId, int size);
+	
+	/**
+	 * Returns the set size of the given layer id or zero.
+	 * 
+	 * @param layerId int
+	 * @return int
+	 */
+	public int getHiddenLayerSize(int layerId);
+
+	/**
+	 * Resetting the hidden layers to empty.
+	 */
+	public void resetHiddenLayer();
+	
 
 }
