@@ -167,6 +167,11 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     private int TOTAL_COLUMNS_MAPPING_OUTPUT;
 
     /**
+     * The mapping top text to indicate that everything is ready for submission.
+     */
+    private final String INFO_SELECTION_REQUIREMENTS_MET = "Ready";
+
+    /**
      * Initialising the various details and selections.
      */
     public void initialize() {
@@ -220,7 +225,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         hiddenLayers = new LinkedList<>();
 
         // Initialise the Mapping combo selections.
-        mappingSelectorInOutId.getItems().clear();
         mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
         mappingSelectorLabelId.setAlignment(Pos.CENTER);
     }
@@ -262,7 +266,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         mappingTabId.getTabPane().getSelectionModel().select(mappingTabId);
 
         // Selecting the next tab, authorising it automatically.
-    	mappingSelectorInOutId.getSelectionModel().select(MAPPING_SELECTOR_INPUT);
+    	mappingSelectorInOutId.valueProperty().setValue(FIRST_SELECTION_DESCRIPTION);
+    	mappingSupervisedCheckboxId.setDisable(true);
+    	mappingSelectAllCheckboxId.setDisable(true);
 
         // Ensure the neural network configuration parts are saved.
         saveNeuralNetworkConfiguration();
@@ -298,6 +304,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     private void resetNetwork() { 
         mainController.resetNeuralNetworkConfiguration();
         mainController.resetMappingSelections();
+
         neuralNetworkTopologyId.setValue(FIRST_SELECTION_DESCRIPTION);
         neuralNetworkTopologyLabelId.setText("");
         neuronInputLayerAmountId.setText("");
@@ -315,16 +322,17 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * Reset all mapping to their defaults.
      */
     private void resetMapping() { 
-        mappingApplyId.setDisable(true);
-        
         mainController.resetMappingSelections();
 
+        mappingApplyId.setDisable(true);
         hiddenLayers = new LinkedList<>();
 
         // Initialise the Mapping combo selections.
         mappingSelectorInOutId.getItems().clear();
         mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
+        mappingSelectorInOutId.getSelectionModel().select(FIRST_SELECTION_DESCRIPTION);
         mappingSelectorLabelId.setAlignment(Pos.CENTER);
+        mappingOutVBoxId.setVisible(false);
 
         // Reset all mapping values to their initial defaults.
         mappingSelectAllCheckboxId.selectedProperty().set(false);
@@ -550,6 +558,10 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         // all data the user may have inserted already for inputs and or outputs.
         refreshMappingTopVisuals();
 
+        mappingSupervisedCheckboxId.setDisable(false);
+        mappingSelectAllCheckboxId.setDisable(false);
+        mappingOutVBoxId.setVisible(true);
+
         if ( mappingSelectorInOutId.getValue() != null && 
                 mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_INPUT) ) {
             // Update the visuals for the input sub-options
@@ -582,7 +594,21 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * all required views.
      */
     @FXML public void mappingSupervisedCheckboxAction() {
-        refreshMappingTopVisuals();
+        if ( mappingSupervisedCheckboxId.isSelected() ) {
+            // Supervised: Show both input and output
+            String currentValue = mappingSelectorInOutId.getValue();
+            if ( currentValue == null ) currentValue = MAPPING_SELECTOR_INPUT;
+            if ( currentValue == FIRST_SELECTION_DESCRIPTION ) currentValue = MAPPING_SELECTOR_INPUT;
+            mappingSelectorInOutId.getItems().clear();
+            mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT, MAPPING_SELECTOR_OUTPUT);
+            mappingSelectorInOutId.getSelectionModel().select(currentValue);
+        }
+        else {
+            // Unsupervised: Lock selector to Input only
+            mappingSelectorInOutId.getItems().clear();
+            mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
+        }
+        mappingSelectorLabelId.setAlignment(Pos.CENTER);
     }
 
     /**
@@ -590,24 +616,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
      * depending on the selections made by user. 
      */
     private void refreshMappingTopVisuals() {
-        if ( mappingSupervisedCheckboxId.isSelected() ) {
-            // Supervised: 
-            //   1 - Show both input and output
-            String currentValue = mappingSelectorInOutId.getValue();
-            if ( currentValue == null ) currentValue = MAPPING_SELECTOR_INPUT;
-            mappingSelectorInOutId.getItems().clear();
-            mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT, MAPPING_SELECTOR_OUTPUT);
-            mappingSelectorInOutId.valueProperty().setValue(currentValue);
-        }
-        else {
-            // Unsupervised:
-            //   1 - Lock selector to Input only
-            mappingSelectorInOutId.getItems().clear();
-            mappingSelectorInOutId.getItems().addAll(MAPPING_SELECTOR_INPUT);
-            mappingSelectorInOutId.valueProperty().setValue(MAPPING_SELECTOR_INPUT);
-        }
-        mappingSelectorLabelId.setAlignment(Pos.CENTER);
-
         // Select all check box to be shown only for the input
         if ( mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_INPUT) ) {
             mappingSelectAllCheckboxId.setVisible(true);
@@ -621,6 +629,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             showMappingInputOptions();
         if ( mappingSelectorInOutId.getValue().equals(MAPPING_SELECTOR_OUTPUT) )
             showMappingOutputOptions();
+        
+        if (mappingSelectorLabelId.getText().equals(INFO_SELECTION_REQUIREMENTS_MET))
+        	mappingApplyId.setDisable(false);
     }
 
     /**
@@ -673,6 +684,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         vBox.setAlignment(Pos.CENTER_RIGHT);
         mappingPaneInputId.getChildren().add(vBox);
     }
+
 
     /**
      * The output mapping between the data set and the neural network outputs.
@@ -728,7 +740,13 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             for ( String activationFunctionName : mainController.getOperatorsList() ) {
                 functionDropDown.getItems().add(activationFunctionName);
             }
-            functionDropDown.setValue(NO_FUNCTION_DESCRIPTION);
+
+            if ( mainController.getOutputFunction(outputId) != null ) {
+                functionDropDown.setValue(mainController.getOutputFunction(outputId).getMathOperatorKey());
+            }
+            else {
+                functionDropDown.setValue(NO_FUNCTION_DESCRIPTION);
+            }
             functionDropDown.setId(""+outputId);
 
             // Adding listeners to function selection changes to let 
@@ -739,14 +757,32 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
                 }
             });
 
-            TextField initialValue = new TextField();
-            initialValue.setVisible(false); // Not showing for no function
-            initialValue.setMaxWidth(50);
-            initialValue.addEventHandler(KeyEvent.KEY_TYPED, this::validateDoubleAction);
-            initialValue.setId(""+outputId);
             Label functionDescriptionLabel = new Label();
             functionDescriptionLabel.setMaxWidth(350);
             functionDescriptionLabel.setId("F"+outputId);
+
+            TextField initialValue = new TextField();
+            initialValue.setVisible(false); // Not showing initially
+            initialValue.setMaxWidth(50);
+            initialValue.addEventHandler(KeyEvent.KEY_TYPED, this::validateDoubleAction);
+            initialValue.setId(""+outputId);
+
+            if ( mainController.getOutputFunction(outputId) != null ) {
+                // The two functions that do not expect user input.
+            	String mathOperatorKey = mainController.getOutputFunction(outputId).getMathOperatorKey();
+                if ( !mathOperatorKey.equals(MathOperatorFactory.getName(MathOperatorKey.INV)) & 
+                     !mathOperatorKey.equals(MathOperatorFactory.getName(MathOperatorKey.BIN)) &
+                     !mathOperatorKey.equals(NO_FUNCTION_DESCRIPTION)) {
+                	initialValue.setVisible(true); // Showing if function requires it.
+                }
+
+                initialValue.setText(mainController.getOutputFunctionSelectionValue(outputId)+"");
+
+                if ( ! mathOperatorKey.equals(NO_FUNCTION_DESCRIPTION) ) {
+                    MathOperatorCore<?> mathOperator = MathOperatorFactory.getMathOperation(mathOperatorKey);
+                    functionDescriptionLabel.setText(mathOperator.getDescription());
+                }
+            }
 
             gridpane.add(inputIdDropDown,          0, outputId); // Data Set column
             gridpane.add(outputIdLabel,            1, outputId); // Neural network output neuron
@@ -770,10 +806,11 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     private void applyExtraFunctionOptions(ComboBox<String> functionDropDown, String mathOperatorKey) {
         // The input text box
         GridPane gridPane = (GridPane) functionDropDown.getParent();
-        int rowId = Integer.parseInt(functionDropDown.getId());
+        int outputId = Integer.parseInt(functionDropDown.getId());
+        int rowId = outputId - 1;
 
-        TextField functionValue = (TextField) gridPane.getChildren().get((rowId-1)*TOTAL_COLUMNS_MAPPING_OUTPUT+3);
-        Label description = (Label) gridPane.getChildren().get((rowId-1)*TOTAL_COLUMNS_MAPPING_OUTPUT+4);
+        TextField functionValue = (TextField) gridPane.getChildren().get(rowId*TOTAL_COLUMNS_MAPPING_OUTPUT+3);
+        Label description = (Label) gridPane.getChildren().get(rowId*TOTAL_COLUMNS_MAPPING_OUTPUT+4);
         description.setText("");
         functionValue.clear();
         
@@ -798,6 +835,31 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             MathOperatorCore<?> mathOperator = MathOperatorFactory.getMathOperation(mathOperatorKey);
             description.setText(mathOperator.getDescription());
         }
+
+        functionValue.removeEventFilter(KeyEvent.KEY_RELEASED, this::functionTextChanged);
+        functionValue.addEventHandler(KeyEvent.KEY_RELEASED, this::functionTextChanged);
+
+        mainController.setOutputFunction(outputId, mathOperatorKey, functionValue.getText());
+    }
+    
+    /**
+     * Function initial value changed.
+     * 
+     * @param keyEvent
+     */
+    @FXML public void functionTextChanged(KeyEvent keyEvent) {
+    	TextField textField = (TextField) keyEvent.getSource();
+ 
+    	String outputText = textField.getId();
+    	String text = textField.getText();
+    	
+    	double initialValue = 0.0;
+    	if ( text.length() > 0 ) initialValue = Double.parseDouble(text);
+
+    	int outputId = 0;
+    	if ( outputText.length() > 0 ) outputId = Integer.parseInt(outputText);
+    	
+        mainController.setOutputFunction(outputId, initialValue);
     }
     
     /**
@@ -894,11 +956,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 // TODO: Give main controller the Network Topology selected
 // TODO: Give main controller the Activation Function selected
 
-        // Supply the found data given by user.
+        // Supply the input neuron amount to the controller.
         int inputLayerSize = Integer.parseInt(neuronInputLayerAmountId.getText());
-        int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
         mainController.setInputLayerSize(inputLayerSize);
-        mainController.setOutputLayerSize(outputLayerSize);
 
         // Supplying the hidden layers configuration.
         List<Integer> hiddenLayerSizes = new LinkedList<>();
@@ -906,12 +966,19 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
             hiddenLayerSizes.add(Integer.parseInt(textField.getText()));
         }
         mainController.setHiddenLayerSizes(hiddenLayerSizes);
+
+        // Supply the output neuron amount to the controller.
+        int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
+        mainController.setOutputLayerSize(outputLayerSize);
+        
+        
     }
 
     /**
      * Giving back to the controller mapping data supplied.
      */
     private void saveMappingData() {
+    	
 // TODO: Give main controller the dataset columns for NN input.
         // if supervised:
 // TODO: Give main controller the dataset columns for NN output.

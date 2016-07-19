@@ -8,9 +8,11 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import app.core.activationFunction.ActivationFunctionFactory;
 import app.core.activationFunction.ActivationFunctionKey;
+import app.core.dataSet.DataSet;
 import app.core.dataSet.MathOperatorFactory;
 import app.core.dataSet.MathOperatorKey;
 import app.core.neuralNetwork.NeuralNetworkPatternFactory;
@@ -76,12 +78,23 @@ public class ControllerImpl implements Controller {
     private final List<String> operatorsList;
     
     /**
+     * The list of output functions and their adjacent values 
+     * supplied by the user.
+     */
+    private final List<OutputFunctionDetails> mappingOutputFunction;
+
+    /**
      * Messages to tell the uses when input data set selections have been made
      * not been made to match the neural network total number of inputs.
      */
     private final String WARNING_TOO_MANY_SELECTED = "Too many data set inputs selected";
     private final String WARNING_NOT_SELECTED_ENOUGH = "Not enough data set inputs selected";
     private final String INFO_SELECTION_REQUIREMENTS_MET = "Ready";
+
+    /**
+     * The data set to be used to train a network.
+     */
+    private DataSet dataset;
     
     /**
      * Controller Constructor to initialise required objects.
@@ -92,6 +105,7 @@ public class ControllerImpl implements Controller {
         for( MathOperatorKey operator : MathOperatorKey.values() ) {
         	operatorsList.add(MathOperatorFactory.getName(operator));
         }
+        mappingOutputFunction = new LinkedList<>();
     }
 
     /**
@@ -381,12 +395,15 @@ public class ControllerImpl implements Controller {
         int dataSetInputSelectionsMade = 0;
         for ( Boolean value : inputMapDataSetSelection ) if ( value ) dataSetInputSelectionsMade++;
 
-        if ( dataSetInputSelectionsMade > neuralNetworkConfig.getInputLayerSize() )
-            warning.setText(WARNING_TOO_MANY_SELECTED);
-        else if ( dataSetInputSelectionsMade < neuralNetworkConfig.getInputLayerSize() ) 
-            warning.setText(WARNING_NOT_SELECTED_ENOUGH);
-        else 
-            warning.setText(INFO_SELECTION_REQUIREMENTS_MET);
+        if ( dataSetInputSelectionsMade > neuralNetworkConfig.getInputLayerSize() ) {
+        	warning.setText(WARNING_TOO_MANY_SELECTED);
+        }
+        else if ( dataSetInputSelectionsMade < neuralNetworkConfig.getInputLayerSize() ) {
+        	warning.setText(WARNING_NOT_SELECTED_ENOUGH);
+        }
+        else {
+        	warning.setText(INFO_SELECTION_REQUIREMENTS_MET);
+        }
     }
 
     /**
@@ -425,7 +442,6 @@ public class ControllerImpl implements Controller {
         neuralNetworkConfig.setInputLayerSize(0);
         neuralNetworkConfig.setOutputLayerSize(0);
         inputMapDataSetSelection = null;
-    
     }
 
     /**
@@ -436,9 +452,77 @@ public class ControllerImpl implements Controller {
 		return operatorsList;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
 	@Override
 	public void resetMappingSelections() {
 		inputMapDataSetSelection = null;
-		System.out.println("Resetting stuff");
+		mappingOutputFunction.clear();
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public void setOutputFunction(int outputId, String mathOperatorKey, String functionValue) {
+		// Calculate the value of the initial function value supplied.
+		double initialValue = 0.0;
+		if ( functionValue.length() > 0 ) initialValue = Double.parseDouble(functionValue);
+
+		if ( mappingOutputFunction.stream().anyMatch(p -> p.getOutputId() == outputId) ) {
+			OutputFunctionDetails functionDetails = mappingOutputFunction.stream()
+					.filter(p -> p.getOutputId() == outputId)
+					.collect(Collectors.toList()).get(0);
+			// Update the function.
+			functionDetails.setOutputFunction(outputId, mathOperatorKey, initialValue);
+		}
+		else {
+			// Create one.
+			OutputFunctionDetails outputFunctionDetails = new OutputFunctionDetailsImpl();
+			outputFunctionDetails.setOutputFunction(outputId, mathOperatorKey, initialValue);
+			mappingOutputFunction.add(outputFunctionDetails);
+		}
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public OutputFunctionDetails getOutputFunction(int outputId) {
+		if ( mappingOutputFunction.size() == 0 ) return null; 
+		List<OutputFunctionDetails> list = mappingOutputFunction.stream()
+				.filter(p -> p.getOutputId() == outputId )
+				.collect(Collectors.toList());
+		
+		if ( list != null & list.size() > 0 ) return list.get(0);
+		return null;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public double getOutputFunctionSelectionValue(int outputId) {
+		OutputFunctionDetails outputFunctionDetails = getOutputFunction(outputId);
+		if ( outputFunctionDetails != null ) {
+			return outputFunctionDetails.getFunctionValue();
+		}
+		return 0.0;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override
+	public void setOutputFunction(int outputId, double initialValue) {
+		OutputFunctionDetails outputFunctionDetails = getOutputFunction(outputId);
+		if ( outputFunctionDetails != null ) {
+			outputFunctionDetails.setOutputFunction(outputId, 
+					outputFunctionDetails.getMathOperatorKey(), initialValue);
+		}
+		else {
+			throw new IllegalArgumentException("Cannot set a value into a not yet created function.");
+		}
 	}
 }

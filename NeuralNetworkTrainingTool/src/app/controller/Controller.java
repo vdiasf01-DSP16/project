@@ -210,4 +210,39 @@ public interface Controller {
 	 * Resets all data possibly set for the Mapping configuration.
 	 */
 	public void resetMappingSelections();
+
+	/**
+	 * Adding the output function to the output list.
+	 * 
+	 * @param outputId int
+	 * @param mathOperatorKey String
+	 * @param text String
+	 */
+	public void setOutputFunction(int outputId, String mathOperatorKey, String text);
+
+	/**
+	 * The Output Function details for given output neuron id.
+	 * 
+	 * If not function is found, it will return null.
+	 * 
+	 * @param outputId int
+	 * @return OutputFunctionDetails
+	 */
+	public OutputFunctionDetails getOutputFunction(int outputId);
+
+	/**
+	 * The output function initial value to be use on the supplied
+	 * output neuron id.
+	 * 
+	 * @param outputId int
+	 * @return double
+	 */
+	public double getOutputFunctionSelectionValue(int outputId);
+
+	/**
+	 * 
+	 * @param outputId int
+	 * @param initialValue double
+	 */
+	public void setOutputFunction(int outputId, double initialValue);
 }
