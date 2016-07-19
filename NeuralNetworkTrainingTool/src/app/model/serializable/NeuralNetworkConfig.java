@@ -3,13 +3,15 @@ package app.model.serializable;
 import java.io.Serializable;
 import java.util.Map;
 
+import app.core.neuralNetwork.NeuralNetworkPatternCore;
+
 /**
  * The serializable version of the neural network configuration.
  * 
  * @author Vasco
  *
  */
-public interface NeuralNetworkConfig extends Serializable {
+public interface NeuralNetworkConfig<T> extends Serializable {
 
 	/**
 	 * The number of neurons on the output layer.
@@ -66,6 +68,16 @@ public interface NeuralNetworkConfig extends Serializable {
 	 * Resetting the hidden layers to empty.
 	 */
 	public void resetHiddenLayer();
-	
 
+	/**
+	 * The type of Neural Network chosen.
+	 * 
+	 * @return NeuralNetworkPatternCore
+	 */
+	public NeuralNetworkPatternCore<T> getTopology();
+
+	/**
+	 * Setting the type of Neural Network chosen.
+	 */
+	public void setTopology(NeuralNetworkPatternCore<T> neuralNetworkTopology);
 }

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.encog.neural.pattern.NeuralNetworkPattern;
+
 import app.controller.menu.neuralNetwork.OutputFunctionDetails;
 import app.controller.menu.neuralNetwork.OutputFunctionDetailsImpl;
 import app.core.activationFunction.ActivationFunctionCore;
@@ -19,6 +21,7 @@ import app.core.activationFunction.ActivationFunctionKey;
 import app.core.dataSet.DataSet;
 import app.core.dataSet.MathOperatorFactory;
 import app.core.dataSet.MathOperatorKey;
+import app.core.neuralNetwork.NeuralNetworkPatternCore;
 import app.core.neuralNetwork.NeuralNetworkPatternFactory;
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
 import app.model.file.DataSetFileGUIReader;
@@ -67,7 +70,7 @@ public class ControllerImpl implements Controller {
     /**
      * The Neural Network configuration set by the user.
      */
-    private NeuralNetworkConfig neuralNetworkConfig;
+    private NeuralNetworkConfig<NeuralNetworkPattern> neuralNetworkConfig;
 
     /**
      * The selection from the user on which columns from the
@@ -215,7 +218,8 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-    @Override
+    @SuppressWarnings("unchecked")
+	@Override
     public void loadProject(File file) {
         if ( file != null ) {
             if ( file.exists() & file.canRead() ) {
@@ -233,7 +237,7 @@ public class ControllerImpl implements Controller {
                         // to not be readable anymore.
                         projectData = (ProjectData) ois.readObject();
                         dataSetFileAttributes = (FileAttributes) ois.readObject();
-                        neuralNetworkConfig = (NeuralNetworkConfig) ois.readObject();
+                        neuralNetworkConfig = (NeuralNetworkConfig<NeuralNetworkPattern>) ois.readObject();
 
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
@@ -534,7 +538,7 @@ public class ControllerImpl implements Controller {
 		}
 	}
 
-    /**
+	/**
      * {@inheritDoc}
      */
 	@Override public void setActivationFunction(String activationFunctionName) {
@@ -556,15 +560,43 @@ public class ControllerImpl implements Controller {
 		return totalNonZero;
 	}
 
+    /**
+     * {@inheritDoc}
+     */
+	@SuppressWarnings("unchecked")
+	@Override public void setNetworkTopology(String selectedItem) {
+		neuralNetworkConfig.setTopology(
+				(NeuralNetworkPatternCore<NeuralNetworkPattern>) 
+				NeuralNetworkPatternFactory.getNetworkPattern(selectedItem));
+	}
+
 	/**
      * {@inheritDoc}
      */
 	@Override public String toString() {
-		return "DataSet File:   "+dataSetFileAttributes.getFilename()+"\n"
-		     + "Separator:      "+dataSetFileAttributes.getSeparator()+"\n"
-		     + "NN Input size:  "+neuralNetworkConfig.getInputLayerSize()+"\n"
-		     + "NN Hidden size: "+neuralNetworkConfig.getHiddenLayerSizes().size()+"\n"
-		     + "NN Ouput size:  "+neuralNetworkConfig.getOutputLayerSize()+"\n"
-		     + "Act Func:       "+activationFunction.getName()+"\n";
+		String hiddenConfig = "[";
+		for( int layerId : neuralNetworkConfig.getHiddenLayerSizes().keySet() ) {
+			hiddenConfig += " "+neuralNetworkConfig.getHiddenLayerSize(layerId);
+		}
+		hiddenConfig += " ]";
+		neuralNetworkConfig.getHiddenLayerSizes();
+		neuralNetworkConfig.getInputLayerSize();
+//		dataset.setOutputColumns(outputColumns);
+
+		return "=============================================================================\n"
+	        + "DataSet File:        "+dataSetFileAttributes.getFilename()+"\n"
+	        + "Separator:           "+dataSetFileAttributes.getSeparator()+"\n"
+	        + "Header:              "+dataSetFileAttributes.getHeaderRows()+"\n"
+	        + "Footer:              "+dataSetFileAttributes.getFooterRows()+"\n"
+	        + "Data set columns:    "+dataSetFileAttributes.getHeaderRows()+"\n"
+	        + "=============================================================================\n"
+	        + "NN Topology:         "+neuralNetworkConfig.getTopology().getName()+"\n"
+	        + "NN Input size:       "+neuralNetworkConfig.getInputLayerSize()+"\n"
+	        + "NN Hidden size:      "+neuralNetworkConfig.getHiddenLayerSizes().size()+" => "+hiddenConfig+"\n"
+	        + "NN Ouput size:       "+neuralNetworkConfig.getOutputLayerSize()+"\n"
+	        + "Activation Function: "+activationFunction.getName()+"\n"
+            + "=============================================================================\n"
+//	        + TODO: Mapping
+            + "=============================================================================";
 	}
 }

@@ -261,4 +261,11 @@ public interface Controller {
 	 * @return int
 	 */
 	public int getCountNonZeroHiddenLayers();
+
+	/**
+	 * Setting the selected neural network topology.
+	 * 
+	 * @param selectedItem String
+	 */
+	public void setNetworkTopology(String selectedItem);
 }

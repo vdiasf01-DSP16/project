@@ -60,6 +60,42 @@ public abstract class NeuralNetworkPatternFactory {
     }
 
     /**
+     * Get the matching Neural Network Pattern.
+     * 
+     * @param neuralNetworkPattern NeuralNetworkPatternKey
+     * @return NeuralNetworkPatternCore
+     */
+    public static NeuralNetworkPatternCore<?> getNetworkPattern(String neuralNetworkPattern) {
+        if ( getName(NeuralNetworkPatternKey.FeedForwardPattern).equals(neuralNetworkPattern) ) 
+            return new FeedForwardPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.ADALINEPattern).equals(neuralNetworkPattern) ) 
+            return new ADALINEPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.HopfieldPattern).equals(neuralNetworkPattern) ) 
+            return new HopfieldPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.ART1Pattern).equals(neuralNetworkPattern) )
+            return new ART1PatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.BAMPattern).equals(neuralNetworkPattern) )
+            return new BAMPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.BoltzmannPattern).equals(neuralNetworkPattern) )
+            return new BoltzmannPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.CPNPattern).equals(neuralNetworkPattern) )
+            return new CPNPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.ElmanPattern).equals(neuralNetworkPattern) )
+            return new ElmanPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.JordanPattern).equals(neuralNetworkPattern) )
+            return new JordanPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.PNNPattern).equals(neuralNetworkPattern) )
+            return new PNNPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.RadialBasisPattern).equals(neuralNetworkPattern) )
+            return new RadialBasisPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.SOMPattern).equals(neuralNetworkPattern) )
+            return new SomPatternAdaptor();
+        if ( getName(NeuralNetworkPatternKey.SVMPattern).equals(neuralNetworkPattern) )
+            return new SVMPatternAdaptor();
+        return null;
+    }
+
+    /**
      * The Description associated with the given topology.
      * 
      * @param neuralNetworkPattern

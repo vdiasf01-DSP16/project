@@ -3,6 +3,10 @@ package app.model.serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.neural.pattern.NeuralNetworkPattern;
+
+import app.core.neuralNetwork.NeuralNetworkPatternCore;
+
 /**
  * The Neural Network Configuration implementation for the serial
  * model to be saved on disk.
@@ -10,7 +14,7 @@ import java.util.Map;
  * @author Vasco
  * 
  */
-public class NeuralNetworkConfigImpl implements NeuralNetworkConfig {
+public class NeuralNetworkConfigImpl implements NeuralNetworkConfig<NeuralNetworkPattern> {
 
 	/**
 	 * The serial version UID
@@ -32,6 +36,11 @@ public class NeuralNetworkConfigImpl implements NeuralNetworkConfig {
 	 */
 	private int outputLayerSize;
 
+	/**
+	 * Neural Network Pattern chosen by user.
+	 */
+	private NeuralNetworkPatternCore<NeuralNetworkPattern> neuralNetworkPattern;
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -89,5 +98,19 @@ public class NeuralNetworkConfigImpl implements NeuralNetworkConfig {
 	 */
 	@Override public void resetHiddenLayer() {
 		hiddenLayerSizes = new HashMap<>();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public NeuralNetworkPatternCore<NeuralNetworkPattern> getTopology() {
+		return neuralNetworkPattern;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public void setTopology(NeuralNetworkPatternCore<NeuralNetworkPattern> neuralNetworkTopology) {
+		neuralNetworkPattern = neuralNetworkTopology;
 	}
 }
