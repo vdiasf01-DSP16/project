@@ -24,4 +24,11 @@ public interface MathOperatorCore<T> extends Function<Double, Double>{
      * @return MathOperatorKey
      */
     public MathOperatorKey getId();
+    
+    /**
+     * The initial value to be used on the operation.
+     * 
+     * @param bias double
+     */
+    public void setBiasValue(double bias);
 }

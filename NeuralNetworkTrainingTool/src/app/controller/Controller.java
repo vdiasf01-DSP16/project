@@ -216,11 +216,12 @@ public interface Controller {
 	/**
 	 * Adding the output function to the output list.
 	 * 
+	 * @param inputId int
 	 * @param outputId int
 	 * @param mathOperatorKey String
 	 * @param text String
 	 */
-	public void setOutputFunction(int outputId, String mathOperatorKey, String text);
+	public void setOutputFunction(int inputId, int outputId, String mathOperatorKey, String text);
 
 	/**
 	 * The Output Function details for given output neuron id.
@@ -268,4 +269,9 @@ public interface Controller {
 	 * @param selectedItem String
 	 */
 	public void setNetworkTopology(String selectedItem);
+
+	/**
+	 * Load the remaining parts for the neural network config.
+	 */
+	public void applyNeuralNetworkConfig();
 }

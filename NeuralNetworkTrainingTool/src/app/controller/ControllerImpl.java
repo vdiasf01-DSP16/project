@@ -19,8 +19,11 @@ import app.core.activationFunction.ActivationFunctionCore;
 import app.core.activationFunction.ActivationFunctionFactory;
 import app.core.activationFunction.ActivationFunctionKey;
 import app.core.dataSet.DataSet;
+import app.core.dataSet.FileDataSet;
+import app.core.dataSet.MathOperatorCore;
 import app.core.dataSet.MathOperatorFactory;
 import app.core.dataSet.MathOperatorKey;
+import app.core.dataSet.VectorMap;
 import app.core.neuralNetwork.NeuralNetworkPatternCore;
 import app.core.neuralNetwork.NeuralNetworkPatternFactory;
 import app.core.neuralNetwork.NeuralNetworkPatternKey;
@@ -106,7 +109,7 @@ public class ControllerImpl implements Controller {
     /**
      * The activation function to be used.
      */
-    private ActivationFunctionCore activationFunction;
+    private ActivationFunctionCore<?> activationFunction;
     
     /**
      * Controller Constructor to initialise required objects.
@@ -478,7 +481,7 @@ public class ControllerImpl implements Controller {
      * {@inheritDoc}
      */
 	@Override
-	public void setOutputFunction(int outputId, String mathOperatorKey, String functionValue) {
+	public void setOutputFunction(int inputId, int outputId, String mathOperatorKey, String functionValue) {
 		// Calculate the value of the initial function value supplied.
 		double initialValue = 0.0;
 		if ( functionValue.length() > 0 ) initialValue = Double.parseDouble(functionValue);
@@ -488,12 +491,12 @@ public class ControllerImpl implements Controller {
 					.filter(p -> p.getOutputId() == outputId)
 					.collect(Collectors.toList()).get(0);
 			// Update the function.
-			functionDetails.setOutputFunction(outputId, mathOperatorKey, initialValue);
+			functionDetails.setOutputFunction(inputId, outputId, mathOperatorKey, initialValue);
 		}
 		else {
 			// Create one.
 			OutputFunctionDetails outputFunctionDetails = new OutputFunctionDetailsImpl();
-			outputFunctionDetails.setOutputFunction(outputId, mathOperatorKey, initialValue);
+			outputFunctionDetails.setOutputFunction(inputId, outputId, mathOperatorKey, initialValue);
 			mappingOutputFunction.add(outputFunctionDetails);
 		}
 	}
@@ -530,7 +533,7 @@ public class ControllerImpl implements Controller {
 	@Override public void setOutputFunction(int outputId, double initialValue) {
 		OutputFunctionDetails outputFunctionDetails = getOutputFunction(outputId);
 		if ( outputFunctionDetails != null ) {
-			outputFunctionDetails.setOutputFunction(outputId, 
+			outputFunctionDetails.setOutputFunction(outputFunctionDetails.getInputId(), outputId, 
 					outputFunctionDetails.getMathOperatorKey(), initialValue);
 		}
 		else {
@@ -568,6 +571,57 @@ public class ControllerImpl implements Controller {
 		neuralNetworkConfig.setTopology(
 				(NeuralNetworkPatternCore<NeuralNetworkPattern>) 
 				NeuralNetworkPatternFactory.getNetworkPattern(selectedItem));
+	}
+
+	/**
+     * {@inheritDoc}
+     */
+	@Override public void applyNeuralNetworkConfig() {
+        dataset = new FileDataSet(dataSetFileAttributes);
+        List<VectorMap> inputMap = new LinkedList<>();
+        List<VectorMap> outputMap = new LinkedList<>();
+        int dataSetColumn = 0;
+
+        // Add only selected data set columns to neural network input map.
+        for( boolean selected : inputMapDataSetSelection ) {
+        	if ( selected ) {
+        		MathOperatorCore<?> operation = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD); 
+        		operation.setBiasValue(0);
+        		inputMap.add(new VectorMap(dataSetColumn, operation));
+        	}
+        	dataSetColumn++;
+        }
+
+        // Add output map and functions to neural network output map.
+        for( OutputFunctionDetails details : mappingOutputFunction ) {
+        	outputMap.add(new VectorMap(details.getOutputId(), 
+        			MathOperatorFactory.getMathOperation(details.getMathOperatorKey())));
+        }
+        
+        // Set data set with maps
+        dataset.setInputColumns(inputMap);
+        dataset.setOutputColumns(outputMap);
+
+// TODO: Pass this to the next widget where these will be requested before loading
+        dataSetFileAttributes.setTestingRangeIndex(1, 20);
+        dataSetFileAttributes.setTrainingRangeIndex(21, 30);
+        dataset.load();
+        dataset.normalise();
+
+//        String firstRow = "[ ";
+//        for( double value : dataset.getTestingOutputRow(0) ) {
+//        	firstRow += " "+value;
+//        }
+//    	firstRow += " | ";
+//        for( double value : dataset.getTestingInputRow(0) ) {
+//        	firstRow += " "+value;
+//        }
+//        firstRow += " ]";
+//        System.err.println("NoInputC: "+dataset.getNumberOfInputColumns()+
+//        		" NoOutputC: "+dataset.getNumberOfOutputColumns()+
+//        		" NoTestRow: "+dataset.getNumberOfTestingRows()+
+//                " NoTraiRow: "+dataset.getNumberOfTrainingRows()+
+//                " TestInput[00]:"+ firstRow);
 	}
 
 	/**

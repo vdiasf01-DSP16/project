@@ -32,13 +32,11 @@ public class BinMathOperator implements MathOperatorCore<Double> {
     }
 
     /**
-     * Constructor accepting a double value only for compatibility.
-     * 
-     * @param biasValue double
+     * {@inheritDoc}
      */
-    public BinMathOperator(double biasValue) {
-    	// No initial value required. Kept only compatibility.
-    }
+	@Override public void setBiasValue(double bias) {
+		// No bias will be used.
+	}
 
     /**
      * {@inheritDoc}

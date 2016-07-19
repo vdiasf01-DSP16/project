@@ -37,27 +37,6 @@ public abstract class MathOperatorFactory {
 
     /**
      * Get the matching Math Operation available.
-     * The given initial bias value will be used against all 
-     * online values given by the data set or neural network output.
-     * 
-     * @param mathOperator
-     * @param value double bias value
-     * @return MathOperatorCore
-     * @throws IllegalStateException
-     */
-    public static MathOperatorCore<?> getMathOperation(MathOperatorKey mathOperator, Double value) 
-            throws IllegalStateException {
-        if ( MathOperatorKey.ADD.equals(mathOperator) ) return new AddMathOperator(value);
-        if ( MathOperatorKey.SUB.equals(mathOperator) ) return new SubMathOperator(value);
-        if ( MathOperatorKey.MUL.equals(mathOperator) ) return new MulMathOperator(value);
-        if ( MathOperatorKey.DIV.equals(mathOperator) ) return new DivMathOperator(value);
-        if ( MathOperatorKey.INV.equals(mathOperator) ) return new InvMathOperator(value);
-        if ( MathOperatorKey.BIN.equals(mathOperator) ) return new BinMathOperator(value);
-        throw new IllegalStateException("Unknown Math Operation "+mathOperator);
-    }
-
-    /**
-     * Get the matching Math Operation available.
      * This converts a string that matches the Math Key into the
      * respective Math Operator object.
      * 

@@ -32,7 +32,7 @@ public class MulMathOperator implements MathOperatorCore<Double> {
      * The biasValue to be used with the operation to transform
      * the apply given value.
      */
-    private final BigDecimal biasValue;
+    private BigDecimal biasValue;
     
     /**
      * If no operation is supplied at the start, then no transformation 
@@ -43,15 +43,11 @@ public class MulMathOperator implements MathOperatorCore<Double> {
     }
 
     /**
-     * Constructor requiring an initial double value to which the input
-     * will changed according to this operation.<p>
-     * e.g.: apply(value) will return value + operation + biasValue.
-     * 
-     * @param biasValue double
+     * {@inheritDoc}
      */
-    public MulMathOperator(double biasValue) {
-        this.biasValue = BigDecimal.valueOf(biasValue);
-    }
+	@Override public void setBiasValue(double bias) {
+		this.biasValue = BigDecimal.valueOf(bias);
+	}
 
     /**
      * {@inheritDoc}

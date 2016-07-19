@@ -9,6 +9,12 @@ package app.controller.menu.neuralNetwork;
 public class OutputFunctionDetailsImpl implements OutputFunctionDetails {
 
 	/**
+	 * The data set input id from which the transformation is applied 
+	 * and then linked to the given respective output id.
+	 */
+	private int inputId;
+	
+	/**
 	 * The Neuron id that this information is for.
 	 */
 	private int outputId;
@@ -26,8 +32,8 @@ public class OutputFunctionDetailsImpl implements OutputFunctionDetails {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public void setOutputFunction(int outputId, String mathOperatorKey, double functionValue) {
+	@Override public void setOutputFunction(int inputId, int outputId, String mathOperatorKey, double functionValue) {
+		this.inputId = inputId;
 		this.outputId = outputId;
 		this.mathOperatorKey = mathOperatorKey;
 		this.functionValue = functionValue;
@@ -36,9 +42,15 @@ public class OutputFunctionDetailsImpl implements OutputFunctionDetails {
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
-	public int getOutputId() {
+	@Override public int getOutputId() {
 		return outputId;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override public int getInputId() {
+		return inputId;
 	}
 
 	/**

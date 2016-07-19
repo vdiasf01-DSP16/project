@@ -45,6 +45,13 @@ public class InvMathOperator implements MathOperatorCore<Double> {
     /**
      * {@inheritDoc}
      */
+	@Override public void setBiasValue(double bias) {
+		// Value ignored for this operation
+	}
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getDescription() {
         return DESCRIPTION;

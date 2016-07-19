@@ -11,12 +11,20 @@ public interface OutputFunctionDetails {
 	/**
 	 * Setting the output function attributes.
 	 * 
+	 * @param inputId int
 	 * @param outputId int
 	 * @param mathOperatorKey String
 	 * @param functionValue double
 	 */
-	public void setOutputFunction(int outputId, String mathOperatorKey, double functionValue);
+	public void setOutputFunction(int inputId, int outputId, String mathOperatorKey, double functionValue);
 
+	/**
+	 * The respective data set input id.
+	 * 
+	 * @return int
+	 */
+	public int getInputId();
+	
 	/**
 	 * The output neuron id.
 	 * 
