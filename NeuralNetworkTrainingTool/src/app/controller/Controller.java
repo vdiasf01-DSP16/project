@@ -246,4 +246,11 @@ public interface Controller {
 	 * @param initialValue double
 	 */
 	public void setOutputFunction(int outputId, double initialValue);
+
+	/**
+	 * The Activation Function selected by user.
+	 * 
+	 * @param activationFunctionName String
+	 */
+	public void setActivationFunction(String activationFunctionName);
 }

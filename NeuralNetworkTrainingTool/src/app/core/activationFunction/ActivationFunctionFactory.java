@@ -32,7 +32,7 @@ public abstract class ActivationFunctionFactory {
      * @param activationFunction ActivationFunctionKey
      * @return ActivationFunctionCore
      */
-    private static ActivationFunctionCore<?> getActivationFunction(ActivationFunctionKey activationFunction) {
+    public static ActivationFunctionCore<?> getActivationFunction(ActivationFunctionKey activationFunction) {
         if ( ActivationFunctionKey.ActivationBiPolar.equals(activationFunction) ) 
             return new ActivationBiPolarAdaptor();
         if ( ActivationFunctionKey.ActivationBipolarSteepenedSigmoid.equals(activationFunction) ) 
@@ -64,6 +64,48 @@ public abstract class ActivationFunctionFactory {
         if ( ActivationFunctionKey.ActivationStep.equals(activationFunction) ) 
             return new ActivationStepAdaptor();
         if ( ActivationFunctionKey.ActivationTANH.equals(activationFunction) ) 
+            return new ActivationTANHAdaptor();
+        return null;
+    }
+
+    /**
+     * Get the matching Activation Function available by name.
+     * 
+     * @param activationFunctionName ActivationFunctionKey
+     * @return ActivationFunctionCore
+     */
+    public static ActivationFunctionCore<?> getActivationFunction(String activationFunctionName) {
+        if ( getName(ActivationFunctionKey.ActivationBiPolar).equals(activationFunctionName) ) 
+            return new ActivationBiPolarAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationBipolarSteepenedSigmoid).equals(activationFunctionName) ) 
+            return new ActivationBiPolarSteepenedSigmoidAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationClippedLinear).equals(activationFunctionName) ) 
+            return new ActivationClippedLinearAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationCompetitive).equals(activationFunctionName) ) 
+            return new ActivationCompetitiveAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationElliott).equals(activationFunctionName) ) 
+            return new ActivationElliottAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationElliottSymmetric).equals(activationFunctionName) ) 
+            return new ActivationElliottSymmetricAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationGaussian).equals(activationFunctionName) ) 
+            return new ActivationGaussianAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationLinear).equals(activationFunctionName) ) 
+            return new ActivationLinearAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationLOG).equals(activationFunctionName) ) 
+            return new ActivationLOGAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationRamp).equals(activationFunctionName) ) 
+            return new ActivationRampAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationSigmoid).equals(activationFunctionName) ) 
+            return new ActivationSigmoidAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationSIN).equals(activationFunctionName) ) 
+            return new ActivationSINAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationSoftMax).equals(activationFunctionName) ) 
+            return new ActivationSoftMaxAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationSteepenedSigmoid).equals(activationFunctionName) ) 
+            return new ActivationSteepenedSigmoidAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationStep).equals(activationFunctionName) ) 
+            return new ActivationStepAdaptor();
+        if ( getName(ActivationFunctionKey.ActivationTANH).equals(activationFunctionName) ) 
             return new ActivationTANHAdaptor();
         return null;
     }

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import app.controller.menu.neuralNetwork.OutputFunctionDetails;
 import app.controller.menu.neuralNetwork.OutputFunctionDetailsImpl;
+import app.core.activationFunction.ActivationFunctionCore;
 import app.core.activationFunction.ActivationFunctionFactory;
 import app.core.activationFunction.ActivationFunctionKey;
 import app.core.dataSet.DataSet;
@@ -97,6 +98,11 @@ public class ControllerImpl implements Controller {
      * The data set to be used to train a network.
      */
     private DataSet dataset;
+    
+    /**
+     * The activation function to be used.
+     */
+    private ActivationFunctionCore activationFunction;
     
     /**
      * Controller Constructor to initialise required objects.
@@ -516,8 +522,7 @@ public class ControllerImpl implements Controller {
     /**
      * {@inheritDoc}
      */
-	@Override
-	public void setOutputFunction(int outputId, double initialValue) {
+	@Override public void setOutputFunction(int outputId, double initialValue) {
 		OutputFunctionDetails outputFunctionDetails = getOutputFunction(outputId);
 		if ( outputFunctionDetails != null ) {
 			outputFunctionDetails.setOutputFunction(outputId, 
@@ -526,5 +531,22 @@ public class ControllerImpl implements Controller {
 		else {
 			throw new IllegalArgumentException("Cannot set a value into a not yet created function.");
 		}
+	}
+
+    /**
+     * {@inheritDoc}
+     */
+	@Override public void setActivationFunction(String activationFunctionName) {
+		activationFunction = ActivationFunctionFactory.getActivationFunction(activationFunctionName);
+		if ( activationFunction == null ) throw new IllegalStateException("Activation function not set.");
+	}
+	
+	@Override public String toString() {
+		return "DataSet File:   "+dataSetFileAttributes.getFilename()+"\n"
+		     + "Separator:      "+dataSetFileAttributes.getSeparator()+"\n"
+		     + "NN Input size:  "+neuralNetworkConfig.getInputLayerSize()+"\n"
+		     + "NN Hidden size: "+neuralNetworkConfig.getHiddenLayerSizes().size()+"\n"
+		     + "NN Ouput size:  "+neuralNetworkConfig.getOutputLayerSize()+"\n"
+		     + "Act Func:       "+activationFunction.getName()+"\n";
 	}
 }

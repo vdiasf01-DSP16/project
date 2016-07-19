@@ -93,6 +93,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     private ChangeListener<String> activationFunctionChangeListener = new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+            mainController.setActivationFunction(newValue);
             checkAllNeuralNetworkConfigFilled(null);
         }
     };
@@ -252,9 +253,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
         resetMapping();
         mappingTabId.setDisable(true);
-
-        // Keep all data set selected at this point safe.
-        saveDataSetData();
     }
 
     /**
@@ -269,16 +267,12 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     	mappingSelectorInOutId.valueProperty().setValue(FIRST_SELECTION_DESCRIPTION);
     	mappingSupervisedCheckboxId.setDisable(true);
     	mappingSelectAllCheckboxId.setDisable(true);
-
-        // Ensure the neural network configuration parts are saved.
-        saveNeuralNetworkConfiguration();
     }
 
     /**
      * Final button push to finish all this process.
      */
     @FXML public void mappingApplyAction() {
-        saveDataSetData();
         saveNeuralNetworkConfiguration();
         saveMappingData();
         closeWindow();
@@ -943,13 +937,6 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
 
     /**
-     * Giving back to the controller data set data supplied.
-     */
-    private void saveDataSetData() {
-        // TODO: Give main controller the file attributes
-    }
-
-    /**
      * Giving back to the controller Neural Network configurations supplied.
      */
     private void saveNeuralNetworkConfiguration() {
@@ -971,14 +958,14 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
         mainController.setOutputLayerSize(outputLayerSize);
         
-        
+        // Activation Function already saved at the selection point.
     }
 
     /**
      * Giving back to the controller mapping data supplied.
      */
     private void saveMappingData() {
-    	
+    	System.out.println(mainController.toString());
 // TODO: Give main controller the dataset columns for NN input.
         // if supervised:
 // TODO: Give main controller the dataset columns for NN output.

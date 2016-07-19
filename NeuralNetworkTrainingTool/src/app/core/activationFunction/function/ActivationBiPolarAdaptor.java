@@ -22,7 +22,7 @@ public class ActivationBiPolarAdaptor implements ActivationFunctionCore<Activati
     /**
      * The user friendly name.
      */
-    private final String PATTERN_NAME = "BiPolar";
+    private final String PATTERN_NAME = "Activation BiPolar";
     
     /**
      * {@inheritDoc}
