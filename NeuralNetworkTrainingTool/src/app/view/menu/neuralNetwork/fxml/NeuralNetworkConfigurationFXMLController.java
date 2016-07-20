@@ -271,6 +271,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
     @FXML public void mappingApplyAction() {
         saveNeuralNetworkConfiguration();
         saveMappingData();
+        mainController.applyNeuralNetworkConfig();
         closeWindow();
     }
 
@@ -702,8 +703,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
 
         int outputLayerSize = Integer.parseInt(neuronOutputLayerAmountId.getText());
         List<String> outputLayerIds = new LinkedList<>();
-        for ( int outputId = 1; outputId <= outputLayerSize; outputId++ ) 
-        	outputLayerIds.add(""+outputId);
+        for ( int outputId = 1; outputId <= outputLayerSize; outputId++ ) outputLayerIds.add(""+outputId);
 
         // 1 - Show all neural network output ids that may require a function.
         // [Neuron Output label] [Data set input] [Function] [optional value]
@@ -794,6 +794,9 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         int outputId = Integer.parseInt(functionDropDown.getId());
         int rowId = outputId - 1;
 
+        @SuppressWarnings("unchecked")
+		ComboBox<String> dropBoxInput = (ComboBox<String>) gridPane.getChildren().get(rowId*TOTAL_COLUMNS_MAPPING_OUTPUT+0);
+        int inputId = Integer.parseInt(dropBoxInput.getSelectionModel().getSelectedItem());
         TextField functionValue = (TextField) gridPane.getChildren().get(rowId*TOTAL_COLUMNS_MAPPING_OUTPUT+3);
         Label description = (Label) gridPane.getChildren().get(rowId*TOTAL_COLUMNS_MAPPING_OUTPUT+4);
         description.setText("");
@@ -824,7 +827,7 @@ public class NeuralNetworkConfigurationFXMLController implements FXMLController 
         functionValue.removeEventFilter(KeyEvent.KEY_RELEASED, this::functionTextChanged);
         functionValue.addEventHandler(KeyEvent.KEY_RELEASED, this::functionTextChanged);
 
-        mainController.setOutputFunction(outputId, mathOperatorKey, functionValue.getText());
+        mainController.setOutputFunction(inputId, outputId, mathOperatorKey, functionValue.getText());
     }
     
     /**
