@@ -29,7 +29,7 @@ public abstract class NeuralNetworkPatternFactory {
      * @param neuralNetworkPattern NeuralNetworkPatternKey
      * @return NeuralNetworkPatternCore
      */
-    private static NeuralNetworkPatternCore<?> getNetworkPattern(NeuralNetworkPatternKey neuralNetworkPattern) {
+    public static NeuralNetworkPatternCore<?> getNetworkPattern(NeuralNetworkPatternKey neuralNetworkPattern) {
         if ( NeuralNetworkPatternKey.FeedForwardPattern.equals(neuralNetworkPattern) ) 
             return new FeedForwardPatternAdaptor();
         if ( NeuralNetworkPatternKey.ADALINEPattern.equals(neuralNetworkPattern) ) 
