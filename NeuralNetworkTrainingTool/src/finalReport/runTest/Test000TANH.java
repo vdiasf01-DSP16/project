@@ -45,13 +45,11 @@ public class Test000TANH {
 	/**
 	 * Building the path to where Encog file will be generated.
 	 */
-	private static final String PATH = "";
+	private static final String PATH = "";//"src"+File.separator
+//			+ "finalReport"+File.separator
+//			+ "runTest"+File.separator;
 
-	/**
-	 * The base file name.
-	 */
 	private static final String BASE_FILE_NAME = "test_000_TANH";
-
 	/**
 	 * The Encog file where the training network will be saved into.
 	 */
