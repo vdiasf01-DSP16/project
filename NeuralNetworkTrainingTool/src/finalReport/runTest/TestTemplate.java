@@ -45,9 +45,10 @@ public class TestTemplate {
 	/**
 	 * Building the path to where Encog file will be generated.
 	 */
-	private static final String PATH = "src"+File.separator
-			+ "finalReport"+File.separator
-			+ "runTest"+File.separator;
+	private static final String PATH = "";
+//	          "src"+File.separator
+//			+ "finalReport"+File.separator
+//			+ "runTest"+File.separator;
 
 	/**
 	 * The base file name.
