@@ -130,7 +130,7 @@ public class Test010TANH {
 		 */
 		pattern.addHiddenLayer(10);
 		int hiddenLayers = 1;
-		String hiddenLayersSpec = "";
+		String hiddenLayersSpec = "[ 10 ]";
 		pattern.setOutputNeurons(OUTPUT_NEURONS);
 		BasicNetwork network = (BasicNetwork) pattern.generate();
 
