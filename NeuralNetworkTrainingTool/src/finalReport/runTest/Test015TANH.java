@@ -40,7 +40,7 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class Test020TANH {
+public class Test015TANH {
 
 	/**
 	 * Building the path to where Encog file will be generated.
@@ -50,7 +50,7 @@ public class Test020TANH {
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_020_TANH";
+	private static final String BASE_FILE_NAME = "test_015_TANH";
 
 	/**
 	 * The Encog file where the training network will be saved into.
@@ -128,9 +128,9 @@ public class Test020TANH {
 		/**
 		 * Hidden layers
 		 */
-		pattern.addHiddenLayer(20);
+		pattern.addHiddenLayer(15);
 		int hiddenLayers = 1;
-		String hiddenLayersSpec = "[ 20 ]";
+		String hiddenLayersSpec = "[ 15 ]";
 		pattern.setOutputNeurons(OUTPUT_NEURONS);
 		BasicNetwork network = (BasicNetwork) pattern.generate();
 
