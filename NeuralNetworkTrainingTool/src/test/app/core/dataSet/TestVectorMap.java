@@ -44,7 +44,8 @@ public class TestVectorMap {
 	 */
 	@Before
 	public void before() {
-		mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.1);
+		mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+		mapTransform.setBiasValue(2.1);
 		vectorMap = new VectorMap(SOURCE_INDEX, mapTransform);
 	}
 

@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import app.core.dataSet.DataSet;
 import app.core.dataSet.FileDataSet;
+import app.core.dataSet.MathOperatorCore;
 import app.core.dataSet.MathOperatorFactory;
 import app.core.dataSet.MathOperatorKey;
 import app.core.dataSet.VectorMap;
@@ -985,7 +986,9 @@ public class TestFileDataSet {
         outputColumns.add(new VectorMap(0, null));
         outputColumns.add(new VectorMap(1, null));
         outputColumns.add(new VectorMap(2, null));
-        outputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.0)));
+        MathOperatorCore<?> operator = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+        operator.setBiasValue(2.0);
+        outputColumns.add(new VectorMap(2, operator));
         fileDataSet.setOutputColumns(outputColumns);
         fileDataSet.load();
 
@@ -1114,7 +1117,9 @@ public class TestFileDataSet {
         outputColumns.add(new VectorMap(0, null));
         outputColumns.add(new VectorMap(1, null));
         outputColumns.add(new VectorMap(2, null));
-        outputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.0)));
+        MathOperatorCore<?> operator = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+        operator.setBiasValue(2.0);
+        outputColumns.add(new VectorMap(2, operator));
         fileDataSet.setOutputColumns(outputColumns);
         fileDataSet.load();
 
@@ -1172,13 +1177,17 @@ public class TestFileDataSet {
         
         // The output transform
         List<VectorMap> outputColumns = new LinkedList<>();
-        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.4)));
+        MathOperatorCore<?> operator = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+        operator.setBiasValue(2.4);
+        outputColumns.add(new VectorMap(0, operator));
 
         // The input transform
         List<VectorMap> inputColumns = new LinkedList<>();
-        inputColumns.add(new VectorMap(1, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
-        inputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
-        inputColumns.add(new VectorMap(3, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
+        operator = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+        operator.setBiasValue(2.5);
+        inputColumns.add(new VectorMap(1, operator));
+        inputColumns.add(new VectorMap(2, operator));
+        inputColumns.add(new VectorMap(3, operator));
         
         fileDataSet.setInputColumns(inputColumns);
         fileDataSet.setOutputColumns(outputColumns);
@@ -1257,13 +1266,17 @@ public class TestFileDataSet {
         
         // The output transform
         List<VectorMap> outputColumns = new LinkedList<>();
-        outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.4)));
+        MathOperatorCore<?> operator = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+        operator.setBiasValue(2.4);
+        outputColumns.add(new VectorMap(0, operator));
 
         // The input transform
         List<VectorMap> inputColumns = new LinkedList<>();
-        inputColumns.add(new VectorMap(1, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
-        inputColumns.add(new VectorMap(2, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
-        inputColumns.add(new VectorMap(3, MathOperatorFactory.getMathOperation(MathOperatorKey.ADD, 2.5)));
+        operator = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+        operator.setBiasValue(2.5);
+        inputColumns.add(new VectorMap(1, operator));
+        inputColumns.add(new VectorMap(2, operator));
+        inputColumns.add(new VectorMap(3, operator));
         
         fileDataSet.setInputColumns(inputColumns);
         fileDataSet.setOutputColumns(outputColumns);

@@ -98,7 +98,8 @@ public class TestMapTransform {
     @Test
     public void testMathAddition() {
         // Instantiate new object with math operation
-    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.ADD);
+    	mapTransform.setBiasValue(INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.add(INITIAL_VALUE).doubleValue();
@@ -112,7 +113,8 @@ public class TestMapTransform {
     @Test
     public void testMathSubtraction() {
         // Instantiate new object with math operation
-    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.SUB,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.SUB);
+    	mapTransform.setBiasValue(INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.subtract(INITIAL_VALUE).doubleValue();
@@ -126,7 +128,8 @@ public class TestMapTransform {
     @Test
     public void testMathMultiplication() {
         // Instantiate new object with math operation
-    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.MUL,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.MUL);
+    	mapTransform.setBiasValue(INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.multiply(INITIAL_VALUE).doubleValue();
@@ -140,7 +143,8 @@ public class TestMapTransform {
     @Test
     public void testMathDivision() {
         // Instantiate new object with math operation
-    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.DIV,INITIAL_VALUE.doubleValue());
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.DIV);
+    	mapTransform.setBiasValue(INITIAL_VALUE.doubleValue());
 
         // Check if expected value matches returned one.
         double expectedValue = GIVEN_VALUE.doubleValue() / INITIAL_VALUE.doubleValue();
@@ -154,7 +158,8 @@ public class TestMapTransform {
     @Test(expected=ArithmeticException.class)
     public void testMathDivisionByZero() {
         // Instantiate new object with math operation
-    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.DIV,0.0);
+    	MathOperatorCore<?> mapTransform = MathOperatorFactory.getMathOperation(MathOperatorKey.DIV);
+    	mapTransform.setBiasValue(0.0);
         mapTransform.apply(GIVEN_VALUE.doubleValue());
     }
 
