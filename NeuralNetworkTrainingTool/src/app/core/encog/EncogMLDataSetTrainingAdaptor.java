@@ -67,7 +67,7 @@ public class EncogMLDataSetTrainingAdaptor implements MLDataSet {
 	 */
 	@Override
 	public int getInputSize() { 
-		return trainingDataSet.getNumberOfTrainingRows();
+		return trainingDataSet.getNumberOfInputColumns();
 	}
 
 	/**
