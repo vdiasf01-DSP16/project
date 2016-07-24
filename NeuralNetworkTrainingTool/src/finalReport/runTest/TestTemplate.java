@@ -14,7 +14,8 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
 
@@ -53,7 +54,7 @@ public class TestTemplate {
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_000_TANH";
+	private static final String BASE_FILE_NAME = "test_015_TANH";
 
 	/**
 	 * The Encog file where the training network will be saved into.
@@ -73,7 +74,8 @@ public class TestTemplate {
 	/**
 	 * The Activation Function to use.
 	 */
-	private static final ActivationFunctionKey ACTIVATION_FUNCTION_KEY = ActivationFunctionKey.ActivationTANH;
+	private static final ActivationFunctionKey ACTIVATION_FUNCTION_KEY = ActivationFunctionKey
+			.ActivationTANH;
 
 	/*************************************************************************
 	 * 
@@ -98,8 +100,8 @@ public class TestTemplate {
 		fileAttributes.setFilename("HIGGS.csv");
 		fileAttributes.setHeaderRows(0);
 		fileAttributes.setSeparator(",");
-		fileAttributes.setTrainingRangeIndex(1, 10500000);
-		fileAttributes.setTestingRangeIndex(    10500001, 11000000);
+		fileAttributes.setTrainingRangeIndex(1, 1050);
+//		fileAttributes.setTestingRangeIndex(    1050001, 1100000);
 
 		// Feed the file into a File DataSet
 		DataSet dataSet = new FileDataSet(fileAttributes);
@@ -131,23 +133,21 @@ public class TestTemplate {
 		/**
 		 * Hidden layers
 		 */
-		pattern.addHiddenLayer(0);
-		int hiddenLayers = 0;
-		String hiddenLayersSpec = "";
+		pattern.addHiddenLayer(15);
+		int hiddenLayers = 1;
+		String hiddenLayersSpec = "[ 15 ]";
 		pattern.setOutputNeurons(OUTPUT_NEURONS);
 		BasicNetwork network = (BasicNetwork) pattern.generate();
-
-		// Loading the network to file if exists..
-		if ( (new File(PATH+ENCOG_FILE_NAME)).exists() ) 
-			network = (BasicNetwork) EncogDirectoryPersistence.loadObject(new File(PATH+ENCOG_FILE_NAME));
 
 		// Prepare the output file to append all output.
 		prepareOutputFile();
 		
 		// Load and normalise the loaded data.
-		append("Loading file");
+		append("Loading file..");
 		dataSet.load();
 		Long loadTime = System.currentTimeMillis();
+
+		append("Normalising..");
 		dataSet.normalise();
 		Long normaliseTime = System.currentTimeMillis();
 		
@@ -155,10 +155,12 @@ public class TestTemplate {
 		MLDataSet dataSetTrainingAdapted = new EncogMLDataSetTrainingAdaptor(dataSet);
 		
 		// Use a Resilient Propagation training strategy.
-		BasicTraining train = (BasicTraining) new ResilientPropagation(network, dataSetTrainingAdapted);
-		
+//		BasicTraining train = (BasicTraining) new ResilientPropagation(network, dataSetTrainingAdapted);
+//		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPp);
+		BasicTraining train = (BasicTraining) new Backpropagation(network, dataSetTrainingAdapted);
+			
 		// Let the API decide the best use of CPU
-		((ResilientPropagation)train).setThreadCount(0);
+		((Propagation)train).setThreadCount(0);
 
 		// Start the training iterations.
 		append("Training...");
@@ -168,22 +170,15 @@ public class TestTemplate {
 		do {
 			train.iteration();
 			epoch++;
-			
-			// Friendly message to user to let know about progress.
-			if ( epoch % 10 == 0 ) {
-				Result result = getError(network, dataSet);
-				
-				append(epoch + ","+train.getError() + "," + result.getTotal()
-				  + ","+result.getCorrect() + "," +result.getResult());
-			}
+			if ( epoch % 1 == 0 )
+			    append(epoch + ","+train.getError());
 
-			// Too good to continue
-			if ( train.getError() < 0.0001 ) break;
+			// Saving the network files for each epoch for further analysis..
+		    if ( epoch % 100 == 0 )
+				EncogDirectoryPersistence.saveObject(new File(PATH+epoch+"_"+ENCOG_FILE_NAME), network);
 			
-			// Enough epochs for today..
-			if ( epoch > 2500 ) break;
-			
-		} while ( true );
+		} while ( train.getError() > 0.0001 );
+
 		Long endTrainingTime = System.currentTimeMillis();
 		
 		// Finalise the training.
@@ -219,7 +214,7 @@ public class TestTemplate {
 		append("Total Time:     " + (endTrainingTime - startTime)/1000.0 + "s");
 		append("====================================================");
 		
-		// Saving the network to file for next time..
+		// Saving the master final network to file..
 		EncogDirectoryPersistence.saveObject(new File(PATH+ENCOG_FILE_NAME), network);
 		
 		Encog.getInstance().shutdown();
