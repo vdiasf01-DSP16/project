@@ -37,7 +37,7 @@ import app.model.serializable.FileAttributes;
 
 /**
  * Analysing network configuration by running indefinitely, saving trained 
- * networks to file every 100 epochs for later comparison and analysis 
+ * networks to file every X epochs for later comparison and analysis 
  * throughout time.
  * 
  * @author Vasco
@@ -49,9 +49,6 @@ public class Test_015_TANH_RESIL {
 	 * Building the path to where Encog file will be generated.
 	 */
 	private static final String PATH = "";
-//	          "src"+File.separator
-//			+ "finalReport"+File.separator
-//			+ "runTest"+File.separator;
 
 	/**
 	 * Latest saved Encog file name.
@@ -84,10 +81,10 @@ public class Test_015_TANH_RESIL {
 	private static BufferedWriter outputFileBuffer = null;
 
 	/**
-	 * The log output buffered file handle.
+	 * The minimum error difference after which the process ends.
 	 */
-	private static BufferedWriter logOutputFileBuffer = null;
-
+	private static final double MIN_ERROR_DIFF = 1e-7;
+	
 	/**
 	 * The Activation Function to use.
 	 */
@@ -158,14 +155,13 @@ public class Test_015_TANH_RESIL {
 
 		// Prepare the output and log files to append all output.
 		prepareOutputFile();
-		prepareLogOutputFile();
 		
 		// Load and normalise the loaded data.
-		logAppend("Loading file..");
+		append("Loading file..");
 		dataSet.load();
 		Long loadTime = System.currentTimeMillis();
 
-		logAppend("Normalising..");
+		append("Normalising..");
 		dataSet.normalise();
 		Long normaliseTime = System.currentTimeMillis();
 		
@@ -181,31 +177,39 @@ public class Test_015_TANH_RESIL {
 		((Propagation)train).setThreadCount(0);
 
 		// Start the training iterations.
-		logAppend("Training...");
+		append("Training...");
 		Long startTrainingTime = System.currentTimeMillis();
-		append("Epoch Number,Network Error,Total Rows,Correct Rows,Accuracy Percent");
+		append("Epoch Number,Network Error,Error Diff,Total Rows,Correct Rows,Accuracy Percent");
+		double previousError = 0.0;
+		double errorDiff = 1.0;
 		do {
-			long startIt = System.currentTimeMillis();
+			previousError = train.getError();
 			train.iteration();
 			epoch++;
+			
 			// Saving the network files for each epoch for further analysis..
-		    if ( epoch % 100 == 0 ) {
+		    if ( epoch % 10 == 0 ) {
 		    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
-				EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
-				Result result = getError(dataSet);
+
+		    	// No need to save more frequent than every 100 epochs
+		    	if ( epoch % 100 == 0 ) 
+					EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
+
+		    	Result result = getError(dataSet);
+				
+				// Save to file current network state at this epoch
 				append(epoch + ","
-				    + train.getError() +","
+					+ train.getError() + ","
+					+ errorDiff + ","
 				    + result.getTotal() + ","
 				    + result.getCorrect() + ","
 				    + result.getResult());
 
+				// Calculate the error diff to check if it has converged enough.
+				errorDiff = Math.abs(previousError - train.getError());
 		    }
-		    logAppend("EPOCH: " + epoch
-		    		+ " ERR: " + train.getError()
-		    		+ " Iteration(ms): " + (System.currentTimeMillis()- startIt)
-		    		+ " Total training(s): " + ( (System.currentTimeMillis()-startTrainingTime)/1000 ));
 
-		} while ( train.getError() > 0.0001 );
+		} while ( errorDiff > MIN_ERROR_DIFF );
 
 		Long endTrainingTime = System.currentTimeMillis();
 		
@@ -228,8 +232,8 @@ public class Test_015_TANH_RESIL {
 		append("                      RESULTS");
 		append("----------------------------------------------------");
 		append("Final Encog Error:  " + train.getError());
-		append("Total rows:         " + (int)result.getTotal());
-		append("Corrent answers:    " + (int)result.getCorrect());
+		append("Total rows:         " + result.getTotal());
+		append("Corrent answers:    " + result.getCorrect());
 		append("Accuracy:           " + result.getResult() + "%");
 		append("====================================================");
 		append("                    TIME SPENT:");
@@ -320,40 +324,11 @@ public class Test_015_TANH_RESIL {
 	}
 	
 	/**
-	 * Prepare the buffer to write to log file.
-	 */
-	private static void prepareLogOutputFile() {
-		try {
-			logOutputFileBuffer = new BufferedWriter(new FileWriter(PATH+"log_"+OUTPUT_FILE_NAME));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Appending info to a log file.
-	 * 
-	 * @param text String
-	 */
-	private static void logAppend(String text) {
-		// Print the same text to STDOUT
-		System.out.println(text);
-
-		try {
-			logOutputFileBuffer.write(text+"\n");
-			logOutputFileBuffer.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
 	 * Close the output file.
 	 */
 	private static void closeFile() {
 		try {
 			outputFileBuffer.close();
-			logOutputFileBuffer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

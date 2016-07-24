@@ -187,10 +187,14 @@ public class TestTemplate {
 			epoch++;
 			
 			// Saving the network files for each epoch for further analysis..
-		    if ( epoch % 100 == 0 ) {
+		    if ( epoch % 10 == 0 ) {
 		    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
-				EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
-				Result result = getError(dataSet);
+
+		    	// No need to save more frequent than every 100 epochs
+		    	if ( epoch % 100 == 0 ) 
+					EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
+
+		    	Result result = getError(dataSet);
 				
 				// Save to file current network state at this epoch
 				append(epoch + ","
