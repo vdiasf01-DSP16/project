@@ -188,21 +188,17 @@ public class Test_015_TANH_BKPROP {
 			
 			// Saving the network files for each epoch for further analysis..
 		    if ( epoch % 10 == 0 ) {
-		    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
 		    	
-		    	// No need to save more frequent than every 100 epochs
-		    	if ( epoch % 100 == 0 ) 
+		    	// Save an Encog file every 100 epochs.
+				if ( epoch % 100 == 0 ) {
+			    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
 					EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
+		    	}
 
-		    	Result result = getError(dataSet);
-				
 				// Save to file current network state at this epoch
 				append(epoch + ","
 					+ train.getError() + ","
-					+ errorDiff + ","
-				    + result.getTotal() + ","
-				    + result.getCorrect() + ","
-				    + result.getResult());
+					+ errorDiff + ",");
 
 				// Calculate the error diff to check if it has converged enough.
 				errorDiff = Math.abs(previousError - train.getError());
@@ -215,6 +211,9 @@ public class Test_015_TANH_BKPROP {
 		// Finalise the training.
 		train.finishTraining();
 
+		// Saving the master final network to file..
+		EncogDirectoryPersistence.saveObject(new File(PATH+ENCOG_FILE_NAME), network);
+		
 		// One more final test to print results and we are done.
 		Result result = getError(dataSet);
 		append("");
@@ -232,7 +231,7 @@ public class Test_015_TANH_BKPROP {
 		append("----------------------------------------------------");
 		append("Final Encog Error:  " + train.getError());
 		append("Total rows:         " + result.getTotal());
-		append("Corrent answers:    " + result.getCorrect());
+		append("Current answers:    " + result.getCorrect());
 		append("Accuracy:           " + result.getResult() + "%");
 		append("====================================================");
 		append("                    TIME SPENT:");
@@ -244,9 +243,6 @@ public class Test_015_TANH_BKPROP {
 		append("----------------------------------------------------");
 		append("Total Time:     " + (endTrainingTime - startTime)/1000.0 + "s");
 		append("====================================================");
-		
-		// Saving the master final network to file..
-		EncogDirectoryPersistence.saveObject(new File(PATH+ENCOG_FILE_NAME), network);
 		
 		Encog.getInstance().shutdown();
 		closeFile();
@@ -260,11 +256,16 @@ public class Test_015_TANH_BKPROP {
 	public static Result getError(DataSet dataSet) {
 		BasicNetwork network = null;
 		
-		// Loading the network to file if exists..
-		if ( latestSavedEncogFileName != null )
+		// The master file
+		File masterFile = new File(PATH+ENCOG_FILE_NAME);
+		if ( masterFile.exists() ) {
+			network = (BasicNetwork) EncogDirectoryPersistence.loadObject(masterFile);
+		}
+		else if ( latestSavedEncogFileName != null )
+			// Loading the network to file if exists..
 			network = (BasicNetwork) EncogDirectoryPersistence.loadObject(new File(latestSavedEncogFileName));
 
-		if ( network == null ) return null;
+		if ( network == null ) return new Result(0,0,0);
 		
 		// Prepare the Encog ML DataSet.
 		MLDataSet dataSetTestingAdapted = new EncogMLDataSetTestingAdaptor(dataSet);
