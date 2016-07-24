@@ -42,7 +42,7 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class TestTemplate {
+public class Test_015_TANH_BKPROP {
 
 	/**
 	 * Building the path to where Encog file will be generated.
@@ -65,7 +65,7 @@ public class TestTemplate {
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_015_TANH_BKPROP";
+	private static final String BASE_FILE_NAME = "test_015_TANH";
 
 	/**
 	 * The Encog file where the training network will be saved into.
