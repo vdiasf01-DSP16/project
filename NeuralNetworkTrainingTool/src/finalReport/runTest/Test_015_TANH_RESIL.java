@@ -14,6 +14,8 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.resilient.RPROPType;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -34,23 +36,37 @@ import app.model.serializable.DataSetFileAttributes;
 import app.model.serializable.FileAttributes;
 
 /**
- * First test to analyse the range required and efficiency of this type 
- * of neural network configuration.
+ * Analysing network configuration by running indefinitely, saving trained 
+ * networks to file every 100 epochs for later comparison and analysis 
+ * throughout time.
  * 
  * @author Vasco
  *
  */
-public class Test045TANH {
+public class Test_015_TANH_RESIL {
 
 	/**
 	 * Building the path to where Encog file will be generated.
 	 */
 	private static final String PATH = "";
+//	          "src"+File.separator
+//			+ "finalReport"+File.separator
+//			+ "runTest"+File.separator;
+
+	/**
+	 * Latest saved Encog file name.
+	 */
+	private static String latestSavedEncogFileName = null;
+
+	/**
+	 * The current epoch number.
+	 */
+	private static int epoch = 0;
 
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_045_TANH";
+	private static final String BASE_FILE_NAME = "test_015_TANH_RESIL";
 
 	/**
 	 * The Encog file where the training network will be saved into.
@@ -68,9 +84,15 @@ public class Test045TANH {
 	private static BufferedWriter outputFileBuffer = null;
 
 	/**
+	 * The log output buffered file handle.
+	 */
+	private static BufferedWriter logOutputFileBuffer = null;
+
+	/**
 	 * The Activation Function to use.
 	 */
-	private static final ActivationFunctionKey ACTIVATION_FUNCTION_KEY = ActivationFunctionKey.ActivationTANH;
+	private static final ActivationFunctionKey ACTIVATION_FUNCTION_KEY = ActivationFunctionKey
+			.ActivationTANH;
 
 	/*************************************************************************
 	 * 
@@ -95,8 +117,8 @@ public class Test045TANH {
 		fileAttributes.setFilename("HIGGS.csv");
 		fileAttributes.setHeaderRows(0);
 		fileAttributes.setSeparator(",");
-		fileAttributes.setTrainingRangeIndex(1, 10500000);
-		fileAttributes.setTestingRangeIndex(    10500001, 11000000);
+		fileAttributes.setTrainingRangeIndex(1, 1050000);
+		fileAttributes.setTestingRangeIndex(    1050001, 1100000);
 
 		// Feed the file into a File DataSet
 		DataSet dataSet = new FileDataSet(fileAttributes);
@@ -128,23 +150,22 @@ public class Test045TANH {
 		/**
 		 * Hidden layers
 		 */
-		pattern.addHiddenLayer(45);
+		pattern.addHiddenLayer(15);
 		int hiddenLayers = 1;
-		String hiddenLayersSpec = "[ 45 ]";
+		String hiddenLayersSpec = "[ 15 ]";
 		pattern.setOutputNeurons(OUTPUT_NEURONS);
 		BasicNetwork network = (BasicNetwork) pattern.generate();
 
-		// Loading the network to file if exists..
-		if ( (new File(PATH+ENCOG_FILE_NAME)).exists() ) 
-			network = (BasicNetwork) EncogDirectoryPersistence.loadObject(new File(PATH+ENCOG_FILE_NAME));
-
-		// Prepare the output file to append all output.
+		// Prepare the output and log files to append all output.
 		prepareOutputFile();
+		prepareLogOutputFile();
 		
 		// Load and normalise the loaded data.
-		append("Loading file");
+		logAppend("Loading file..");
 		dataSet.load();
 		Long loadTime = System.currentTimeMillis();
+
+		logAppend("Normalising..");
 		dataSet.normalise();
 		Long normaliseTime = System.currentTimeMillis();
 		
@@ -153,41 +174,46 @@ public class Test045TANH {
 		
 		// Use a Resilient Propagation training strategy.
 		BasicTraining train = (BasicTraining) new ResilientPropagation(network, dataSetTrainingAdapted);
-		
+		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPp);
+//		BasicTraining train = (BasicTraining) new Backpropagation(network, dataSetTrainingAdapted);
+
 		// Let the API decide the best use of CPU
-		((ResilientPropagation)train).setThreadCount(0);
+		((Propagation)train).setThreadCount(0);
 
 		// Start the training iterations.
-		append("Training...");
+		logAppend("Training...");
 		Long startTrainingTime = System.currentTimeMillis();
-		int epoch = 0;
 		append("Epoch Number,Network Error,Total Rows,Correct Rows,Accuracy Percent");
 		do {
+			long startIt = System.currentTimeMillis();
 			train.iteration();
 			epoch++;
-			
-			// Friendly message to user to let know about progress.
-			if ( epoch % 10 == 0 ) {
-				Result result = getError(network, dataSet);
-				
-				append(epoch + ","+train.getError() + "," + result.getTotal()
-				  + ","+result.getCorrect() + "," +result.getResult());
-			}
+			// Saving the network files for each epoch for further analysis..
+		    if ( epoch % 100 == 0 ) {
+		    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
+				EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
+				Result result = getError(dataSet);
+				append(epoch + ","
+				    + train.getError() +","
+				    + result.getTotal() + ","
+				    + result.getCorrect() + ","
+				    + result.getResult());
 
-			// Too good to continue
-			if ( train.getError() < 0.0001 ) break;
-			
-			// Enough epochs for today..
-			if ( epoch > 2500 ) break;
-			
-		} while ( true );
+		    }
+		    logAppend("EPOCH: " + epoch
+		    		+ " ERR: " + train.getError()
+		    		+ " Iteration(ms): " + (System.currentTimeMillis()- startIt)
+		    		+ " Total training(s): " + ( (System.currentTimeMillis()-startTrainingTime)/1000 ));
+
+		} while ( train.getError() > 0.0001 );
+
 		Long endTrainingTime = System.currentTimeMillis();
 		
 		// Finalise the training.
 		train.finishTraining();
 
 		// One more final test to print results and we are done.
-		Result result = getError(network, dataSet);
+		Result result = getError(dataSet);
 		append("");
 		append("====================================================");
 		append("                      DETAILS");
@@ -216,7 +242,7 @@ public class Test045TANH {
 		append("Total Time:     " + (endTrainingTime - startTime)/1000.0 + "s");
 		append("====================================================");
 		
-		// Saving the network to file for next time..
+		// Saving the master final network to file..
 		EncogDirectoryPersistence.saveObject(new File(PATH+ENCOG_FILE_NAME), network);
 		
 		Encog.getInstance().shutdown();
@@ -224,15 +250,19 @@ public class Test045TANH {
 	}
 
 	/**
-	 * Given a network and a dataSet, calculate the error by going over all 
-	 * set testing range and check what the network says comparing with the 
-	 * dataSet expectations.
+	 * Load the latest encog file, and test it against the given set.
 	 * 
-	 * @param network BasicNetwork
 	 * @param dataSet DataSet
-	 * @return accuracy percent double
 	 */
-	public static Result getError(BasicNetwork network, DataSet dataSet) {
+	public static Result getError(DataSet dataSet) {
+		BasicNetwork network = null;
+		
+		// Loading the network to file if exists..
+		if ( latestSavedEncogFileName != null )
+			network = (BasicNetwork) EncogDirectoryPersistence.loadObject(new File(latestSavedEncogFileName));
+
+		if ( network == null ) return null;
+		
 		// Prepare the Encog ML DataSet.
 		MLDataSet dataSetTestingAdapted = new EncogMLDataSetTestingAdaptor(dataSet);
 		
@@ -290,11 +320,40 @@ public class Test045TANH {
 	}
 	
 	/**
+	 * Prepare the buffer to write to log file.
+	 */
+	private static void prepareLogOutputFile() {
+		try {
+			logOutputFileBuffer = new BufferedWriter(new FileWriter(PATH+"log_"+OUTPUT_FILE_NAME));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Appending info to a log file.
+	 * 
+	 * @param text String
+	 */
+	private static void logAppend(String text) {
+		// Print the same text to STDOUT
+		System.out.println(text);
+
+		try {
+			logOutputFileBuffer.write(text+"\n");
+			logOutputFileBuffer.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
 	 * Close the output file.
 	 */
 	private static void closeFile() {
 		try {
 			outputFileBuffer.close();
+			logOutputFileBuffer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

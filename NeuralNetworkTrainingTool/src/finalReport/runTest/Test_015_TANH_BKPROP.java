@@ -65,7 +65,7 @@ public class Test_015_TANH_BKPROP {
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_015_TANH";
+	private static final String BASE_FILE_NAME = "test_015_TANH_BKPROP";
 
 	/**
 	 * The Encog file where the training network will be saved into.
