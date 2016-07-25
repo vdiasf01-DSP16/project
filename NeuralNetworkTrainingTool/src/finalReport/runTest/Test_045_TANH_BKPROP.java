@@ -82,7 +82,7 @@ public class Test_045_TANH_BKPROP {
 	/**
 	 * The minimum error difference after which the process ends.
 	 */
-	private static final double MIN_ERROR_DIFF = 1e-7;
+	private static final double MIN_ERROR_DIFF = 1e-8;
 	
 	/**
 	 * The Activation Function to use.
@@ -178,7 +178,7 @@ public class Test_045_TANH_BKPROP {
 		// Start the training iterations.
 		append("Training...");
 		Long startTrainingTime = System.currentTimeMillis();
-		append("Epoch Number,Network Error,Error Diff,Total Rows,Correct Rows,Accuracy Percent");
+		append("Epoch Number,Network Error,Error Diff");
 		double previousError = 0.0;
 		double errorDiff = 1.0;
 		do {
@@ -186,7 +186,7 @@ public class Test_045_TANH_BKPROP {
 			train.iteration();
 			epoch++;
 			
-			// Saving the network files for each epoch for further analysis..
+			// Report on the error every 10 epochs.
 		    if ( epoch % 10 == 0 ) {
 		    	
 		    	// Save an Encog file every 100 epochs.
