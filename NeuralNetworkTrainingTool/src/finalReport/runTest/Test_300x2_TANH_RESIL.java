@@ -43,7 +43,7 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class Test_300_TANH_RESIL {
+public class Test_300x2_TANH_RESIL {
 
 	/**
 	 * Building the path to where Encog file will be generated.
@@ -63,7 +63,7 @@ public class Test_300_TANH_RESIL {
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_300_TANH_RESIL";
+	private static final String BASE_FILE_NAME = "test_300x2_TANH_RESIL";
 
 	/**
 	 * The Encog file where the training network will be saved into.
@@ -83,7 +83,7 @@ public class Test_300_TANH_RESIL {
 	/**
 	 * The minimum error difference after which the process ends.
 	 */
-	private static final double MIN_ERROR_DIFF = 1e-8;
+	private static final double MIN_ERROR_DIFF = 1e-7;
 	
 	/**
 	 * The Activation Function to use.
@@ -148,8 +148,9 @@ public class Test_300_TANH_RESIL {
 		 * Hidden layers
 		 */
 		pattern.addHiddenLayer(300);
-		int hiddenLayers = 1;
-		String hiddenLayersSpec = "[ 300 ]";
+		pattern.addHiddenLayer(300);
+		int hiddenLayers = 2;
+		String hiddenLayersSpec = "[ 300 300 ]";
 		pattern.setOutputNeurons(OUTPUT_NEURONS);
 		BasicNetwork network = (BasicNetwork) pattern.generate();
 
