@@ -1,0 +1,32 @@
+Loading file..
+Normalising..
+Training...
+Epoch Number,Network Error,Error Diff
+10,0.5,1.0
+
+====================================================
+                      DETAILS
+----------------------------------------------------
+Encog Trained File: test_300_TANH_RESIL.encog
+Input neurons:      28
+Ouput neurons:      2
+Hidden Layers:      1 [ 300 ]
+Pattern Used:       Feed Forward Pattern
+ActivationFunction: TANH
+====================================================
+                      RESULTS
+----------------------------------------------------
+Final Encog Error:  0.5
+Total rows:         49999.0
+Current answers:    0.0
+Accuracy:           0.0%
+====================================================
+                    TIME SPENT:
+----------------------------------------------------
+Startup Time:   59.938s
+Load Time:      262.352s
+Normalise Time: 0.01s
+Training Time:  117.295s
+----------------------------------------------------
+Total Time:     439.595s
+====================================================

@@ -43,7 +43,7 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class Test_300_TANH_RESIL {
+public class Test_300_TANH_RESIL_iPROPm {
 
 	/**
 	 * Building the path to where Encog file will be generated.
@@ -83,7 +83,7 @@ public class Test_300_TANH_RESIL {
 	/**
 	 * The minimum error difference after which the process ends.
 	 */
-	private static final double MIN_ERROR_DIFF = 1e-8;
+	private static final double MIN_ERROR_DIFF = 1e-10;
 	
 	/**
 	 * The Activation Function to use.
@@ -170,7 +170,10 @@ public class Test_300_TANH_RESIL {
 		
 		// Use a Resilient Propagation training strategy.
 		BasicTraining train = (BasicTraining) new ResilientPropagation(network, dataSetTrainingAdapted);
-		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPp);
+		
+		// iPROPp does not converge.
+//		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPp);
+		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPm);
 //		BasicTraining train = (BasicTraining) new Backpropagation(network, dataSetTrainingAdapted);
 
 		// Let the API decide the best use of CPU
@@ -186,7 +189,7 @@ public class Test_300_TANH_RESIL {
 			previousError = train.getError();
 			train.iteration();
 			epoch++;
-			
+
 			// Report on the error every 10 epochs.
 			if ( epoch % 10 == 0 ) {
 
