@@ -1,0 +1,10 @@
+Loading..
+Normalising..
+Preparing all files..
+====================================================================================================
+=                       Accuracy test percentage over all samples per epoch                        =
+====================================================================================================
+epoch,Correct Signal,Correct Background,Wrong Signal,Wrong Background,Total Signal Samples,Total Background Samples,Total Samples,Signal Accuracy,Background Accuracy,Total Accuracy
+100,26369,0,0,23630,26369,23630,49999,100.0,0.0,52.73905478109562
+200,26369,0,0,23630,26369,23630,49999,100.0,0.0,52.73905478109562
+300,26369,0,0,23630,26369,23630,49999,100.0,0.0,52.73905478109562
