@@ -1,0 +1,8 @@
+Loading..
+Normalising..
+Preparing all files..
+====================================================================================================
+=                         Signal and Background average values per epoch                           =
+====================================================================================================
+epoch,Tsignal0,Tbackground0,Fsignal0,Fbackground0,Tsignal1,Tbackground1,Fsignal1,Fbackground1
+0,1.0,1.0,NaN,NaN,1.0,1.0,NaN,NaN
