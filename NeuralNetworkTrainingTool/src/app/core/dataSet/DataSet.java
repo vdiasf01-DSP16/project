@@ -385,6 +385,7 @@ public abstract class DataSet {
             calculateMinMaxValuesFromData();
             saveNormalisedValues();
         }
+
         // Minimum and maximum values calculated per column. Now normalise it all...
         if ( trainingDataSet != null ) {
             for( int row = 0; row < trainingDataSet.length; row++ ) {
