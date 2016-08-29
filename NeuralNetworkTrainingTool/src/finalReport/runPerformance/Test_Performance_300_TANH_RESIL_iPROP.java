@@ -29,23 +29,23 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class Test_Performance_300_ELLIOTSYM_RESIL_iPROP {
+public class Test_Performance_300_TANH_RESIL_iPROP {
 
     /**
      * The path to where we should be looking into for files 
      * to read and write.
      */
-    private static final String PATH = "src/finalReport/runTest/test_300_ELLIOTSYM_RESIL_iPROPm/";
+    private static final String PATH = "src/finalReport/runTest/test_300_TANH_RESIL_iPROPm/";
 
     /**
      * The base file name for the results to be stored into.
      */
-    private static final String BASE_FILE_NAME = "test_Performance_300_ELLIOTSYM_RESIL_iPROPm";
+    private static final String BASE_FILE_NAME = "test_Performance_300_TANH_RESIL_iPROPm";
 
     /**
      * The Encog file with all network details to load and test.
      */
-    private static final String ENCOG_FILE_NAME = "test_300_ELLIOTSYM_RESIL.encog";
+    private static final String ENCOG_FILE_NAME = "test_300_TANH_RESIL.encog";
     
     /**
      * The application output file where all output will be saved into.
@@ -131,6 +131,8 @@ public class Test_Performance_300_ELLIOTSYM_RESIL_iPROP {
             BasicNetwork network = (BasicNetwork) EncogDirectoryPersistence.loadObject(encogFile);
 
             appendProcessedResult(network, dataSet, epoch);
+
+            if ( epoch > 5000 ) break;
         }
         
         // The last file does not have a prefix.
