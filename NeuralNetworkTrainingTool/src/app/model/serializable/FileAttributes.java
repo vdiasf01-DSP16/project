@@ -143,5 +143,4 @@ public interface FileAttributes extends Serializable {
 	 * @param hasTestingRange
 	 */
 	void setHasTestingRange(boolean hasTestingRange);
-
 }
