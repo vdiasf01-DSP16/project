@@ -1360,6 +1360,7 @@ public class TestFileDataSet {
         inputColumns.add(new VectorMap(3, null));
         fileDataSet.setInputColumns(inputColumns);
 
+		fileDataSet.resetNormalisationValues();
         fileDataSet.load();
         fileDataSet.normalise();
 
@@ -1842,6 +1843,7 @@ public class TestFileDataSet {
         outputColumns.add(new VectorMap(0, MathOperatorFactory.getMathOperation(MathOperatorKey.INV)));
         fileDataSet.setOutputColumns(outputColumns);
 
+		fileDataSet.resetNormalisationValues();
         fileDataSet.load();
         fileDataSet.normalise();
 

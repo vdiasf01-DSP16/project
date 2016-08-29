@@ -1,6 +1,13 @@
 package app.core.dataSet;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -13,6 +20,16 @@ import java.util.List;
  *
  */
 public abstract class DataSet {
+    
+    /**
+     * The File where normalised values are stored.
+     */
+    private final String NORMALISED_MIN_VALUES_FILE = "NormalisedMinValues.dat";
+
+    /**
+     * The File where normalised values are stored.
+     */
+    private final String NORMALISED_MAX_VALUES_FILE = "NormalisedMaxValues.dat";
 
     /**
      * The complete training data set source loaded and transformed for both 
@@ -247,6 +264,110 @@ public abstract class DataSet {
     public Integer getNumberOfTestingRows() {
         return testingDataSet.length;
     }
+
+    /**
+     * Resetting the Normalisation values.
+     */
+    public void resetNormalisationValues() {
+        minValues = null;
+        maxValues = null;
+
+        // Check if the min and max files exist.
+        File normalisedMinFile = new File(NORMALISED_MIN_VALUES_FILE);
+        File normalisedMaxFile = new File(NORMALISED_MAX_VALUES_FILE);
+
+        if ( ! normalisedMinFile.exists() || ! normalisedMaxFile.exists() ) {
+            return;
+        }
+        
+        // Ensure no trace of past information is available.
+        normalisedMaxFile.delete();
+        normalisedMinFile.delete();
+    }
+    
+    /**
+     * By default , the normalised values are stored in a set file 
+     * and loaded when run again. This allows the user to reuse the 
+     * same values when testing different test sets.
+     */
+    private void loadNormalisedValues() {
+        // Check if the min and max files exist.
+        File normalisedMinFile = new File(NORMALISED_MIN_VALUES_FILE);
+        File normalisedMaxFile = new File(NORMALISED_MAX_VALUES_FILE);
+
+        if ( ! normalisedMinFile.exists() || ! normalisedMaxFile.exists() ) {
+            return;
+        }
+
+        // Load min values
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(NORMALISED_MIN_VALUES_FILE));
+            String line = bufferedReader.readLine();
+            String[] minValuesStr = line.split(",");
+            minValues = new double[minValuesStr.length];
+            
+            for ( int index = 0; index < minValuesStr.length; index++ ) {
+                minValues[index] = Double.parseDouble(minValuesStr[index]);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Load max values
+        bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new FileReader(NORMALISED_MAX_VALUES_FILE));
+            String line = bufferedReader.readLine();
+            String[] maxValuesStr = line.split(",");
+            maxValues = new double[maxValuesStr.length];
+            
+            for ( int index = 0; index < maxValuesStr.length; index++ ) {
+                maxValues[index] = Double.parseDouble(maxValuesStr[index]);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Save the current min and max normalising values to file.
+     */
+    private void saveNormalisedValues() {
+        // Saving the min values
+        BufferedWriter bufferedWriter = null;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(NORMALISED_MIN_VALUES_FILE));
+            List<String> minValuesStr = new LinkedList<>();
+            for ( double value : minValues ) {
+                minValuesStr.add(String.valueOf(value));
+            }
+            String finalString = String.join(",", minValuesStr);
+            bufferedWriter.write(finalString);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Saving the max values
+        bufferedWriter = null;
+        try {
+            bufferedWriter = new BufferedWriter(new FileWriter(NORMALISED_MAX_VALUES_FILE));
+            List<String> maxValuesStr = new LinkedList<>();
+            for ( double value : maxValues ) {
+                maxValuesStr.add(String.valueOf(value));
+            }
+            String finalString = String.join(",", maxValuesStr);
+            bufferedWriter.write(finalString);
+            bufferedWriter.flush();
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     
     /**
      * Normalise testing and training sets by first calculate what
@@ -254,69 +375,88 @@ public abstract class DataSet {
      * normalise all values accordingly.
      */
     public void normalise() {
-    	int numberOfColumns;
-    	if ( trainingDataSet != null ) {
-    		numberOfColumns = trainingDataSet[0].length;
-    	} 
-    	else if ( testingDataSet != null ) {
-    		numberOfColumns = testingDataSet[0].length;
-    	}
-    	else {
-    		// No data to normalise and no exception.
-    		return;
-    	}
-    	
-    	// Initialise the minimum and maximum values array.
-    	minValues = new double[numberOfColumns]; 
-    	maxValues = new double[numberOfColumns]; 
+        // Attempt to load any saved values
+        if ( ( minValues == null || minValues[0] == 0.0 ) && 
+                ( maxValues == null || maxValues[0] == 0.0 ) ) loadNormalisedValues();
 
-    	// Set minValues and maxValues initial values with their opposites for unbiased outcome.
-        for( int index = 0 ; index < numberOfColumns ; index ++ ) {
-            maxValues[index] = Double.NEGATIVE_INFINITY;
-            minValues[index] = Double.POSITIVE_INFINITY;
+        // If nothing was saved, then these need to be calculated.
+        if ( ( minValues == null || minValues[0] == 0.0 ) && 
+                ( maxValues == null || maxValues[0] == 0.0 ) ) {
+            calculateMinMaxValuesFromData();
+            saveNormalisedValues();
         }
-
-    	// Start with the training set to collect minimum and maximum values
-    	if ( trainingDataSet != null ) {
-        	for( int row = 0; row < trainingDataSet.length; row++ ) {
-                for(int column = 0; column < trainingDataSet[row].length; column++ ) {
-                    if ( minValues[column] > trainingDataSet[row][column] ) minValues[column] = trainingDataSet[row][column];
-                    if ( maxValues[column] < trainingDataSet[row][column] ) maxValues[column] = trainingDataSet[row][column];
-                }
-        	}
-    	}
-
-    	// Check testing set and collect minimum and maximum values
-    	if ( testingDataSet != null ) {
-        	for( int row = 0; row < testingDataSet.length; row++ ) {
-                for(int column = 0; column < testingDataSet[row].length; column++ ) {
-                    if ( minValues[column] > testingDataSet[row][column] ) minValues[column] = testingDataSet[row][column];
-                    if ( maxValues[column] < testingDataSet[row][column] ) maxValues[column] = testingDataSet[row][column];
-                }
-        	}
-    	}
-    	
-    	// Minimum and maximum values calculated per column. Now normalise it all...
-    	if ( trainingDataSet != null ) {
-        	for( int row = 0; row < trainingDataSet.length; row++ ) {
+        // Minimum and maximum values calculated per column. Now normalise it all...
+        if ( trainingDataSet != null ) {
+            for( int row = 0; row < trainingDataSet.length; row++ ) {
                 for(int column = 0; column < trainingDataSet[row].length; column++ ) {
                     double value = trainingDataSet[row][column];
                     Normalize norm = new Normalize(minValues[column], maxValues[column]);
                     trainingDataSet[row][column] = norm.apply(value);
                 }
-        	}
-    	}
+            }
+        }
 
-    	// Check testing set and collect minimum and maximum values
-    	if ( testingDataSet != null ) {
-        	for( int row = 0; row < testingDataSet.length; row++ ) {
+        // Check testing set and collect minimum and maximum values
+        if ( testingDataSet != null ) {
+            for( int row = 0; row < testingDataSet.length; row++ ) {
                 for(int column = 0; column < testingDataSet[row].length; column++ ) {
                     double value = testingDataSet[row][column];
                     Normalize norm = new Normalize(minValues[column], maxValues[column]);
                     testingDataSet[row][column] = norm.apply(value);
                 }
-        	}
-    	}
+            }
+        }
+
+        // Save these for later.
+        saveNormalisedValues();
+    }
+    
+    /**
+     * Calculating the min and max values for normalisation 
+     * from the loaded data.
+     */
+    private void calculateMinMaxValuesFromData() {
+        int numberOfColumns;
+        if ( trainingDataSet != null ) {
+            numberOfColumns = trainingDataSet[0].length;
+        } 
+        else if ( testingDataSet != null ) {
+            numberOfColumns = testingDataSet[0].length;
+        }
+        else {
+            // No data to normalise and no exception.
+            return;
+        }
+        
+        // Initialise the minimum and maximum values array.
+        minValues = new double[numberOfColumns]; 
+        maxValues = new double[numberOfColumns]; 
+
+        // Set minValues and maxValues initial values with their opposites for unbiased outcome.
+        for( int index = 0 ; index < numberOfColumns ; index ++ ) {
+            maxValues[index] = Double.NEGATIVE_INFINITY;
+            minValues[index] = Double.POSITIVE_INFINITY;
+        }
+
+        // Start with the training set to collect minimum and maximum values
+        if ( trainingDataSet != null ) {
+            for( int row = 0; row < trainingDataSet.length; row++ ) {
+                for(int column = 0; column < trainingDataSet[row].length; column++ ) {
+                    if ( minValues[column] > trainingDataSet[row][column] ) minValues[column] = trainingDataSet[row][column];
+                    if ( maxValues[column] < trainingDataSet[row][column] ) maxValues[column] = trainingDataSet[row][column];
+                }
+            }
+        }
+
+        // Check testing set and collect minimum and maximum values
+        if ( testingDataSet != null ) {
+            for( int row = 0; row < testingDataSet.length; row++ ) {
+                for(int column = 0; column < testingDataSet[row].length; column++ ) {
+                    if ( minValues[column] > testingDataSet[row][column] ) minValues[column] = testingDataSet[row][column];
+                    if ( maxValues[column] < testingDataSet[row][column] ) maxValues[column] = testingDataSet[row][column];
+                }
+            }
+        }
     }
 
     /**
@@ -325,28 +465,32 @@ public abstract class DataSet {
      * In case these are not yet saved, nothing will be done.
      */
     public void deNormalise() {
-    	if ( minValues == null | maxValues == null ) return;
+        if ( minValues == null | maxValues == null ) return;
 
-    	// Minimum and maximum values calculated per column. DeNormalise it all...
-    	if ( trainingDataSet != null ) {
-        	for( int row = 0; row < trainingDataSet.length; row++ ) {
+        // Minimum and maximum values calculated per column. DeNormalise it all...
+        if ( trainingDataSet != null ) {
+            for( int row = 0; row < trainingDataSet.length; row++ ) {
                 for(int column = 0; column < trainingDataSet[row].length; column++ ) {
                     double value = trainingDataSet[row][column];
                     DeNormalize deNorm = new DeNormalize(minValues[column], maxValues[column]); 
                     trainingDataSet[row][column] = deNorm.apply(value);
                 }
-        	}
-    	}
+            }
+        }
 
-    	// Check testing set and collect minimum and maximum values
-    	if ( testingDataSet != null ) {
-        	for( int row = 0; row < testingDataSet.length; row++ ) {
+        // Check testing set and collect minimum and maximum values
+        if ( testingDataSet != null ) {
+            for( int row = 0; row < testingDataSet.length; row++ ) {
                 for(int column = 0; column < testingDataSet[row].length; column++ ) {
                     double value = testingDataSet[row][column];
                     DeNormalize deNorm = new DeNormalize(minValues[column], maxValues[column]);
                     testingDataSet[row][column] = deNorm.apply(value);
                 }
-        	}
-    	}
+            }
+        }
+    }
+    
+    public double[] getMinValues() {
+        return minValues;
     }
 }
