@@ -603,25 +603,10 @@ public class ControllerImpl implements Controller {
         dataset.setOutputColumns(outputMap);
 
 // TODO: Pass this to the next widget where these will be requested before loading
-        dataSetFileAttributes.setTestingRangeIndex(1, 20);
-        dataSetFileAttributes.setTrainingRangeIndex(21, 30);
+        dataSetFileAttributes.setTrainingRangeIndex(1, 10500000);
+        dataSetFileAttributes.setTestingRangeIndex(10500001, 11000000);
         dataset.load();
         dataset.normalise();
-
-//        String firstRow = "[ ";
-//        for( double value : dataset.getTestingOutputRow(0) ) {
-//        	firstRow += " "+value;
-//        }
-//    	firstRow += " | ";
-//        for( double value : dataset.getTestingInputRow(0) ) {
-//        	firstRow += " "+value;
-//        }
-//        firstRow += " ]";
-//        System.err.println("NoInputC: "+dataset.getNumberOfInputColumns()+
-//        		" NoOutputC: "+dataset.getNumberOfOutputColumns()+
-//        		" NoTestRow: "+dataset.getNumberOfTestingRows()+
-//                " NoTraiRow: "+dataset.getNumberOfTrainingRows()+
-//                " TestInput[00]:"+ firstRow);
 	}
 
 	/**
@@ -635,7 +620,6 @@ public class ControllerImpl implements Controller {
 		hiddenConfig += " ]";
 		neuralNetworkConfig.getHiddenLayerSizes();
 		neuralNetworkConfig.getInputLayerSize();
-//		dataset.setOutputColumns(outputColumns);
 
 		return "=============================================================================\n"
 	        + "DataSet File:        "+dataSetFileAttributes.getFilename()+"\n"
