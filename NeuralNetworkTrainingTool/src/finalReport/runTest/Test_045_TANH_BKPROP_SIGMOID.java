@@ -15,8 +15,7 @@ import org.encog.ml.data.MLDataSet;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
-import org.encog.neural.networks.training.propagation.resilient.RPROPType;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.persist.EncogDirectoryPersistence;
@@ -44,7 +43,12 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class Test_045_TANH_RESIL_SIGMOID_iPROPm {
+public class Test_045_TANH_BKPROP_SIGMOID {
+
+	/**
+	 * The number of epochs that this neural network will train for.
+	 */
+	private static final int MAX_EPOCH_TRAINING = 2500;
 
 	/**
 	 * Building the path to where Encog file will be generated.
@@ -64,7 +68,7 @@ public class Test_045_TANH_RESIL_SIGMOID_iPROPm {
 	/**
 	 * The base file name.
 	 */
-	private static final String BASE_FILE_NAME = "test_045_TANH_RESIL_SIGMOID_iPROPm";
+	private static final String BASE_FILE_NAME = "test_045_TANH_BKPROP_SIGMOID";
 
 	/**
 	 * The Encog file where the training network will be saved into.
@@ -176,9 +180,9 @@ public class Test_045_TANH_RESIL_SIGMOID_iPROPm {
 		MLDataSet dataSetTrainingAdapted = new EncogMLDataSetTrainingAdaptor(dataSet);
 		
 		// Use a Resilient Propagation training strategy.
-		BasicTraining train = (BasicTraining) new ResilientPropagation(network, dataSetTrainingAdapted);
-		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPm);
-//		BasicTraining train = (BasicTraining) new Backpropagation(network, dataSetTrainingAdapted);
+//		BasicTraining train = (BasicTraining) new ResilientPropagation(network, dataSetTrainingAdapted);
+//		((ResilientPropagation) train).setRPROPType(RPROPType.iRPROPm);
+		BasicTraining train = (BasicTraining) new Backpropagation(network, dataSetTrainingAdapted);
 
 		// Let the API decide the best use of CPU
 		((Propagation)train).setThreadCount(0);
@@ -194,17 +198,26 @@ public class Test_045_TANH_RESIL_SIGMOID_iPROPm {
 			train.iteration();
 			epoch++;
 			
-	    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
-			EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
+			// Report on the error every 10 epochs.
+			if ( epoch % 10 == 0 ) {
 
-			// Save to file current network state at this epoch
-			errorDiff = Math.abs(previousError - train.getError());
-			append(epoch + ","
-				+ train.getError() + ","
-				+ errorDiff + ",");
+		    	// Save an Encog file every 100 epochs.
+				if ( epoch % 100 == 0 ) {
+			    	latestSavedEncogFileName = PATH+epoch+"_"+ENCOG_FILE_NAME;
+					EncogDirectoryPersistence.saveObject(new File(latestSavedEncogFileName), network);
+		    	}
 
-			// exit at the end of epoch 25 to follow one of the papers.
-			if ( epoch >= 25 ) break;
+				// Save to file current network state at this epoch
+				append(epoch + ","
+					+ train.getError() + ","
+					+ errorDiff + ",");
+
+				// Calculate the error diff to check if it has converged enough.
+				errorDiff = Math.abs(previousError - train.getError());
+		    }
+
+			// exit at the end of epoch MAX_EPOCH_TRAINING.
+			if ( epoch >= MAX_EPOCH_TRAINING ) break;
 		} while ( true );
 
 		Long endTrainingTime = System.currentTimeMillis();
