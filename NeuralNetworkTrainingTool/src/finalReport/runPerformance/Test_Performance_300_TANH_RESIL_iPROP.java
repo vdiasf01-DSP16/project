@@ -192,7 +192,7 @@ public class Test_Performance_300_TANH_RESIL_iPROP {
         // Prepare the Encog ML DataSet.
         MLDataSet dataSetTestingAdapted = new EncogMLDataSetTestingAdaptor(dataSet);
 
-        long startingTime = System.currentTimeMillis();
+        double startingTime = System.currentTimeMillis();
         int totalSamples = 0;
         
         // Go over the full testing set.
@@ -207,10 +207,9 @@ public class Test_Performance_300_TANH_RESIL_iPROP {
             totalSamples++;
         }
 
-        long endingTime = System.currentTimeMillis();
-        long diffTime = endingTime - startingTime;
-        long samplesPerMillisecond = totalSamples / diffTime;
-        double samplesPerSecond = (double) ( samplesPerMillisecond * 1000.0 );
+        double endingTime = System.currentTimeMillis();
+        double diffTime = endingTime - startingTime;
+        double samplesPerSecond = (double) ( totalSamples * 1000.0 / diffTime );
 
         // If first value, simply assign it.
         if ( mean == 0 ) mean = samplesPerSecond;
