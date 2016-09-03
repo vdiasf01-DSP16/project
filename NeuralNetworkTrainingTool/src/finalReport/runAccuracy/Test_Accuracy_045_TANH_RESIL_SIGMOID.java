@@ -30,23 +30,23 @@ import app.model.serializable.FileAttributes;
  * @author Vasco
  *
  */
-public class Test_Accuracy_045_TANH_RESIL_SIGMOID_iPROPm {
+public class Test_Accuracy_045_TANH_RESIL_SIGMOID {
 
     /**
      * The path to where we should be looking into for files 
      * to read and write.
      */
-    private static final String PATH = "src/finalReport/runTest/test_045_TANH_RESIL_SIGMOID_iPROPm/";
+    private static final String PATH = "src/finalReport/runTest/test_045_TANH_RESIL_SIGMOID/";
 
     /**
      * The base file name for the results to be stored into.
      */
-    private static final String BASE_FILE_NAME = "test_Accuracy_045_TANH_RESIL_SIGMOID_iPROPm";
+    private static final String BASE_FILE_NAME = "test_Accuracy_045_TANH_RESIL_SIGMOID";
 
     /**
      * The Encog file with all network details to load and test.
      */
-    private static final String ENCOG_FILE_NAME = "test_045_TANH_RESIL_SIGMOID_iPROPm.encog";
+    private static final String ENCOG_FILE_NAME = "test_045_TANH_RESIL_SIGMOID.encog";
     
     /**
      * The application output file where all output will be saved into.
@@ -76,8 +76,8 @@ public class Test_Accuracy_045_TANH_RESIL_SIGMOID_iPROPm {
         fileAttributes.setSeparator(",");
 
         // Same range used for testing on all trained networks.
-        fileAttributes.setTrainingRangeIndex(           1,  10_500_0);
-        fileAttributes.setTestingRangeIndex(    10_500_1, 11_000_0);
+        fileAttributes.setTrainingRangeIndex(           1,  10_500_000);
+        fileAttributes.setTestingRangeIndex(    10_500_001, 11_000_000);
 
         // Feed the file into a File DataSet
         DataSet dataSet = new FileDataSet(fileAttributes);
