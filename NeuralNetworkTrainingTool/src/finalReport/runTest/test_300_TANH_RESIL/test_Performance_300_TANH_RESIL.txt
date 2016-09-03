@@ -1,0 +1,8 @@
+Loading..
+Normalising..
+Preparing all files..
+====================================================================================================
+=                           Performance test over all samples per epoch                            =
+====================================================================================================
+epoch,total classification time ms,total samples,classifications per second,mean
+100,4568.0,49999,10945.490367775832,10945.490367775832
