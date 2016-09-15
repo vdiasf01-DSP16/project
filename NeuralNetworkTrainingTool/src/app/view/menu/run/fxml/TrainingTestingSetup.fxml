@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import java.net.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="296.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#keyTypedAction" prefHeight="296.0" prefWidth="500.0">
+         <children>
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="14.0" layoutY="12.0" prefHeight="17.0" prefWidth="471.0" text="Training Row Range" textAlignment="CENTER" />
+            <Slider fx:id="trainingSliderStartId" layoutX="29.0" layoutY="30.0" onDragDone="#trainingSliderStartAction" prefHeight="41.0" prefWidth="370.0" />
+            <Slider fx:id="trainingSliderEndId" layoutX="29.0" layoutY="61.0" onDragDone="#trainingSliderEndAction" prefHeight="41.0" prefWidth="370.0" />
+            <Slider fx:id="testingSliderStartId" layoutX="29.0" layoutY="131.0" onDragDone="#testingSliderStartAction" prefHeight="41.0" prefWidth="370.0" scaleShape="false" />
+            <Slider fx:id="testingSliderEndId" layoutX="29.0" layoutY="162.0" onDragDone="#testingSliderEndAction" prefHeight="41.0" prefWidth="370.0" />
+            <Label layoutX="15.0" layoutY="42.0" text="S" />
+            <TextField fx:id="trainingStartId" layoutX="409.0" layoutY="39.0" onKeyReleased="#trainingStartAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <TextField fx:id="trainingEndId" layoutX="409.0" layoutY="69.0" onKeyReleased="#trainingEndAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <Separator layoutY="102.0" prefHeight="17.0" prefWidth="500.0" />
+            <Label layoutX="15.0" layoutY="73.0" text="E" />
+            <Label layoutX="17.0" layoutY="174.0" text="E" />
+            <TextField fx:id="testingStartId" layoutX="411.0" layoutY="140.0" onKeyReleased="#testingStartAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <TextField fx:id="testingEndId" layoutX="411.0" layoutY="170.0" onKeyReleased="#testingEndAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <Label layoutX="17.0" layoutY="143.0" text="S" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="16.0" layoutY="119.0" prefHeight="17.0" prefWidth="471.0" text="Testing Row Range" textAlignment="CENTER" />
+            <Separator layoutY="200.0" prefHeight="17.0" prefWidth="500.0" />
+            <Label layoutX="19.0" layoutY="227.0" text="Min Epochs:" />
+            <Label layoutX="18.0" layoutY="261.0" text="Max Epochs:" />
+            <Label layoutX="178.0" layoutY="227.0" text="Max Error:" />
+            <Label layoutX="177.0" layoutY="261.0" text="Min Delta:" />
+            <Label layoutX="327.0" layoutY="227.0" text="Min Accuracy:" />
+            <Label layoutX="326.0" layoutY="261.0" text="Check step" />
+            <TextField fx:id="minEpochsId" layoutX="89.0" layoutY="223.0" onKeyReleased="#minEpochsAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <TextField fx:id="maxEpochsId" layoutX="89.0" layoutY="257.0" onKeyReleased="#maxEpochsAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <TextField fx:id="maxErrorId" layoutX="238.0" layoutY="223.0" onKeyReleased="#maxErrorAction" onKeyTyped="#validateDouble" prefHeight="25.0" prefWidth="75.0" />
+            <TextField fx:id="minDeltaId" layoutX="238.0" layoutY="257.0" onKeyReleased="#minDeltaAction" onKeyTyped="#validateDouble" prefHeight="25.0" prefWidth="75.0" />
+            <TextField fx:id="minAccuracyId" layoutX="411.0" layoutY="223.0" onKeyReleased="#minAccuracyAction" onKeyTyped="#validateDouble" prefHeight="25.0" prefWidth="60.0" />
+            <TextField fx:id="checkStepId" layoutX="411.0" layoutY="257.0" onKeyReleased="#checkStepAction" onKeyTyped="#validateInteger" prefHeight="25.0" prefWidth="75.0" />
+            <Label layoutX="475.0" layoutY="227.0" text="\%" />
+         </children>
+      </Pane>
+   </children>
+</VBox>

@@ -9,7 +9,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox fx:id="backgroundPaneId" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <MenuBar>
         <menus>
@@ -87,19 +87,14 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Run">
             <items>
-              <MenuItem fx:id="runTrainingId" mnemonicParsing="false" onAction="#runTrainingAction" text="Training ..">
+              <MenuItem fx:id="runTrainingId" mnemonicParsing="false" onAction="#runTrainingAction" text="Run Setup ..">
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="T" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
-                     </accelerator></MenuItem>
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem fx:id="runTestingId" mnemonicParsing="false" onAction="#runTestingAction" text="Testing ..">
-                     <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="Y" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="R" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="runResetTrainingId" mnemonicParsing="false" onAction="#runResetTrainingAction" text="Reset Training">
                      <accelerator>
-                        <KeyCodeCombination alt="DOWN" code="R" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
+                        <KeyCodeCombination alt="DOWN" code="ENTER" control="UP" meta="UP" shift="DOWN" shortcut="UP" />
                      </accelerator></MenuItem>
             </items>
           </Menu>
@@ -146,9 +141,5 @@
             </Menu>
         </menus>
       </MenuBar>
-      <Pane fx:id="backgroundPaneId" prefHeight="773.0" prefWidth="1280.0">
-         <opaqueInsets>
-            <Insets />
-         </opaqueInsets></Pane>
    </children>
 </VBox>

@@ -94,7 +94,6 @@ public class NeuralNetworkTrainingAppFXMLController implements FXMLController {
         neuralNetworkEditConfigId.setDisable(true);
         neuralNetworkCloseConfigId.setDisable(true);
         runTrainingId.setDisable(true);
-        runTestingId.setDisable(true);
         runResetTrainingId.setDisable(true);
         windowShowTrainingReportId.setDisable(true);
         windowShowTestingReportId.setDisable(true);    

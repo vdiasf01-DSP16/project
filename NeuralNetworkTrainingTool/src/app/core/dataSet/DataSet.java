@@ -490,8 +490,4 @@ public abstract class DataSet {
             }
         }
     }
-    
-    public double[] getMinValues() {
-        return minValues;
-    }
 }
